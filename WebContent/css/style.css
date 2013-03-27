@@ -144,10 +144,19 @@ p, ul, ol, dl {
 	float: left;
 	width: 60%;
 	background-color: #eee;
-	min-height: 20em;
+	min-height: 13em;
 	border-radius: 10px;
 	margin-bottom: 2em;
 	position: relative;
+	padding-top:7em;
+}
+#content .loginForm{
+	margin:auto;
+	
+}
+#content .loginForm table {
+	margin:auto;
+	
 }
 
 #sidebar {
@@ -155,7 +164,17 @@ p, ul, ol, dl {
 	float: right;
 	margin: 0 0 2em 1em;
 }
-
+#sidebar .catList {
+	list-style:none;
+	padding:0;
+}
+#sidebar .catList li {
+	background-color: #EEEEEE;
+	-moz-border-radius: 5px;
+	border-radius: 5px;
+	padding:3px;
+	margin-bottom:3px;
+}
 #highscore {
     margin-top: 1em;
 }
