@@ -1,4 +1,4 @@
-package de.quiz.servlets;
+package de.quiz.Servlets;
 
 import java.io.IOException;
 import javax.servlet.ServletException;
