@@ -11,7 +11,7 @@
 		<script type="text/javascript" src="loginFeld.js"></script>
 	</head>
 	<body>
-		<div id="header">
+		<header>
 			<a href="http://www.hs-weingarten.de">
 				<img
 					id="hs-logo"
@@ -19,14 +19,14 @@
 					alt="Hochschule Ravensburg-Weingarten"
 				>
 			</a>
-		</div>
-		<div id="quiz-app">
-
-    		<header>
+		</header>
+		<section id="quiz-app">
+    		<div>
         		<h1><i class=" icon-question-sign icon-large"></i>WebQuiz Gruppe 4</h1>
-    		</header>
+    		</div>
     
     		<section id="content">
+<<<<<<< HEAD
         		<!-- <form class="loginForm"> -->
 					<table class="loginForm" id="loginEingabe">
 					    <tr>
@@ -42,9 +42,18 @@
 					    </tr>
 				  	</table>
 				<!-- </form> -->
+=======
+    			<div id="login">
+        			<form class="center" style="display: block;">
+        				<label for="name">Spielername</label>
+						<input id="nameInput" name="name" type="text" autofocus="autofocus">
+						<button type="submit">Login <i class="icon-signin"></i></button>
+					</form>
+				</div>
+>>>>>>> + created login servlet
 			</section>
 
-    		<div id="sidebar">
+    		<section id="sidebar">
         		<section id="catalog-list">
             		<h2><i class="icon-book"></i>Kataloge</h2>
 					<ul class="catList">
@@ -63,39 +72,43 @@
 	         		 	</tbody>
 	      			</table>
 	   			</section>
-    		</div>
-		</div>
+    		</section>
+    		<div id="float_clearer"></div>
+    		<section id="log">
+    			<h2><a href="log.jsp"><i class ="icon-list-alt icon-large"></i>Log</a></h2>
+    		</section>
+		</section>
 		
 
-			<div class="footer">                                 
+		<footer>                                 
 		  
-				<br>
+			<br>
 		  
-				<p>Erstellt durch Gruppe 4</p>             
+			<p>Erstellt durch Gruppe 4</p>             
 		  
-				<hr class="footer_hr">
+			<hr class="footer_hr">
 		  
-				<p>           
-					Dieses Website bzw. der Inhalt steht unter einer
-					<br> 
-					<a rel="license" 
-					href="http://creativecommons.org/licenses/by-nc-sa/3.0/de/">
-					Creative Commons Lizenz (Namensnennung | Keine kommerzielle Nutzung | Weitergabe <br>unter gleichen Bedingungen).</a>
-					<br><br>
-					<a href="http://creativecommons.org/licenses/by-nc-sa/3.0/de/"><img
-					src="img/creativecommons.png"
-					alt="Creative Commons Lizenzvertrag"></a>
-				</p>                   
+			<p>           
+				Dieses Website bzw. der Inhalt steht unter einer
+				<br> 
+				<a rel="license" 
+				href="http://creativecommons.org/licenses/by-nc-sa/3.0/de/">
+				Creative Commons Lizenz (Namensnennung | Keine kommerzielle Nutzung | Weitergabe <br>unter gleichen Bedingungen).</a>
+				<br><br>
+				<a href="http://creativecommons.org/licenses/by-nc-sa/3.0/de/"><img
+				src="img/creativecommons.png"
+				alt="Creative Commons Lizenzvertrag"></a>
+			</p>                   
 		  
-				<hr class="footer_hr">
+			<hr class="footer_hr">
 		  
-				<p>Diese Website wurde HTML 5 konform erstellt, und durch den <br><a href="http://validator.w3.org/#validate_by_upload">Markup Validation Service des W3C validiert.</a></p>
-				<p>   
-					<a href="http://validator.w3.org/#validate_by_upload"><img
-					src="img/w3cvalidhtml5.jpg"
-					alt="Valid HTML 5"></a>
-				</p>          
-			</div><!--end of footer-->	
+			<p>Diese Website wurde HTML 5 konform erstellt, und durch den <br><a href="http://validator.w3.org/#validate_by_upload">Markup Validation Service des W3C validiert.</a></p>
+			<p>   
+				<a href="http://validator.w3.org/#validate_by_upload"><img
+				src="img/w3cvalidhtml5.jpg"
+				alt="Valid HTML 5"></a>
+			</p>          
+		</footer><!--end of footer-->	
 
 
 	</body>

@@ -64,7 +64,7 @@ html {
 	
 	background-attachment: fixed;
 }
-#header {
+header {
 	width: 60em;
 	height: 8em;
 	margin: 2em auto;
@@ -148,15 +148,28 @@ p, ul, ol, dl {
 	border-radius: 10px;
 	margin-bottom: 2em;
 	position: relative;
-	padding-top:7em;
+
 }
-#content .loginForm{
-	margin:auto;
-	
+
+#login input {
+	font-size: 20px;
+	display: block;
+	width: 100%;
+	margin: 0.5em 0;
 }
-#content .loginForm table {
-	margin:auto;
-	
+
+#login label {
+	font-size: 20px;
+	font-weight: 600;
+	color: #ccc;
+	display: block;
+	margin: 0.5em 0;
+}
+
+#login button {
+	font-size: 20px;
+	margin: 0.5em 0;
+	padding: 5px 8px 5px 8px;
 }
 
 #sidebar {
@@ -192,23 +205,44 @@ p, ul, ol, dl {
     background: #DC143C;
 }
 
+#float_clearer{
+	clear: both;
+}
+
+.center {
+margin: 8em auto;
+width: 20em;
+}
+
+/* -------------LOG------------ */
+#log {
+	float: bottom;
+}
+
+#log a:link, #log a:visited { text-decoration:none; color:#666; }
+
+#log a:focus, #log a:hover, #log a:active { 
+	text-decoration:none; 
+	color:#0B330D;
+}
+
 /* -------------Footer------------ */
 
-.footer a:link, .footer a:visited { text-decoration:none; color:#3399CC; }
+footer a:link, footer a:visited { text-decoration:none; color:#3399CC; }
 
-.footer a:focus, .footer a:hover, .footer a:active { 
+footer a:focus, footer a:hover, footer a:active { 
 	text-decoration:none; 
 	color:#0B330D;
 }
 
 
-.footer p {
+footer p {
 	color: #3399CC;
 	font-weight: 700;
 }
 
 
-.footer{
+footer{
     border-top: 6px solid #3399CC;
 	width: 60em;
 	margin: 2em auto;
@@ -240,9 +274,9 @@ p, ul, ol, dl {
 }
 
 
-#footer a img { border : 0 none; }
+footer a img { border : 0 none; }
 
 
-.footer_nav{
+footer_nav{
   	word-spacing: 40px;
 }
