@@ -7,6 +7,8 @@
 		<link type="text/javascript" href='http://fonts.googleapis.com/css?family=Open+Sans:400italic,600italic,400,600' rel='stylesheet'>
 		<!-- Font Awesome - http://fortawesome.github.com/Font-Awesome -->
 		<link type="text/css" href="css/font-awesome.css" rel="stylesheet">
+		<script type="text/javascript" src="jquery-1.9.1.js"></script>
+		<script type="text/javascript" src="loginFeld.js"></script>
 	</head>
 	<body>
 		<div id="header">
@@ -25,21 +27,21 @@
     		</header>
     
     		<section id="content">
-        		<form class="loginForm" action="http://de.selfhtml.org/cgi-bin/comments.pl">
-					<table>
+        		<!-- <form class="loginForm"> -->
+					<table class="loginForm" id="loginEingabe">
 					    <tr>
 					      	<td>Username</td>
 					    </tr>
 					    <tr>
-					 		<td><input name="Vorname" type="text" size="30" maxlength="30"></td>
+					 		<td><input name="Vorname" type="text" size="30" maxlength="30" id="Eingabefeld"></td>
 						</tr>
 						<tr>
 					      <td>
-					        <input type="submit" value="Login">
+					        <input type="submit" value="Login" id="test">
 					      </td>
 					    </tr>
 				  	</table>
-				</form>
+				<!-- </form> -->
 			</section>
 
     		<div id="sidebar">
@@ -48,6 +50,7 @@
 					<ul class="catList">
 						<li>Systemprogrammierung.cat</li>
 						<li>bla</li>
+						<li>test</li>
 					</ul>
         		</section>
 	    		<section id="highscore">
