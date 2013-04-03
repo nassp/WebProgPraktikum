@@ -7,7 +7,7 @@ $(document).ready(function() {
 		else
 			{
 				$("#login").hide();
-				$("#content").wrapInner('<table class="login" id="loginEingabe"><td>Bitte w&aumlhle einen Fragekatalog aus.</td></table>');
+				$("#content").wrapInner('<table class="center" id="loginEingabe"><td>Bitte w&aumlhle einen Fragekatalog aus.</td></table>');
 			}
 	});
 });
