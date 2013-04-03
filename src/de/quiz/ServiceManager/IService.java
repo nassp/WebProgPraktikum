@@ -3,7 +3,7 @@ package de.quiz.ServiceManager;
 /**
  * base class for all services
  * 
- * @author Alexander St√∂cker
+ * @author Patrick Naß
  */
 public interface IService {
     
