@@ -144,7 +144,7 @@ p, ul, ol, dl {
 	float: left;
 	width: 60%;
 	background-color: #eee;
-	min-height: 13em;
+	min-height: 382px;
 	border-radius: 10px;
 	margin-bottom: 2em;
 	position: relative;
@@ -210,8 +210,9 @@ p, ul, ol, dl {
 }
 
 .center {
-margin: 8em auto;
-width: 20em;
+	
+	margin: 8em auto;
+	width: 20em;
 }
 
 /* -------------LOG------------ */
