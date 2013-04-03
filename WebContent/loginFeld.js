@@ -8,6 +8,7 @@ $(document).ready(function() {
 			{
 				$("#login").hide();
 				$("#content").wrapInner('<table class="center" id="loginEingabe"><td>Bitte w&aumlhle einen Fragekatalog aus.</td></table>');
+				
 			}
 	});
 });
