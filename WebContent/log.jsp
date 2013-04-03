@@ -16,14 +16,17 @@
 	</head>
 <body>	
 	
-
-	<% 	response.getWriter().println("<h1>Gibt alle Einträge des internen Logs aus:</h1>");
+		
+	<% 	response.getWriter().println("<section id=\"quiz-app\">");
+		response.getWriter().println("<h1><i class =\"icon-list-alt icon-large\"></i> Gibt alle Einträge des internen Logs aus:</h1>");
 		for(int i = 0; i < ServiceManager.getInstance().getService(ILoggingManager.class).getLogContainer().size(); i++) {
 			
 			String msg = ServiceManager.getInstance().getService(ILoggingManager.class).getLogContainer().get(i);
 			response.getWriter().println(msg + "<br />");
-	} 
+		} 
+		response.getWriter().println("<div id=\"log\"><a href=\"index.html\">Back</a></div>");
+		response.getWriter().println("</section>");
 	%>
-
+		
 </body>
 </html>
