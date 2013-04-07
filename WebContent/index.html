@@ -7,8 +7,8 @@
 		<link type="text/javascript" href='http://fonts.googleapis.com/css?family=Open+Sans:400italic,600italic,400,600' rel='stylesheet'>
 		<!-- Font Awesome - http://fortawesome.github.com/Font-Awesome -->
 		<link type="text/css" href="css/font-awesome.css" rel="stylesheet">
-		<script type="text/javascript" src="jquery-1.9.1.js"></script>
-		<script type="text/javascript" src="loginFeld.js"></script>
+		<script type="text/javascript" src="js/jquery-1.9.1.js"></script>
+		<script type="text/javascript" src="js/loginFeld.js"></script>
 	</head>
 	<body>
 		<header>
@@ -27,7 +27,7 @@
     
     		<section id="content">
     			<div id="login">
-        			<form class="center" style="display: block;">
+        			<form action="CatalogServlet" method="get" class="center" style="display: block;">
         				<label for="name">Spielername</label>
 						<input id="nameInput" name="name" type="text" autofocus="autofocus">
 						<button id="loginButton" type="button">Login <i class="icon-signin"></i></button>
@@ -57,7 +57,7 @@
     		</section>
     		<div id="float_clearer"></div>
     		<section id="log">
-    			<h2><a href="log.jsp"><i class ="icon-list-alt icon-large"></i>Log</a></h2>
+    			<h2><a href="jsp/log.jsp"><i class ="icon-list-alt icon-large"></i>Log</a></h2>
     		</section>
 		</section>
 		
@@ -66,7 +66,7 @@
 		  
 			<br>
 		  
-			<p>Erstellt durch Blähnsdorf, Naß, Strauch</p>             
+			<p>Erstellt durch Blänsdorf, Naß, Strauch</p>             
 		  
 			<hr class="footer_hr">
 		  
