@@ -24,7 +24,7 @@
 			String msg = ServiceManager.getInstance().getService(ILoggingManager.class).getLogContainer().get(i);
 			response.getWriter().println(msg + "<br />");
 		} 
-		response.getWriter().println("<div id=\"log\"><a href=\"index.html\">Back</a></div>");
+		response.getWriter().println("<div id=\"log\"><a href=\"../index.html\">Back</a></div>");
 		response.getWriter().println("</section>");
 	%>
 		
