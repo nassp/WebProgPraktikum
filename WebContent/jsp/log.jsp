@@ -11,8 +11,8 @@
 		
 		<meta http-equiv="content-type" content="text/html; charset=utf-8">
 		
-		<link type="text/css" href="css/style.css" rel="stylesheet">
-		<link type="text/css" href="css/font-awesome.css" rel="stylesheet">
+		<link type="text/css" href="../css/style.css" rel="stylesheet">
+		<link type="text/css" href="../css/font-awesome.css" rel="stylesheet">
 	</head>
 <body>	
 	
