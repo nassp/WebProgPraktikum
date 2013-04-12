@@ -14,53 +14,60 @@ import de.quiz.LoggingManager.ILoggingManager;
 import de.quiz.ServiceManager.ServiceManager;
 
 /**
- * Servlet implementation class LoginServlet
- * this servlet handels the login process and the integration of the game logic
+ * Servlet implementation class LoginServlet this servlet handels the login
+ * process and the integration of the game logic
  * 
  * @author Patrick Na§
  */
 @WebServlet(description = "handles the login and integrates the game logic", urlPatterns = { "/LoginServlet" })
 public class LoginServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-       
-    /**
-     * @see HttpServlet#HttpServlet()
-     */
-    public LoginServlet() {
-        super();
-        // TODO Auto-generated constructor stub
-    }
 
 	/**
-	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
+	 * @see HttpServlet#HttpServlet()
 	 */
-	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	public LoginServlet() {
+		super();
+		// TODO Auto-generated constructor stub
+	}
+
+	/**
+	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse
+	 *      response)
+	 */
+	protected void doGet(HttpServletRequest request,
+			HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
 	}
 
 	/**
-	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
+	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse
+	 *      response)
 	 */
-	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	protected void doPost(HttpServletRequest request,
+			HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
 	}
-	
+
 	/**
 	 * Player Login method
 	 * 
-	 * @param name			username
-	 * @return boolean		true for success, false for failure
+	 * @param name
+	 *            username
+	 * @return boolean true for success, false for failure
 	 */
 	protected boolean login(String name) {
-		
+
 		QuizError error = new QuizError();
 		Player ActivePlayer = Quiz.getInstance().createPlayer(name, error);
-		
-		if(error.isSet()) {
-			ServiceManager.getInstance().getService(ILoggingManager.class).log(this, error);
+
+		if (error.isSet()) {
+			ServiceManager.getInstance().getService(ILoggingManager.class)
+					.log(this, error);
 			return false;
-		}else {
-			ServiceManager.getInstance().getService(ILoggingManager.class).log(this, "Successfully logged in user" + name);
+		} else {
+			ServiceManager.getInstance().getService(ILoggingManager.class)
+					.log(this, "Successfully logged in user" + name);
 			return true;
 		}
 	}

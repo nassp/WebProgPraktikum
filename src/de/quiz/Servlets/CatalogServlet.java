@@ -18,56 +18,59 @@ import de.fhwgt.quiz.loader.LoaderException;
 import de.quiz.LoggingManager.ILoggingManager;
 import de.quiz.ServiceManager.ServiceManager;
 
-
 /**
- * Servlet implementation class CatalogServlet
- * This servlet handles catalogs.
+ * Servlet implementation class CatalogServlet This servlet handles catalogs.
  * 
- *
+ * 
  * @author Patrick Na§
  */
 @WebServlet(description = "managing of catalogs", urlPatterns = { "/CatalogServlet" })
 public class CatalogServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-       
-    /**
-     * @see HttpServlet#HttpServlet()
-     */
-    public CatalogServlet() {
-        super();
-    }
 
 	/**
-	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
+	 * @see HttpServlet#HttpServlet()
 	 */
-	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	public CatalogServlet() {
+		super();
+	}
+
+	/**
+	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse
+	 *      response)
+	 */
+	protected void doGet(HttpServletRequest request,
+			HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
 	}
 
 	/**
-	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
+	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse
+	 *      response)
 	 */
-	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	protected void doPost(HttpServletRequest request,
+			HttpServletResponse response) throws ServletException, IOException {
 		String sc = request.getParameter("serviceCall");
-		
-		if(sc.equals("gcl")){
+
+		if (sc.equals("gcl")) {
 			response.setContentType("application/json");
 			PrintWriter out = response.getWriter();
 			JSONObject json = new JSONObject(this.getCatalogList());
 			out.print(json);
 		}
 	}
-	
+
 	/**
 	 * Returns a map object with available catalogs.
 	 * 
-	 * @return map  <String, Catalog>
+	 * @return map <String, Catalog>
 	 */
 	protected Map<String, Catalog> getCatalogList() {
 		try {
 			return Quiz.getInstance().getCatalogList();
 		} catch (LoaderException e) {
-			ServiceManager.getInstance().getService(ILoggingManager.class).log(this, "Failed fetching catalog list");
+			ServiceManager.getInstance().getService(ILoggingManager.class)
+					.log(this, "Failed fetching catalog list");
 			return null;
 		}
 

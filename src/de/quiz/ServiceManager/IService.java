@@ -6,7 +6,7 @@ package de.quiz.ServiceManager;
  * @author Patrick Na§
  */
 public interface IService {
-    
-    // FIXME: think of methods every service has to support
+
+	// FIXME: think of methods every service has to support
 
 }
