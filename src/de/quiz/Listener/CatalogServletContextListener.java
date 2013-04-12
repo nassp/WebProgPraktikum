@@ -4,6 +4,7 @@ import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 import javax.servlet.annotation.WebListener;
 
+import de.fhwgt.quiz.application.Quiz;
 import de.fhwgt.quiz.loader.FilesystemLoader;
 import de.fhwgt.quiz.loader.LoaderException;
 import de.quiz.LoggingManager.ILoggingManager;
@@ -32,8 +33,7 @@ public class CatalogServletContextListener implements ServletContextListener {
 			
 			try {
 				loader.getCatalogs();
-				String type = "filesystemLoader";
-				arg0.getServletContext().setAttribute(type, loader);
+				Quiz.getInstance().initCatalogLoader(loader);
 				ServiceManager.getInstance().getService(ILoggingManager.class).log(this, "Instantiation of FileSystemLoader: success");
 			} catch (LoaderException e) {
 				ServiceManager.getInstance().getService(ILoggingManager.class).log(this, "Instantiation of CatalogLoader failed");

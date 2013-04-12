@@ -18,7 +18,7 @@ import de.fhwgt.quiz.application.Catalog;
 import de.fhwgt.quiz.application.Question;
 import de.quiz.ServiceManager.IService;
 
-public class FilesystemLoader implements CatalogLoader, IService {
+public class FilesystemLoader implements CatalogLoader {
 
     /**
     * RegEx to capture the question block.

@@ -10,8 +10,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import de.fhwgt.quiz.application.Catalog;
-import de.fhwgt.quiz.loader.CatalogLoader;
-import de.fhwgt.quiz.loader.FilesystemLoader;
+import de.fhwgt.quiz.application.Quiz;
 import de.fhwgt.quiz.loader.LoaderException;
 import de.quiz.LoggingManager.ILoggingManager;
 import de.quiz.ServiceManager.ServiceManager;
@@ -29,7 +28,6 @@ public class CatalogServlet extends HttpServlet {
      */
     public CatalogServlet() {
         super();
-        ServiceManager.getInstance().registerService(CatalogLoader.class.getSimpleName(), (FilesystemLoader) getServletContext().getAttribute("filesystemLoader"));
     }
 
 	/**
@@ -48,7 +46,7 @@ public class CatalogServlet extends HttpServlet {
 	
 	protected Map<String, Catalog> getCatalogList() {
 		try {
-			return ServiceManager.getInstance().getService(CatalogLoader.class).getCatalogs();
+			return Quiz.getInstance().getCatalogList();
 		} catch (LoaderException e) {
 			ServiceManager.getInstance().getService(ILoggingManager.class).log(this, "Failed fetching catalog list");
 			return null;
