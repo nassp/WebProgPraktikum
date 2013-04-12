@@ -13,6 +13,7 @@ import de.quiz.ServiceManager.ServiceManager;
 /**
  * Application Lifecycle Listener implementation class CatalogServletContextListener
  *
+ * @author Patrick Na§
  */
 @WebListener
 public class CatalogServletContextListener implements ServletContextListener {

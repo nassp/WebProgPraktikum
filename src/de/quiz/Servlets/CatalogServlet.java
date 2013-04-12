@@ -1,6 +1,7 @@
 package de.quiz.Servlets;
 
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.Map;
 
 import javax.servlet.ServletException;
@@ -8,6 +9,8 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import org.json.JSONObject;
 
 import de.fhwgt.quiz.application.Catalog;
 import de.fhwgt.quiz.application.Quiz;
@@ -18,6 +21,10 @@ import de.quiz.ServiceManager.ServiceManager;
 
 /**
  * Servlet implementation class CatalogServlet
+ * This servlet handles catalogs.
+ * 
+ *
+ * @author Patrick Na§
  */
 @WebServlet(description = "managing of catalogs", urlPatterns = { "/CatalogServlet" })
 public class CatalogServlet extends HttpServlet {
@@ -41,9 +48,21 @@ public class CatalogServlet extends HttpServlet {
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// TODO Auto-generated method stub
+		String sc = request.getParameter("serviceCall");
+		
+		if(sc.equals("gcl")){
+			response.setContentType("application/json");
+			PrintWriter out = response.getWriter();
+			JSONObject json = new JSONObject(this.getCatalogList());
+			out.print(json);
+		}
 	}
 	
+	/**
+	 * Returns a map object with available catalogs.
+	 * 
+	 * @return map  <String, Catalog>
+	 */
 	protected Map<String, Catalog> getCatalogList() {
 		try {
 			return Quiz.getInstance().getCatalogList();
