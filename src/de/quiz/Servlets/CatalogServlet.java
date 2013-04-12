@@ -1,11 +1,21 @@
 package de.quiz.Servlets;
 
 import java.io.IOException;
+import java.util.Map;
+
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import de.fhwgt.quiz.application.Catalog;
+import de.fhwgt.quiz.loader.CatalogLoader;
+import de.fhwgt.quiz.loader.FilesystemLoader;
+import de.fhwgt.quiz.loader.LoaderException;
+import de.quiz.LoggingManager.ILoggingManager;
+import de.quiz.ServiceManager.ServiceManager;
+
 
 /**
  * Servlet implementation class CatalogServlet
@@ -19,7 +29,7 @@ public class CatalogServlet extends HttpServlet {
      */
     public CatalogServlet() {
         super();
-        // TODO Auto-generated constructor stub
+        ServiceManager.getInstance().registerService(CatalogLoader.class.getSimpleName(), (FilesystemLoader) getServletContext().getAttribute("filesystemLoader"));
     }
 
 	/**
@@ -34,6 +44,16 @@ public class CatalogServlet extends HttpServlet {
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
+	}
+	
+	protected Map<String, Catalog> getCatalogList() {
+		try {
+			return ServiceManager.getInstance().getService(CatalogLoader.class).getCatalogs();
+		} catch (LoaderException e) {
+			ServiceManager.getInstance().getService(ILoggingManager.class).log(this, "Failed fetching catalog list");
+			return null;
+		}
+
 	}
 
 }

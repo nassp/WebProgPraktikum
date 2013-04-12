@@ -18,11 +18,14 @@
     <url-pattern>/LoginServlet</url-pattern>
   </servlet-mapping>
   <servlet>
-  	<servlet-name>CatalogServlet</servlet-name>
-  	<servlet-class>de.quiz.Servlets.CatalogServlet</servlet-class>
+    <servlet-name>CatalogServlet</servlet-name>
+    <servlet-class>de.quiz.Servlets.CatalogServlet</servlet-class>
   </servlet>
   <servlet-mapping>
-  	<servlet-name>CatalogServlet</servlet-name>
-  	<url-pattern>/CatalogServlet</url-pattern>
+    <servlet-name>CatalogServlet</servlet-name>
+    <url-pattern>/CatalogServlet</url-pattern>
   </servlet-mapping>
+  <listener>
+  	<listener-class>de.quiz.Listener.CatalogServletContextListener</listener-class>
+  </listener>
 </web-app>

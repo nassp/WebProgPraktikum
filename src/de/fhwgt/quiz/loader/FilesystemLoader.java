@@ -16,8 +16,9 @@ import java.util.regex.Pattern;
 
 import de.fhwgt.quiz.application.Catalog;
 import de.fhwgt.quiz.application.Question;
+import de.quiz.ServiceManager.IService;
 
-public class FilesystemLoader implements CatalogLoader {
+public class FilesystemLoader implements CatalogLoader, IService {
 
     /**
     * RegEx to capture the question block.
