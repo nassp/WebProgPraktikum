@@ -181,12 +181,18 @@ p, ul, ol, dl {
 	list-style:none;
 	padding:0;
 }
+
 #sidebar .catList li {
 	background-color: #EEEEEE;
 	-moz-border-radius: 5px;
 	border-radius: 5px;
 	padding:3px;
 	margin-bottom:3px;
+}
+#sidebar .catList li:hover {
+	background-color: #3399cc;
+	cursor:pointer;
+	color:#FFFFFF;
 }
 #highscore {
     margin-top: 1em;
