@@ -42,6 +42,8 @@ public class CatalogServlet extends HttpServlet {
 	protected void doGet(HttpServletRequest request,
 			HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
+		java.io.PrintWriter ausgabe = response.getWriter();
+		ausgabe.println("Hallo Welt");
 	}
 
 	/**
