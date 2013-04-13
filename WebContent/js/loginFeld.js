@@ -9,17 +9,20 @@ var DatenVomServerVearbeiten = function() {
 		break;
 		case 4:
 			console.log("ready State = Antwort vom Server vollstaendig erhalten\n Server Antwort: "+request.responseText+"\n status Server"+request.status);
-			textfeld.value=request.responseText;
+			$("#highscore table tbody").append("<tr><td>"+request.responseText+"</td><td>0</td></tr>");
 			break;
 		default: console.log("noch kein open fuer XMLHttpRequest-Objekt erfolgt");
 		}	
 }
 var sendLogin = function (event) {
 	var button = event.target;
+	var nameInput = $("#nameInput");
 	request = new XMLHttpRequest();
 	request.onreadystatechange = DatenVomServerVearbeiten;
-	request.open("Get","CatalogServlet",true);
-	request.send(null);
+	request.open("POST","CatalogServlet",true);
+	request.setRequestHeader("Content-type","application/x-www-form-urlencoded");
+	console.log(nameInput.val());
+	request.send("name="+nameInput.val()+"");
 };
 $(document).ready(function() {
 	console.log("Content geladen");

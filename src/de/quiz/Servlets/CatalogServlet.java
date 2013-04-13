@@ -42,8 +42,8 @@ public class CatalogServlet extends HttpServlet {
 	protected void doGet(HttpServletRequest request,
 			HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
-		java.io.PrintWriter ausgabe = response.getWriter();
-		ausgabe.println("Hallo Welt");
+
+		
 	}
 
 	/**
@@ -52,14 +52,16 @@ public class CatalogServlet extends HttpServlet {
 	 */
 	protected void doPost(HttpServletRequest request,
 			HttpServletResponse response) throws ServletException, IOException {
-		String sc = request.getParameter("serviceCall");
-
+		String sc = request.getParameter("name");
+		/*
 		if (sc.equals("gcl")) {
 			response.setContentType("application/json");
 			PrintWriter out = response.getWriter();
 			JSONObject json = new JSONObject(this.getCatalogList());
 			out.print(json);
-		}
+		}*/
+		java.io.PrintWriter ausgabe = response.getWriter();  
+		ausgabe.println(sc);
 	}
 
 	/**
