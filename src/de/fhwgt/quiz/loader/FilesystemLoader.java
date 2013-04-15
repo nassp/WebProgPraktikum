@@ -16,7 +16,6 @@ import java.util.regex.Pattern;
 
 import de.fhwgt.quiz.application.Catalog;
 import de.fhwgt.quiz.application.Question;
-import de.quiz.ServiceManager.IService;
 
 public class FilesystemLoader implements CatalogLoader {
 
