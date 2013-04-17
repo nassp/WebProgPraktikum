@@ -66,8 +66,8 @@ public class CatalogServlet extends HttpServlet {
 			JSONObject json = new JSONObject(this.getCatalogList());
 			out.print(json);
 		}
-		java.io.PrintWriter ausgabe = response.getWriter();  
-		ausgabe.println(sc);
+		PrintWriter output = response.getWriter();  
+		output.println(sc);
 	}
 
 	/**
@@ -77,6 +77,7 @@ public class CatalogServlet extends HttpServlet {
 	 */
 	protected Map<String, Catalog> getCatalogList() {
 		try {
+			System.out.println(Quiz.getInstance().getCatalogList().size());
 			return Quiz.getInstance().getCatalogList();
 		} catch (LoaderException e) {
 			ServiceManager.getInstance().getService(ILoggingManager.class)
