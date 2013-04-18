@@ -15,7 +15,7 @@ var DatenVomServerVearbeiten = function() {
 			break;
 		default: console.log("noch kein open fuer XMLHttpRequest-Objekt erfolgt");
 		}	
-}
+};
 var loggedIn = function (e) {
 	if(loginPhase==true){
 		if(document.getElementById("nameInput").value.length <= 0){
@@ -27,7 +27,7 @@ var loggedIn = function (e) {
 		}
 		loginPhase=false;
 	}
-}
+};
 var send = function (event,ElemDesc,ElemVal) {
 	//var button = event.target;
 	request = new XMLHttpRequest();
@@ -47,6 +47,9 @@ var send = function (event,ElemDesc,ElemVal) {
 //	}
 //	console.log(catArr);
 //};
+var loginURL = "localhost:8080/WebQuiz/LoginServlet";
+var ws = new WebSocket("ws://"+loginURL);
+
 $(document).ready(function() {
 	
 	console.log("Content geladen");
@@ -59,7 +62,7 @@ $(document).ready(function() {
 	});
 	$("#loginButton").click(function(event){
 		send(event,"name",$("#nameInput").val());
-		//$.post("CatalogServlet",{catalog:"gcl"},showMeTheCatalogs(json));
+		
 		$.ajax({ 
 		    type: 'POST', 
 		    url: 'CatalogServlet', 
@@ -71,6 +74,21 @@ $(document).ready(function() {
 		        });
 		    }
 		});
+		
+		ws.onopen = function(){
+        };
+        ws.onmessage = function(message){
+        	$(".catList").append("<li>"+message.data+"</li>");
+        };
+        function postToServer(){
+            ws.send("LoginServlet(WebSocket): "+$("#nameInput").val());
+        }
+        function closeConnection(){
+            ws.close();
+        }
+        postToServer();
+        closeConnection();
+		
 	});
 	$("#nameInput").bind("keypress", {}, function(e){
 		var code = (e.keyCode ? e.keyCode : e.which);
@@ -80,35 +98,4 @@ $(document).ready(function() {
 	    }
 	});
 	
-	/*$("#loginButton").click(function(event){
-		if(document.getElementById("nameInput").value.length <= 0)
-		{
-			alert("Es wurde kein Loginname eingegeben. Bitte versuch es erneut.");
-		}
-		else
-		{
-			$("#login").hide();
-			$("#content").wrapInner("<table class=\"center\" id=\"loginEingabe\"><td>Bitte w&aumlhle einen Fragekatalog aus.</td></table>");		
-		}
-	});
-	
-	$("#nameInput").bind("keypress", {}, keypressInBox);
-	
-	function keypressInBox(e) {
-		var code = (e.keyCode ? e.keyCode : e.which);
-	    if (code == 13) { //Enter keycode                        
-	        e.preventDefault();
-	        if(document.getElementById("nameInput").value.length <= 0)
-			{
-	        	alert("Es wurde kein Loginname eingegeben. Bitte versuch es erneut.");
-			}
-	        else
-			{
-				$("#login").hide();
-				$("#content").wrapInner("</table><table class=\"center\" id=\"loginEingabe\"><td>Bitte w&aumlhle einen Fragekatalog aus.</td></table>");
-				
-			}
-
-	    }
-	}*/
 });
