@@ -1,11 +1,16 @@
 package de.quiz.Servlets;
 
 import java.io.IOException;
-import javax.servlet.ServletException;
+import java.nio.ByteBuffer;
+import java.nio.CharBuffer;
+import java.util.ArrayList;
+
 import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import org.apache.catalina.websocket.MessageInbound;
+import org.apache.catalina.websocket.StreamInbound;
+import org.apache.catalina.websocket.WebSocketServlet;
+import org.apache.catalina.websocket.WsOutbound;
 
 import de.fhwgt.quiz.application.Player;
 import de.fhwgt.quiz.application.Quiz;
@@ -14,61 +19,88 @@ import de.quiz.LoggingManager.ILoggingManager;
 import de.quiz.ServiceManager.ServiceManager;
 
 /**
- * Servlet implementation class LoginServlet this servlet handels the login
- * process and the integration of the game logic
+ * WebSocketServlet implementation class LoginServlet. 
+ * This servlet handles the login process and the integration of the game logic.
  * 
  * @author Patrick Na§
  */
 @WebServlet(description = "handles the login and integrates the game logic", urlPatterns = { "/LoginServlet" })
-public class LoginServlet extends HttpServlet {
+public class LoginServlet extends WebSocketServlet {
 	private static final long serialVersionUID = 1L;
+	private static ArrayList<LoginMessageInbound> mmiList = new ArrayList<LoginMessageInbound>();
 
-	/**
-	 * @see HttpServlet#HttpServlet()
-	 */
-	public LoginServlet() {
-		super();
-		// TODO Auto-generated constructor stub
+	@Override
+	protected StreamInbound createWebSocketInbound(String arg0,
+			HttpServletRequest arg1) {
+		return new LoginMessageInbound();
+	}
+
+	private class LoginMessageInbound extends MessageInbound {
+		private WsOutbound loginOutbound;
+
+		@Override
+		protected void onClose(int status) {
+			ServiceManager.getInstance().getService(ILoggingManager.class)
+					.log("Login client closed.");
+			mmiList.remove(this);
+		}
+
+		@Override
+		protected void onOpen(WsOutbound outbound) {
+			try {
+				this.loginOutbound = outbound;
+				mmiList.add(this);
+				outbound.writeTextMessage(CharBuffer.wrap("Hello world!"));
+				ServiceManager.getInstance().getService(ILoggingManager.class)
+						.log("Login client open.");
+			} catch (IOException e) {
+				ServiceManager.getInstance().getService(ILoggingManager.class)
+						.log("Login client opening failed.");
+			}
+		}
+
+		@Override
+		protected void onBinaryMessage(ByteBuffer arg0) throws IOException {
+			// this application does not expect binary data
+			throw new UnsupportedOperationException(
+					"Binary message not supported.");
+		}
+		
+		
+		@Override
+		protected void onTextMessage(CharBuffer arg0) throws IOException {
+			ServiceManager.getInstance().getService(ILoggingManager.class)
+			.log("Accept Message : "+ arg0);
+			for (LoginMessageInbound mmib : mmiList) {
+				CharBuffer buffer = CharBuffer.wrap(arg0);
+				mmib.loginOutbound.writeTextMessage(buffer);
+				mmib.loginOutbound.flush();
+			}
+		}
+
+
 	}
 
 	/**
-	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse
-	 *      response)
-	 */
-	protected void doGet(HttpServletRequest request,
-			HttpServletResponse response) throws ServletException, IOException {
-		// TODO Auto-generated method stub
-	}
-
-	/**
-	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse
-	 *      response)
-	 */
-	protected void doPost(HttpServletRequest request,
-			HttpServletResponse response) throws ServletException, IOException {
-		// TODO Auto-generated method stub
-	}
-
-	/**
-	 * Player Login method
+	 * Player Login method.
 	 * 
 	 * @param name
 	 *            username
-	 * @return boolean true for success, false for failure
+	 * @return long id at success -1 at failure
 	 */
-	protected boolean login(String name) {
+	protected long login(String name) {
 
 		QuizError error = new QuizError();
-		Player ActivePlayer = Quiz.getInstance().createPlayer(name, error);
+		Player activePlayer = Quiz.getInstance().createPlayer(name, error);
 
 		if (error.isSet()) {
 			ServiceManager.getInstance().getService(ILoggingManager.class)
 					.log(this, error);
-			return false;
+			return -1;
 		} else {
 			ServiceManager.getInstance().getService(ILoggingManager.class)
 					.log(this, "Successfully logged in user" + name);
-			return true;
+			return activePlayer.getId();
 		}
 	}
 
