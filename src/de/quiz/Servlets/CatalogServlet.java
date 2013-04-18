@@ -53,11 +53,11 @@ public class CatalogServlet extends HttpServlet {
 	protected void doPost(HttpServletRequest request,
 		HttpServletResponse response) throws ServletException, IOException {
 		String sc ="";
-		if(request.getParameter("name")!=null){
-			sc = request.getParameter("name");
-		}
+//		if(request.getParameter("name")!=null){
+//			sc = request.getParameter("name");
+//		}
 		if(request.getParameter("catalog")!=null){
-			sc = request.getParameter("catalog");
+			sc = request.getParameter("catalog");		
 		}
 		
 		if (sc.equals("gcl")) {
@@ -66,8 +66,8 @@ public class CatalogServlet extends HttpServlet {
 			JSONObject json = new JSONObject(this.getCatalogList());
 			out.print(json);
 		}
-		PrintWriter output = response.getWriter();  
-		output.println(sc);
+//		PrintWriter output = response.getWriter();  
+//		output.println(sc);
 	}
 
 	/**
@@ -77,7 +77,6 @@ public class CatalogServlet extends HttpServlet {
 	 */
 	protected Map<String, Catalog> getCatalogList() {
 		try {
-			System.out.println(Quiz.getInstance().getCatalogList().size());
 			return Quiz.getInstance().getCatalogList();
 		} catch (LoaderException e) {
 			ServiceManager.getInstance().getService(ILoggingManager.class)

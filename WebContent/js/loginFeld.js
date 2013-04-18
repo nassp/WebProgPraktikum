@@ -37,20 +37,20 @@ var send = function (event,ElemDesc,ElemVal) {
 	//console.log(getElem.val());
 	request.send(""+ElemDesc+"="+ElemVal+"");
 };
-var showCatalogNames = function () {
-	var catArr = new Array();
-	catArr[0] = "one.cat";
-	catArr[1] = "simple.cat";
-	catArr[2] = "Systemprogrammierung.cat";
-	for (var i = catArr.length-1;i>=0 ;i--){
-		$(".catList").append("<li>"+catArr[i]+"</li>");
-	}
-	console.log(catArr);
-};
+//var showCatalogNames = function () {
+//	var catArr = new Array();
+//	catArr[0] = "one.cat";
+//	catArr[1] = "simple.cat";
+//	catArr[2] = "Systemprogrammierung.cat";
+//	for (var i = catArr.length-1;i>=0 ;i--){
+//		$(".catList").append("<li>"+catArr[i]+"</li>");
+//	}
+//	console.log(catArr);
+//};
 $(document).ready(function() {
 	
 	console.log("Content geladen");
-	showCatalogNames();
+	//showCatalogNames();
 	var catElements = $(".catList");
 	catElements.children().each(function() {   
 		$(this).click(function(event){
@@ -59,7 +59,18 @@ $(document).ready(function() {
 	});
 	$("#loginButton").click(function(event){
 		send(event,"name",$("#nameInput").val());
-		
+		//$.post("CatalogServlet",{catalog:"gcl"},showMeTheCatalogs(json));
+		$.ajax({ 
+		    type: 'POST', 
+		    url: 'CatalogServlet', 
+		    data: { catalog: 'gcl' }, 
+		    dataType: 'json',
+		    success: function (data) { 
+		        $.each(data, function(index, element) {
+		        	$(".catList").append("<li>"+element.name+"</li>");
+		        });
+		    }
+		});
 	});
 	$("#nameInput").bind("keypress", {}, function(e){
 		var code = (e.keyCode ? e.keyCode : e.which);
