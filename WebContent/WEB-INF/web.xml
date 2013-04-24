@@ -30,10 +30,12 @@
   </listener>
   <servlet>
   	<servlet-name>LogicServlet</servlet-name>
-  	<servlet-class>/LogicServlet</servlet-class>
+  	<servlet-class>de.quiz.Servlets.LogicServlet</servlet-class>
   </servlet>
   <servlet-mapping>
   	<servlet-name>LogicServlet</servlet-name>
   	<url-pattern>/LogicServlet</url-pattern>
   </servlet-mapping>
+  <session-config>
+  	<session-timeout>15</session-timeout></session-config>
 </web-app>
