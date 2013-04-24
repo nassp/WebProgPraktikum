@@ -19,13 +19,13 @@ import de.quiz.LoggingManager.ILoggingManager;
 import de.quiz.ServiceManager.ServiceManager;
 
 /**
- * WebSocketServlet implementation class LoginServlet. 
+ * WebSocketServlet implementation class PlayerServlet. 
  * This servlet handles the login process and the integration of the game logic.
  * 
  * @author Patrick Na§
  */
-@WebServlet(description = "handles the login and integrates the game logic", urlPatterns = { "/LoginServlet" })
-public class LoginServlet extends WebSocketServlet {
+@WebServlet(description = "connection to game the logic", urlPatterns = { "/LogicServlet" })
+public class LogicServlet extends WebSocketServlet {
 	private static final long serialVersionUID = 1L;
 	private static ArrayList<LoginMessageInbound> mmiList = new ArrayList<LoginMessageInbound>();
 
@@ -81,27 +81,6 @@ public class LoginServlet extends WebSocketServlet {
 
 	}
 
-	/**
-	 * Player Login method.
-	 * 
-	 * @param name
-	 *            username
-	 * @return long id at success -1 at failure
-	 */
-	protected long login(String name) {
 
-		QuizError error = new QuizError();
-		Player activePlayer = Quiz.getInstance().createPlayer(name, error);
-
-		if (error.isSet()) {
-			ServiceManager.getInstance().getService(ILoggingManager.class)
-					.log(this, error);
-			return -1;
-		} else {
-			ServiceManager.getInstance().getService(ILoggingManager.class)
-					.log(this, "Successfully logged in user" + name);
-			return activePlayer.getId();
-		}
-	}
 
 }

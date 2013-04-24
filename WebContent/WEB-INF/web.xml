@@ -10,12 +10,12 @@
     <welcome-file>default.jsp</welcome-file>
   </welcome-file-list>
   <servlet>
-    <servlet-name>LoginServlet</servlet-name>
-    <servlet-class>de.quiz.Servlets.LoginServlet</servlet-class>
+    <servlet-name>PlayerServlet</servlet-name>
+    <servlet-class>de.quiz.Servlets.PlayerServlet</servlet-class>
   </servlet>
   <servlet-mapping>
-    <servlet-name>LoginServlet</servlet-name>
-    <url-pattern>/LoginServlet</url-pattern>
+    <servlet-name>PlayerServlet</servlet-name>
+    <url-pattern>/PlayerServlet</url-pattern>
   </servlet-mapping>
   <servlet>
     <servlet-name>CatalogServlet</servlet-name>
@@ -26,6 +26,14 @@
     <url-pattern>/CatalogServlet</url-pattern>
   </servlet-mapping>
   <listener>
-  	<listener-class>de.quiz.Listener.CatalogServletContextListener</listener-class>
+    <listener-class>de.quiz.Listener.CatalogServletContextListener</listener-class>
   </listener>
+  <servlet>
+  	<servlet-name>LogicServlet</servlet-name>
+  	<servlet-class>/LogicServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+  	<servlet-name>LogicServlet</servlet-name>
+  	<url-pattern>/LogicServlet</url-pattern>
+  </servlet-mapping>
 </web-app>

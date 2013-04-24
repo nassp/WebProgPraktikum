@@ -56,16 +56,18 @@ public class CatalogServlet extends HttpServlet {
 //		if(request.getParameter("name")!=null){
 //			sc = request.getParameter("name");
 //		}
-		if(request.getParameter("catalog")!=null){
-			sc = request.getParameter("catalog");		
+		if(request.getParameter("rID")!=null){
+			sc = request.getParameter("rID");		
 		}
 		
-		if (sc.equals("gcl")) {
+		if (sc.equals("3")) {
 			response.setContentType("application/json");
 			PrintWriter out = response.getWriter();
 			JSONObject json = new JSONObject(this.getCatalogList());
 			out.print(json);
+			ServiceManager.getInstance().getService(ILoggingManager.class).log("Send CatalogList");
 		}
+		
 //		PrintWriter output = response.getWriter();  
 //		output.println(sc);
 	}
@@ -85,5 +87,20 @@ public class CatalogServlet extends HttpServlet {
 		}
 
 	}
-
+	
+	/**
+	 * Returns a catalog with given name
+	 * 
+	 * @param String Name of the catalog.
+	 * @return Catalog Catalog object or null.
+	 */
+	protected Catalog getCatalogByName (String name) {
+		try {
+			return Quiz.getInstance().getCatalogByName(name);
+		} catch (LoaderException e) {
+			return null;
+		}
+	}
+	
+	
 }

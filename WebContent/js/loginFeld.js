@@ -47,32 +47,33 @@ var send = function (event,ElemDesc,ElemVal) {
 //	}
 //	console.log(catArr);
 //};
-var loginURL = "localhost:8080/WebQuiz/LoginServlet";
+var loginURL = "localhost:8080/WebQuiz/LogicServlet";
 var ws = new WebSocket("ws://"+loginURL);
 
 $(document).ready(function() {
 	
 	console.log("Content geladen");
 	//showCatalogNames();
-	var catElements = $(".catList");
-	catElements.children().each(function() {   
-		$(this).click(function(event){
-			send(event,"catalog",$(this).text()); 
-		});
-	});
+
 	$("#loginButton").click(function(event){
 		send(event,"name",$("#nameInput").val());
 		
 		$.ajax({ 
 		    type: 'POST', 
 		    url: 'CatalogServlet', 
-		    data: { catalog: 'gcl' }, 
+		    data: { rID: '3' }, 
 		    dataType: 'json',
 		    success: function (data) { 
 		        $.each(data, function(index, element) {
 		        	$(".catList").append("<li>"+element.name+"</li>");
 		        });
 		    }
+		});
+		var catElements = $(".catList");
+		catElements.children().each(function() {   
+			$(this).click(function(event){
+				send(event,"catalog",$(this).text()); 
+			});
 		});
 		
 		ws.onopen = function(){
