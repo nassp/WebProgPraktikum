@@ -5,6 +5,8 @@ import java.util.Map;
 
 import de.quiz.LoggingManager.ILoggingManager;
 import de.quiz.LoggingManager.LoggingManager;
+import de.quiz.UserManager.IUserManager;
+import de.quiz.UserManager.UserManager;
 
 /**
  * This singleton class manages all services/managers. If anyone needs to get a
@@ -48,6 +50,8 @@ public class ServiceManager {
 			// register default services
 			registerService(ILoggingManager.class.getSimpleName(),
 					new LoggingManager());
+			registerService(IUserManager.class.getSimpleName(),
+					new UserManager());
 
 			ServiceManager.getInstance().getService(ILoggingManager.class)
 					.log(this, "sucessfully started default services");

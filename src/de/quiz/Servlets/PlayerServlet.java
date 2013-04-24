@@ -8,6 +8,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import org.json.JSONObject;
 
@@ -16,6 +17,7 @@ import de.fhwgt.quiz.application.Quiz;
 import de.fhwgt.quiz.error.QuizError;
 import de.quiz.LoggingManager.ILoggingManager;
 import de.quiz.ServiceManager.ServiceManager;
+import de.quiz.UserManager.IUserManager;
 
 /**
  * Servlet implementation class PlayerServlet
@@ -49,33 +51,21 @@ public class PlayerServlet extends HttpServlet {
 		}
 		
 		if (sc.equals("1")) {
-			response.setContentType("application/json");
+			response.setContentType("text/plain");
 			PrintWriter out = response.getWriter();
-			//JSONObject json = new JSONObject(this.getCatalogList());
-			//out.print(json);
+			HttpSession session = request.getSession(true);
+			long userID;
+			try {
+				userID = ServiceManager.getInstance().getService(IUserManager.class).loginUser(request.getParameter("name"), session);
+				out.print(userID);
+				ServiceManager.getInstance().getService(ILoggingManager.class).log("Successfully logged in User with ID: "+userID);;
+			} catch (Exception e) {
+				ServiceManager.getInstance().getService(ILoggingManager.class).log("User login failed!");
+			}
+
+			//ServiceManager.getInstance().getService(ILoggingManager.class).log("Send Playerthings");
 		}
 	}
 
-	/**
-	 * Player Login method.
-	 * 
-	 * @param name
-	 *            username
-	 * @return long ID at success -1 at failure.
-	 */
-	protected long login(String name) {
 
-		QuizError error = new QuizError();
-		Player activePlayer = Quiz.getInstance().createPlayer(name, error);
-
-		if (error.isSet()) {
-			ServiceManager.getInstance().getService(ILoggingManager.class)
-					.log(this, error);
-			return -1;
-		} else {
-			ServiceManager.getInstance().getService(ILoggingManager.class)
-					.log(this, "Successfully logged in user" + name);
-			return activePlayer.getId();
-		}
-	}
 }

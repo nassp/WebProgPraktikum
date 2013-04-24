@@ -53,9 +53,7 @@ public class CatalogServlet extends HttpServlet {
 	protected void doPost(HttpServletRequest request,
 		HttpServletResponse response) throws ServletException, IOException {
 		String sc ="";
-//		if(request.getParameter("name")!=null){
-//			sc = request.getParameter("name");
-//		}
+
 		if(request.getParameter("rID")!=null){
 			sc = request.getParameter("rID");		
 		}
@@ -65,11 +63,9 @@ public class CatalogServlet extends HttpServlet {
 			PrintWriter out = response.getWriter();
 			JSONObject json = new JSONObject(this.getCatalogList());
 			out.print(json);
-			ServiceManager.getInstance().getService(ILoggingManager.class).log("Send CatalogList");
+			//ServiceManager.getInstance().getService(ILoggingManager.class).log("Send CatalogList");
 		}
-		
-//		PrintWriter output = response.getWriter();  
-//		output.println(sc);
+
 	}
 
 	/**

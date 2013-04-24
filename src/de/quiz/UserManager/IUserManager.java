@@ -23,7 +23,7 @@ public interface IUserManager extends IService {
      * @param session
      *            the user's session
      */
-    public void loginUser(String id, String name, HttpSession session) throws Exception;
+    public long loginUser(String name, HttpSession session) throws Exception;
     
     /**
      * logout user
@@ -61,12 +61,5 @@ public interface IUserManager extends IService {
      */
     public void setSessionForUser(IUser user, HttpSession session) throws Exception;
 
-    /**
-     * Creates a new user.
-     * 
-     * @param user
-     *            user to create
-     * @throws Exception
-     */
-    void createUser(IUser user) throws Exception;
+
 }

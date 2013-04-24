@@ -4,6 +4,9 @@ import java.util.ArrayList;
 
 import javax.servlet.http.HttpSession;
 
+import de.fhwgt.quiz.application.Player;
+import de.fhwgt.quiz.application.Quiz;
+import de.fhwgt.quiz.error.QuizError;
 import de.quiz.LoggingManager.ILoggingManager;
 import de.quiz.ServiceManager.ServiceManager;
 import de.quiz.User.IUser;
@@ -42,17 +45,7 @@ public class UserManager implements IUserManager {
 	}
     }
 
-    /**
-     * Creates a new user.
-     * 
-     * @param user
-     *            user to create
-     * @throws Exception
-     */
-    @Override
-    public void createUser(IUser user) throws Exception {
-    	//TODO
-    }
+
 
     /**
      * check user data and set session ID
@@ -63,7 +56,7 @@ public class UserManager implements IUserManager {
      *            the user's session
      * @throws Exception
      */
-    public void loginUser(String id, String name, HttpSession session) throws Exception {
+    public long loginUser(String name, HttpSession session) throws Exception {
 
     	// check if session in use -> delete old user entry
     	if (isUserSessionValid(session) != null) {
@@ -71,14 +64,26 @@ public class UserManager implements IUserManager {
 	    	removeActiveUser(isUserSessionValid(session));
 		}
     	//TODO
+		QuizError error = new QuizError();
+		Player activePlayer = Quiz.getInstance().createPlayer(name, error);
 
-		IUser tmpUser = new User(id, name, session);
+		if (error.isSet()) {
+			ServiceManager.getInstance().getService(ILoggingManager.class)
+					.log(this, error);
+			return -1;
+			
+		} else {
+			ServiceManager.getInstance().getService(ILoggingManager.class)
+					.log(this, "Successfully logged in user" + name);
+			IUser tmpUser = new User(activePlayer.getId().toString(), activePlayer.getName(), session);
+			// add to list
+			activeUser.add(tmpUser);
+			return activePlayer.getId();
+		}
 
-		// add to list
-		activeUser.add(tmpUser);
-
+		
 	    // store session
-	    this.setSessionForUser(tmpUser, session);
+	    //this.setSessionForUser(tmpUser, session);
 
 
     }
