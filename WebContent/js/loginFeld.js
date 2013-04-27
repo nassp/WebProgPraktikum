@@ -2,6 +2,12 @@ var loginPhase = true;
 var gamePhase = false;
 var startButtonVisible = false;
 var content;
+
+//Websocket 
+var loginURL = "localhost:8080/WebQuiz/LogicServlet";
+var ws = new WebSocket("ws://"+loginURL);
+
+/* CountdownTimer Funktion */
 jQuery.fn.countDown = function(settings,to) {
 	settings = jQuery.extend({
 		startFontSize: "36px",
@@ -33,23 +39,7 @@ jQuery.fn.countDown = function(settings,to) {
 				
 	});
 };
-var DatenVomServerVearbeiten = function() {
-	var textfeld= $("#login");
-	switch (request.readyState){
-		case 2:
-			console.log("ready State = Anfrage wurde gesendet\n status Server"+request.status);
-		break;
-		case 3:
-			console.log("ready State = ein Teil der Antwort vom Server erhalten\n status Server"+request.status);
-		break;
-		case 4:
-			console.log("ready State = Antwort vom Server vollstaendig erhalten\n Server Antwort: "+request.responseText+"\n status Server"+request.status);
-			loggedIn();
-			$("#highscore table tbody").append("<tr><td>"+request.responseText+"</td><td>0</td></tr>");
-			break;
-		default: console.log("noch kein open fuer XMLHttpRequest-Objekt erfolgt");
-		}	
-};
+/* Quizfrage anzeigen */
 var showQuestion = function(question, answer1,answer2,answer3,answer4,timeout) {
 	content.empty();
 	content.append("<table></table>");
@@ -67,9 +57,11 @@ var showQuestion = function(question, answer1,answer2,answer3,answer4,timeout) {
 		}
 	});
 };
+/* Startet das Spiel und l‰dt erste Frage*/
 var startGame = function() {
 	gamePhase = true;
 	loginPhase = false;
+	// Spielstart Paket senden
 	$.ajax({ 
 	    type: 'POST', 
 	    url: 'CatalogServlet', 
@@ -81,6 +73,7 @@ var startGame = function() {
 	        });
 	    }
 	});
+	// Quizfrage zum testen
 	var question ="Ein Thread soll auf ein durch einen anderen Thread ausgel√∂stes Ereignis warten. Welcher Mechanismus ist geeignet?";
 	var answer1 = "nur Semaphore";
 	var answer2 = "nur Mutex";
@@ -90,6 +83,7 @@ var startGame = function() {
 
 	showQuestion(question, answer1,answer2,answer3,answer4,timeout);
 };
+/* Spielstart Button anzeigen*/
 var initGameStartButton = function () {
 	var button = '<input class="startButton" type="button" name="Text 2" value="Spiel starten"></input>';
 	content.append(button);
@@ -98,6 +92,7 @@ var initGameStartButton = function () {
 		startGame();
 	});
 };
+/* Katalogliste anzeigen und selektierbar machen */
 var initCatalogList = function () {
 	var catElements = $(".catList");
 	catElements.children().each(function() {   
@@ -123,7 +118,7 @@ var initCatalogList = function () {
 		});
 	});
 };
-
+/* Fragekatalog Auswahl zuslassen wenn Loginname eingegeben ist */
 var loggedIn = function (e) {
 	if(loginPhase==true){
 		if(document.getElementById("nameInput").value.length <= 0){
@@ -152,17 +147,16 @@ var loggedIn = function (e) {
 //	request.send(requestString);
 //};
 
-var loginURL = "localhost:8080/WebQuiz/LogicServlet";
-var ws = new WebSocket("ws://"+loginURL);
 
+/* Wird ausgef¸hrt wenn HTML-Content geladen ist */
 $(document).ready(function() {
 	content = $("#content");
-	console.log("Content geladen");
+	//console.log("Content geladen");
 
 	$("#loginButton").click(function(event){
 		//send(event,"name",$("#nameInput").val());
 		
-		
+		// Spielername senden
 		$.ajax({ 
 		    type: 'POST', 
 		    url: 'PlayerServlet', 
@@ -175,7 +169,7 @@ $(document).ready(function() {
 		        });
 		    }
 		});
-		
+		// Katalogliste anfragen
 		$.ajax({ 
 		    type: 'POST', 
 		    url: 'CatalogServlet', 
