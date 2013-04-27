@@ -151,9 +151,10 @@ p, ul, ol, dl {
 
 }
 #content #countdown {
+	margin-top: 2em;
 	height: 100px;
 	width: 100px;
-	text-align: center
+	text-align: center;
 }
 #login input {
 	font-size: 20px;
@@ -227,6 +228,20 @@ p, ul, ol, dl {
 	
 	margin: 8em auto;
 	width: 20em;
+}
+
+.startButton {
+	margin: 8em auto;
+	margin-left: 12em;
+	margin-top: 10em;
+	width: 20em;
+	height: 5em;
+}
+
+.answer {
+	margin-top: 2em;
+	width: 45em;
+	height: 3em;
 }
 
 /* -------------LOG------------ */

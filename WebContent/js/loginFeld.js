@@ -75,10 +75,10 @@ var startGame = function() {
 	});
 	// Quizfrage zum testen
 	var question ="Ein Thread soll auf ein durch einen anderen Thread ausgelöstes Ereignis warten. Welcher Mechanismus ist geeignet?";
-	var answer1 = "nur Semaphore";
-	var answer2 = "nur Mutex";
-	var answer3 = "weder Semaphore noch Mutexe";
-	var answer4 = "sowohl Semaphore als auch Mutexe";
+	var answer1 = '<input class="answer" type="button" name="Antwort 1" value="Nur Semaphore"></input>';
+	var answer2 = '<input class="answer" type="button" name="Antwort 2" value="Nur Mutexe"></input>';
+	var answer3 = '<input class="answer" type="button" name="Antwort 3" value="Weder Semaphore noch Mutexe"></input>';
+	var answer4 = '<input class="answer" type="button" name="Antwort 4" value="Sowohl Semaphore als auch Mutexe"></input>';
 	var timeout = 30;
 
 	showQuestion(question, answer1,answer2,answer3,answer4,timeout);
@@ -86,7 +86,7 @@ var startGame = function() {
 /* Spielstart Button anzeigen*/
 var initGameStartButton = function () {
 	var button = '<input class="startButton" type="button" name="Text 2" value="Spiel starten"></input>';
-	content.append(button);
+	content.wrapInner(button);
 	startButtonVisible = true;
 	$("#content .startButton").click(function(e) {
 		startGame();
