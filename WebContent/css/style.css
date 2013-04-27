@@ -151,7 +151,6 @@ p, ul, ol, dl {
 
 }
 #content #countdown {
-	margin-top: 2em;
 	height: 100px;
 	width: 100px;
 	text-align: center;
@@ -222,6 +221,11 @@ p, ul, ol, dl {
 
 #float_clearer{
 	clear: both;
+}
+
+#test {
+	margin-top: 2em;
+	margin-left: -1.5em;
 }
 
 .center {

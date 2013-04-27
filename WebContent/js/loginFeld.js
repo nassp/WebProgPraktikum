@@ -49,7 +49,7 @@ var showQuestion = function(question, answer1,answer2,answer3,answer4,timeout) {
 	contentTable.append("<tr><td>"+answer2+"</td></tr>");
 	contentTable.append("<tr><td>"+answer3+"</td></tr>");
 	contentTable.append("<tr><td>"+answer4+"</td></tr>");
-	content.append('<div id="countdown"></div>');
+	content.append('<div id="test"><div id="countdown"></div></div>');
 	jQuery("#content #countdown").countDown({
 		startNumber: timeout,
 		callBack: function(me) {
