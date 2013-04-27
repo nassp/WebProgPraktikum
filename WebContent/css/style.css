@@ -150,7 +150,11 @@ p, ul, ol, dl {
 	position: relative;
 
 }
-
+#content #countdown {
+	height: 100px;
+	width: 100px;
+	text-align: center
+}
 #login input {
 	font-size: 20px;
 	display: block;
@@ -187,11 +191,15 @@ p, ul, ol, dl {
 	-moz-border-radius: 5px;
 	border-radius: 5px;
 	padding:3px;
+	cursor:pointer;
 	margin-bottom:3px;
 }
 #sidebar .catList li:hover {
 	background-color: #3399cc;
-	cursor:pointer;
+	color:#FFFFFF;
+}
+#sidebar .catList li.selected {
+	background-color: #3399cc;
 	color:#FFFFFF;
 }
 #highscore {
