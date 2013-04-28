@@ -67,6 +67,13 @@ public class CatalogServlet extends HttpServlet {
 			JSONObject json = new JSONObject(this.getCatalogList());
 			out.print(json);
 		}
+		
+		//TODO: muss Ÿber server sent events laufen
+		//catalog change
+		if (sc.equals("5")) {
+			response.setContentType("text/plain");
+			response.getWriter().print(request.getParameter("actualCatalog"));
+		}
 
 	}
 
@@ -100,5 +107,6 @@ public class CatalogServlet extends HttpServlet {
 			return null;
 		}
 	}
+	
 
 }

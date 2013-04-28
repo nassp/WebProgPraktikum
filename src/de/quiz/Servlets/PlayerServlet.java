@@ -75,7 +75,7 @@ public class PlayerServlet extends HttpServlet {
 						.getInstance()
 						.getService(ILoggingManager.class)
 						.log("Successfully logged in User with ID: "
-								+ tmpUser.getUserID());
+								+ tmpUser.getUserID() + " and name: "+tmpUser.getName());
 				;
 			} catch (Exception e) {
 				ServiceManager.getInstance().getService(ILoggingManager.class)

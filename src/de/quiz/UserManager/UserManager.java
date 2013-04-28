@@ -79,8 +79,8 @@ public class UserManager implements IUserManager {
 					newPlayer.getName(), session, newPlayer);
 			// add to list
 			activeUser.add(tmpUser);
-			ServiceManager.getInstance().getService(ILoggingManager.class)
-			.log(this, "Successfully logged in user" + name);
+//			ServiceManager.getInstance().getService(ILoggingManager.class)
+//			.log(this, "Successfully logged in user" + name);
 			return tmpUser;
 		}
 
