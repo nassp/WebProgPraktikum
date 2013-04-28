@@ -13,7 +13,7 @@ import javax.servlet.http.HttpSession;
 public class User implements IUser {
 
 	private HttpSession session;
-	private String userID;
+	private long userID;
 	private String name;
 	//TODO: WebsocketID fehlt noch
 
@@ -35,7 +35,7 @@ public class User implements IUser {
 	}
 
 	@Override
-	public void setID(String id) {
+	public void setID(long id) {
 
 		this.userID = id;
 	}
@@ -44,7 +44,7 @@ public class User implements IUser {
 	 * constructor of UserConfig object
 	 * 
 	 */
-	public User(String id, String name, HttpSession session) {
+	public User(long id, String name, HttpSession session) {
 
 		this.userID = id;
 		this.session = session;
@@ -92,7 +92,7 @@ public class User implements IUser {
 	 * getter for the user ID
 	 * 
 	 */
-	public String getUserID() {
+	public long getUserID() {
 		return userID;
 	}
 
@@ -114,8 +114,8 @@ public class User implements IUser {
 		IUser user = (IUser) object;
 
 		if (this.name.equals(user.getName()) &&
-
-		this.userID.equals(user.getUserID())) {
+				
+		this.userID == user.getUserID()) {
 			return true;
 		}
 		return false;
@@ -128,7 +128,7 @@ public class User implements IUser {
 
 		IUser user = (IUser) object;
 
-		if (this.userID.equals(user.getUserID())) {
+		if (this.userID == user.getUserID()) {
 			return true;
 		}
 		return false;

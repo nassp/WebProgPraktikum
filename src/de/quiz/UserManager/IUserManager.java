@@ -2,6 +2,8 @@ package de.quiz.UserManager;
 
 import javax.servlet.http.HttpSession;
 
+import org.json.JSONObject;
+
 import de.quiz.ServiceManager.IService;
 import de.quiz.User.IUser;
 
@@ -23,7 +25,7 @@ public interface IUserManager extends IService {
      * @param session
      *            the user's session
      */
-    public long loginUser(String name, HttpSession session) throws Exception;
+    public IUser loginUser(String name, HttpSession session) throws Exception;
     
     /**
      * logout user
@@ -39,7 +41,7 @@ public interface IUserManager extends IService {
      * @param id
      *            the requested user's ID return the user object or null
      */
-    public IUser getUserById(String id) throws Exception;
+    public IUser getUserById(long id) throws Exception;
 
     /**
      * check if the users session timed out!
@@ -47,7 +49,7 @@ public interface IUserManager extends IService {
      * @param session
      *            the requested user's session return the user object or null
      */
-    public IUser isUserSessionValid(HttpSession session);
+    public IUser getUserBySession(HttpSession session);
 
 
     /**
@@ -61,5 +63,11 @@ public interface IUserManager extends IService {
      */
     public void setSessionForUser(IUser user, HttpSession session) throws Exception;
 
+	/**
+	 * Returns a JSON with the playerlist. THIS METHOD HAS TO BE CALLED FROM THE SERVER SEND EVENTS!!!
+	 * 
+	 * @return JSONObject Playerlist or null at failure.
+	 */
+	public JSONObject getPlayerList();
 
 }

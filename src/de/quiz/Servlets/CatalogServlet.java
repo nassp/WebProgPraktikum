@@ -41,8 +41,9 @@ public class CatalogServlet extends HttpServlet {
 	 */
 	protected void doGet(HttpServletRequest request,
 			HttpServletResponse response) throws ServletException, IOException {
-		// TODO Auto-generated method stub
-
+		
+		ServiceManager.getInstance().getService(ILoggingManager.class).log(this, "GET is not supported on this Servlet");
+		response.getWriter().print("GET is not supported on this Servlet");
 		
 	}
 
@@ -63,7 +64,8 @@ public class CatalogServlet extends HttpServlet {
 			PrintWriter out = response.getWriter();
 			JSONObject json = new JSONObject(this.getCatalogList());
 			out.print(json);
-			//ServiceManager.getInstance().getService(ILoggingManager.class).log("Send CatalogList");
+			//For debugging
+//			ServiceManager.getInstance().getService(ILoggingManager.class).log("Send CatalogList");
 		}
 
 	}

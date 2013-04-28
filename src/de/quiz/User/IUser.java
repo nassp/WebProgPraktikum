@@ -21,7 +21,7 @@ public interface IUser {
      * 
      * @param id	the user's id/alias
      */
-    public void setID(String id);
+    public void setID(long id);
     
     
     /**
@@ -54,7 +54,7 @@ public interface IUser {
      * getter for the user ID
      * 
      */
-    public String getUserID ();
+    public long getUserID ();
     
     /**
      * getter for the user's name

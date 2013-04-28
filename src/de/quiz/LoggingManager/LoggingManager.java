@@ -80,7 +80,7 @@ public class LoggingManager implements ILoggingManager {
 
 	@Override
 	public void log(Object clazz, QuizError e) {
-		log(clazz, e.toString());
+		log(clazz, e.getDescription());
 	}
 
 }
