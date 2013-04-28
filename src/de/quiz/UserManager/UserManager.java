@@ -37,7 +37,7 @@ public class UserManager implements IUserManager {
 
 		for (int i = 0; i < activeUser.size(); i++) {
 
-			if (activeUser.get(i).getUserID() == user.getUserID()) {
+			if (activeUser.get(i).getUserID().equals(user.getUserID())) {
 
 				// remove from list is sufficient
 				activeUser.remove(user);
@@ -75,8 +75,8 @@ public class UserManager implements IUserManager {
 
 		} else {
 
-			IUser tmpUser = new User(newPlayer.getId(),
-					newPlayer.getName(), session);
+			IUser tmpUser = new User(newPlayer.getId().toString(),
+					newPlayer.getName(), session, newPlayer);
 			// add to list
 			activeUser.add(tmpUser);
 			ServiceManager.getInstance().getService(ILoggingManager.class)
@@ -93,12 +93,12 @@ public class UserManager implements IUserManager {
 	 *            the requested user's ID return the user object or null
 	 * @throws Exception
 	 */
-	public IUser getUserById(long id) throws Exception {
+	public IUser getUserById(String id) throws Exception {
 
 		// find user
 		for (int i = 0; i < activeUser.size(); i++) {
 
-			if (activeUser.get(i).getUserID() == id) {
+			if (activeUser.get(i).getUserID().equals(id)) {
 
 				return activeUser.get(i);
 			}

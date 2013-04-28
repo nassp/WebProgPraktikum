@@ -12,6 +12,8 @@ import javax.servlet.http.HttpSession;
 
 import org.json.JSONObject;
 
+import de.fhwgt.quiz.application.Quiz;
+import de.fhwgt.quiz.error.QuizError;
 import de.quiz.LoggingManager.ILoggingManager;
 import de.quiz.ServiceManager.ServiceManager;
 import de.quiz.User.IUser;
@@ -52,13 +54,14 @@ public class PlayerServlet extends HttpServlet {
 		if (request.getParameter("rID") != null) {
 			sc = request.getParameter("rID");
 		}
-
+		// login request
 		if (sc.equals("1")) {
 			response.setContentType("text/plain");
 			PrintWriter out = response.getWriter();
 			HttpSession session = request.getSession(true);
 			IUser tmpUser;
 			try {
+
 				// create user
 				tmpUser = ServiceManager.getInstance()
 						.getService(IUserManager.class)
@@ -77,6 +80,47 @@ public class PlayerServlet extends HttpServlet {
 			} catch (Exception e) {
 				ServiceManager.getInstance().getService(ILoggingManager.class)
 						.log("User login failed!");
+				response.setContentType("text/plain");
+				out.print(255);
+			}
+		}
+		// playerlist
+		if (sc.equals("6")) {
+			PrintWriter out = response.getWriter();
+			try {
+				response.setContentType("application/json");
+				JSONObject json = ServiceManager.getInstance()
+						.getService(IUserManager.class).getPlayerList();
+				out.print(json);
+				ServiceManager.getInstance().getService(ILoggingManager.class)
+						.log("Send Playerlist!");
+			} catch (Exception e) {
+				ServiceManager.getInstance().getService(ILoggingManager.class)
+						.log("Failed sending Playerlist!");
+				response.setContentType("text/plain");
+				out.print(255);
+			}
+		}
+
+		// start game
+		// TODO: MUSS †BER SERVER SENT EVENTS LAUFEN!!!
+		if (sc.equals("7") && request.getParameter("uID").equals("0")) {
+			PrintWriter out = response.getWriter();
+			QuizError error = new QuizError();
+			Quiz.getInstance().startGame(
+					ServiceManager.getInstance().getService(IUserManager.class)
+							.getUserBySession(request.getSession())
+							.getPlayerObject(), error);
+			if (error.isSet()) {
+				ServiceManager.getInstance().getService(ILoggingManager.class)
+						.log("Failed starting game!");
+				response.setContentType("text/plain");
+				out.print(255);
+			} else {
+				ServiceManager.getInstance().getService(ILoggingManager.class)
+						.log("Started game!");
+				response.setContentType("text/plain");
+				out.print(7);
 			}
 		}
 	}

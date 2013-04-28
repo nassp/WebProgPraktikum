@@ -41,10 +41,11 @@ public class CatalogServlet extends HttpServlet {
 	 */
 	protected void doGet(HttpServletRequest request,
 			HttpServletResponse response) throws ServletException, IOException {
-		
-		ServiceManager.getInstance().getService(ILoggingManager.class).log(this, "GET is not supported on this Servlet");
+
+		ServiceManager.getInstance().getService(ILoggingManager.class)
+				.log(this, "GET is not supported on this Servlet");
 		response.getWriter().print("GET is not supported on this Servlet");
-		
+
 	}
 
 	/**
@@ -52,20 +53,19 @@ public class CatalogServlet extends HttpServlet {
 	 *      response)
 	 */
 	protected void doPost(HttpServletRequest request,
-		HttpServletResponse response) throws ServletException, IOException {
-		String sc ="";
+			HttpServletResponse response) throws ServletException, IOException {
+		String sc = "";
 
-		if(request.getParameter("rID")!=null){
-			sc = request.getParameter("rID");		
+		if (request.getParameter("rID") != null) {
+			sc = request.getParameter("rID");
 		}
-		
+
+		// catalog request
 		if (sc.equals("3")) {
 			response.setContentType("application/json");
 			PrintWriter out = response.getWriter();
 			JSONObject json = new JSONObject(this.getCatalogList());
 			out.print(json);
-			//For debugging
-//			ServiceManager.getInstance().getService(ILoggingManager.class).log("Send CatalogList");
 		}
 
 	}
@@ -85,20 +85,20 @@ public class CatalogServlet extends HttpServlet {
 		}
 
 	}
-	
+
 	/**
 	 * Returns a catalog with given name
 	 * 
-	 * @param String Name of the catalog.
+	 * @param String
+	 *            Name of the catalog.
 	 * @return Catalog Catalog object or null.
 	 */
-	protected Catalog getCatalogByName (String name) {
+	protected Catalog getCatalogByName(String name) {
 		try {
 			return Quiz.getInstance().getCatalogByName(name);
 		} catch (LoaderException e) {
 			return null;
 		}
 	}
-	
-	
+
 }

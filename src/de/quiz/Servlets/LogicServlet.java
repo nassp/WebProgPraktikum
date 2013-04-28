@@ -17,37 +17,37 @@ import de.quiz.LoggingManager.ILoggingManager;
 import de.quiz.ServiceManager.ServiceManager;
 
 /**
- * WebSocketServlet implementation class PlayerServlet. 
- * This servlet handles the login process and the integration of the game logic.
+ * WebSocketServlet implementation class PlayerServlet. This servlet handles the
+ * login process and the integration of the game logic.
  * 
  * @author Patrick Na§
  */
 @WebServlet(description = "connection to game the logic", urlPatterns = { "/LogicServlet" })
 public class LogicServlet extends WebSocketServlet {
 	private static final long serialVersionUID = 1L;
-	private static ArrayList<LoginMessageInbound> mmiList = new ArrayList<LoginMessageInbound>();
+	private static ArrayList<LogicMessageInbound> myInList = new ArrayList<LogicMessageInbound>();
 
 	@Override
 	protected StreamInbound createWebSocketInbound(String arg0,
 			HttpServletRequest arg1) {
-		return new LoginMessageInbound();
+		return new LogicMessageInbound();
 	}
 
-	private class LoginMessageInbound extends MessageInbound {
+	private class LogicMessageInbound extends MessageInbound {
 		private WsOutbound loginOutbound;
 
 		@Override
 		protected void onClose(int status) {
 			ServiceManager.getInstance().getService(ILoggingManager.class)
 					.log("Login client closed.");
-			mmiList.remove(this);
+			myInList.remove(this);
 		}
 
 		@Override
 		protected void onOpen(WsOutbound outbound) {
 			try {
 				this.loginOutbound = outbound;
-				mmiList.add(this);
+				myInList.add(this);
 				outbound.writeTextMessage(CharBuffer.wrap("Hello world!"));
 				ServiceManager.getInstance().getService(ILoggingManager.class)
 						.log("Login client open.");
@@ -63,22 +63,18 @@ public class LogicServlet extends WebSocketServlet {
 			throw new UnsupportedOperationException(
 					"Binary message not supported.");
 		}
-		
-		
+
 		@Override
 		protected void onTextMessage(CharBuffer arg0) throws IOException {
 			ServiceManager.getInstance().getService(ILoggingManager.class)
-			.log("Accept Message : "+ arg0);
-			for (LoginMessageInbound mmib : mmiList) {
+					.log("Accept Message : " + arg0);
+			for (LogicMessageInbound mmib : myInList) {
 				CharBuffer buffer = CharBuffer.wrap(arg0);
 				mmib.loginOutbound.writeTextMessage(buffer);
 				mmib.loginOutbound.flush();
 			}
 		}
 
-
 	}
-
-
 
 }

@@ -4,6 +4,8 @@ package de.quiz.User;
 
 import javax.servlet.http.HttpSession;
 
+import de.fhwgt.quiz.application.Player;
+
 /**
  * this class saves the userdata at register as preparation for the DBM to write
  * it into the database.
@@ -13,20 +15,21 @@ import javax.servlet.http.HttpSession;
 public class User implements IUser {
 
 	private HttpSession session;
-	private long userID;
+	private String userID;
 	private String name;
+	private Player playerObject;
 	//TODO: WebsocketID fehlt noch
 
 
 	/**
-	 * default constructor of UserConfig object
+	 * default constructor of User object
 	 * 
 	 */
 	public User() {
 	}
 
 	/**
-	 * constructor of UserConfig object
+	 * constructor of User object
 	 * 
 	 */
 	public User(String id) {
@@ -34,20 +37,16 @@ public class User implements IUser {
 		this.name = id;
 	}
 
-	@Override
-	public void setID(long id) {
-
-		this.userID = id;
-	}
-
 	/**
-	 * constructor of UserConfig object
+	 * constructor of User object
 	 * 
 	 */
-	public User(long id, String name, HttpSession session) {
+	public User(String id, String name, HttpSession session, Player player) {
 
 		this.userID = id;
 		this.session = session;
+		this.name = name;
+		this.playerObject = player;
 	}
 
 	/*
@@ -75,6 +74,25 @@ public class User implements IUser {
 	public void setName(String _name) {
 		name = _name;
 	}
+	
+    /**
+     * set user id
+     * 
+     * @param id	the user's id/alias
+     */
+	public void setID(String id) {
+
+		this.userID = id;
+	}
+	
+    /**
+     * set the player object
+     * 
+     * @param _player
+     */
+    public void setPlayerObject(Player _player) {
+    	playerObject = _player;
+    }
 
 	/*
 	 * ################################## getter
@@ -92,7 +110,7 @@ public class User implements IUser {
 	 * getter for the user ID
 	 * 
 	 */
-	public long getUserID() {
+	public String getUserID() {
 		return userID;
 	}
 
@@ -103,6 +121,14 @@ public class User implements IUser {
 	public String getName() {
 		return name;
 	}
+	
+    /**
+     * getter for the player object
+     * 
+     */
+    public Player getPlayerObject () {
+    	return playerObject;
+    }
 
 	// methods
 
@@ -115,7 +141,7 @@ public class User implements IUser {
 
 		if (this.name.equals(user.getName()) &&
 				
-		this.userID == user.getUserID()) {
+		this.userID.equals(user.getUserID())) {
 			return true;
 		}
 		return false;
@@ -128,7 +154,7 @@ public class User implements IUser {
 
 		IUser user = (IUser) object;
 
-		if (this.userID == user.getUserID()) {
+		if (this.userID.equals(user.getUserID())) {
 			return true;
 		}
 		return false;

@@ -3,6 +3,8 @@ package de.quiz.User;
 
 import javax.servlet.http.HttpSession;
 
+import de.fhwgt.quiz.application.Player;
+
 
 
 /**
@@ -21,7 +23,7 @@ public interface IUser {
      * 
      * @param id	the user's id/alias
      */
-    public void setID(long id);
+    public void setID(String id);
     
     
     /**
@@ -37,6 +39,13 @@ public interface IUser {
      * @param	_firstname	the user's name
      */
     public void setName (String _firstname);
+    
+    /**
+     * set the player object
+     * 
+     * @param _player
+     */
+    public void setPlayerObject(Player _player);
     
     
     /*##################################
@@ -54,13 +63,19 @@ public interface IUser {
      * getter for the user ID
      * 
      */
-    public long getUserID ();
+    public String getUserID ();
     
     /**
      * getter for the user's name
      * 
      */
     public String getName ();
+    
+    /**
+     * getter for the player object
+     * 
+     */
+    public Player getPlayerObject ();
     
     
     

@@ -41,7 +41,7 @@ public interface IUserManager extends IService {
      * @param id
      *            the requested user's ID return the user object or null
      */
-    public IUser getUserById(long id) throws Exception;
+    public IUser getUserById(String id) throws Exception;
 
     /**
      * check if the users session timed out!
