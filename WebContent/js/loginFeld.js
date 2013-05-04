@@ -42,14 +42,14 @@ jQuery.fn.countDown = function(settings,to) {
 /* Quizfrage anzeigen */
 var showQuestion = function(question, answer1,answer2,answer3,answer4,timeout) {
 	content.empty();
-	content.append("<table></table>");
+	content.append('<table id="quizTable"></table>');
 	var contentTable = $("#content table");
 	contentTable.append("<tr><th>"+question+"</th></tr>");
 	contentTable.append("<tr><td>"+answer1+"</td></tr>");
 	contentTable.append("<tr><td>"+answer2+"</td></tr>");
 	contentTable.append("<tr><td>"+answer3+"</td></tr>");
 	contentTable.append("<tr><td>"+answer4+"</td></tr>");
-	content.append('<div id="test"><div id="countdown"></div></div>');
+	content.append('<div id="countdownWrap"><div id="countdown"></div></div>');
 	jQuery("#content #countdown").countDown({
 		startNumber: timeout,
 		callBack: function(me) {
@@ -59,6 +59,10 @@ var showQuestion = function(question, answer1,answer2,answer3,answer4,timeout) {
 };
 /* Startet das Spiel und lädt erste Frage*/
 var startGame = function() {
+	var catElements = $(".catList");
+	catElements.children().each(function() {   
+		$(this).removeClass("active");
+	});
 	gamePhase = true;
 	loginPhase = false;
 	// Spielstart Paket senden
@@ -96,6 +100,7 @@ var initGameStartButton = function () {
 var initCatalogList = function () {
 	var catElements = $(".catList");
 	catElements.children().each(function() {   
+		$(".catList li").addClass("active");
 		$(this).click(function(event){
 			if(gamePhase==false) {
 				$.ajax({ 
@@ -121,31 +126,12 @@ var initCatalogList = function () {
 /* Fragekatalog Auswahl zuslassen wenn Loginname eingegeben ist */
 var loggedIn = function (e) {
 	if(loginPhase==true){
-		if(document.getElementById("nameInput").value.length <= 0){
-			alert("Es wurde kein Loginname eingegeben. Bitte versuche es erneut.");
-		}
-		else {
-			$("#login").hide();
-			content.wrapInner("<table class=\"center\" id=\"loginEingabe\"><td>Bitte w&aumlhle einen Fragekatalog aus.</td></table>");		
-		}
+		content.wrapInner.empty();
+		content.wrapInner("<table class=\"center\" id=\"loginEingabe\"><td>Bitte w&aumlhle einen Fragekatalog aus.</td></table>");	
 		loginPhase=false;
 	}
 };
-//var send = function (event, ElemDesc,ElemVal) {
-//	//var button = event.target;
-//	request = new XMLHttpRequest();
-//	request.onreadystatechange = DatenVomServerVearbeiten;
-//	request.open("POST","CatalogServlet",true);
-//	request.setRequestHeader("Content-type","application/x-www-form-urlencoded");
-//	//console.log(getElem.val());
-//	var requestString = "";
-//	var length = arr.length;
-//	for (var i = 0; i < length; i++) {
-//		requestString += ""+ElemDesc[i]+"="+ElemVal[i]+"";
-//	  // Do something with element i.
-//	}
-//	request.send(requestString);
-//};
+
 
 
 /* Wird ausgeführt wenn HTML-Content geladen ist */
@@ -155,55 +141,63 @@ $(document).ready(function() {
 
 	$("#loginButton").click(function(event){
 		//send(event,"name",$("#nameInput").val());
-		
-		// Spielername senden
-		$.ajax({ 
-		    type: 'POST', 
-		    url: 'PlayerServlet', 
-		    data: { rID: '1' , name: $("#nameInput").val() }, 
-		    dataType: 'json',
-		    success: function (data) { 
-		        $.each(data, function(index, element) {
-		        	loggedIn();
-		        	$("#highscore table tbody").append("<tr><td>"+element+"</td><td>0</td></tr>");
-		        });
-		    }
-		});
-		// Katalogliste anfragen
-		$.ajax({ 
-		    type: 'POST', 
-		    url: 'CatalogServlet', 
-		    data: { rID: '3' }, 
-		    dataType: 'json',
-		    success: function (data) { 
-		        $.each(data, function(index, element) {
-		        	$(".catList").append("<li>"+element.name+"</li>");
-		        });
-		        initCatalogList();
-		    }
-		});
-
-		
-		ws.onopen = function(){
-        };
-        ws.onmessage = function(message){
-        	$(".catList").append("<li>"+message.data+"</li>");
-        };
-        function postToServer(){
-            ws.send("LoginServlet(WebSocket): "+$("#nameInput").val());
-        }
-        function closeConnection(){
-            ws.close();
-        }
-        postToServer();
-        closeConnection();
+		if(document.getElementById("nameInput").value.length > 0){
+			// Spielername senden
+			$("#highscore table tbody").empty();
+			$.ajax({ 
+			    type: 'POST', 
+			    url: 'PlayerServlet', 
+			    data: { rID: '1' , name: $("#nameInput").val() }, 
+			    dataType: 'json',
+			    success: function (data) { 
+			        $.each(data, function(index, element) {
+			        	if(index==255) {
+			        		alert("bla");
+			        	}
+			        	loggedIn();
+			        	$("#highscore table tbody").append("<tr><td>"+element+"</td><td>0</td></tr>");
+			        });
+			    }
+			});
+			// Katalogliste anfragen
+			$(".catList").empty();
+			$.ajax({ 
+			    type: 'POST', 
+			    url: 'CatalogServlet', 
+			    data: { rID: '3' }, 
+			    dataType: 'json',
+			    success: function (data) { 
+			        $.each(data, function(index, element) {
+			        	$(".catList").append("<li>"+element.name+"</li>");
+			        });
+			        initCatalogList();
+			    }
+			});
+	
+			
+			ws.onopen = function(){
+	        };
+	        ws.onmessage = function(message){
+	        	$(".catList").append("<li>"+message.data+"</li>");
+	        };
+	        function postToServer(){
+	            ws.send("LoginServlet(WebSocket): "+$("#nameInput").val());
+	        }
+	        function closeConnection(){
+	            ws.close();
+	        }
+	        postToServer();
+	        closeConnection();
+		} else {
+			alert("Es wurde kein Loginname eingegeben. Bitte versuche es erneut.");
+		}
 		
 	});
 	$("#nameInput").bind("keypress", {}, function(e){
 		var code = (e.keyCode ? e.keyCode : e.which);
 	    if (code == 13) { //Enter keycode                        
 	        e.preventDefault();
-	        send(event,"name",$("#nameInput").val());
+	        $("#loginButton").trigger('click');
 	    }
 	});
 	

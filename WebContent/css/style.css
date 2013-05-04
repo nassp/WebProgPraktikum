@@ -150,19 +150,47 @@ p, ul, ol, dl {
 	position: relative;
 
 }
-#content #countdown {
-	height: 100px;
-	width: 100px;
+#content .startButton {
+	margin: 8em auto;
+	margin-left: 12em;
+	margin-top: 10em;
+	width: 20em;
+	height: 5em;
+}
+#content #quizTable {
+	margin-top:15px;
 	text-align: center;
 }
-#login input {
+#content #countdownWrap{
+	margin-top: 1em;	
+	width: 100%;
+}
+#content #countdownWrap #countdown {
+	margin-right: auto;
+	margin-left: auto;
+	height: 40px;
+	width: 40px;
+	text-align: center;
+}
+#content #quizTable .answer {
+	margin-top: 2em;
+	width: 40em;
+	height: 3em;
+}
+#content #login {
+	margin-right:auto;
+	margin-left:auto;
+	margin-top:115px;
+	width:300px;
+}
+#content #login input {
 	font-size: 20px;
 	display: block;
 	width: 100%;
 	margin: 0.5em 0;
 }
 
-#login label {
+#content #login label {
 	font-size: 20px;
 	font-weight: 600;
 	color: #ccc;
@@ -170,7 +198,7 @@ p, ul, ol, dl {
 	margin: 0.5em 0;
 }
 
-#login button {
+#content #login button {
 	font-size: 20px;
 	margin: 0.5em 0;
 	padding: 5px 8px 5px 8px;
@@ -190,11 +218,11 @@ p, ul, ol, dl {
 	background-color: #EEEEEE;
 	-moz-border-radius: 5px;
 	border-radius: 5px;
-	padding:3px;
+	padding:5px;
 	cursor:pointer;
 	margin-bottom:3px;
 }
-#sidebar .catList li:hover {
+#sidebar .catList li.active:hover {
 	background-color: #3399cc;
 	color:#FFFFFF;
 }
@@ -223,30 +251,12 @@ p, ul, ol, dl {
 	clear: both;
 }
 
-#test {
-	margin-top: 2em;
-	margin-left: -1.5em;
-}
-
 .center {
-	
-	margin: 8em auto;
-	width: 20em;
+    margin-left: auto;
+    margin-right: auto;
 }
 
-.startButton {
-	margin: 8em auto;
-	margin-left: 12em;
-	margin-top: 10em;
-	width: 20em;
-	height: 5em;
-}
 
-.answer {
-	margin-top: 2em;
-	width: 45em;
-	height: 3em;
-}
 
 /* -------------LOG------------ */
 #log {
