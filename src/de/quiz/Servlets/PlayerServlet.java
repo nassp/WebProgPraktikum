@@ -39,6 +39,33 @@ public class PlayerServlet extends HttpServlet {
 	 */
 	protected void doGet(HttpServletRequest request,
 			HttpServletResponse response) throws ServletException, IOException {
+	    try
+	    {
+	        System.out.println("SSE Demo");
+	        response.setContentType("text/event-stream");
+			response.setCharacterEncoding("UTF-8");
+	        PrintWriter out = response.getWriter();
+	        int i=0;
+	        while(i>5)
+	        {
+
+	            
+				IUser currentUser = ServiceManager.getInstance().getService(IUserManager.class).getUserById(String.valueOf(i));
+				//out.print(json);
+				out.write("data: {\n");
+				out.write("data: \"msg\": \""+currentUser.getName()+"\",\n");
+				out.write("data: \"id\": "+currentUser.getUserID()+"\n");
+				out.write("data: }\n\n");
+	            //out.write("event: server-time\n\n"); 
+	            //out.write("data: "+ i + "\n\n");
+	            //System.out.println("Data Sent!!!"+i);
+	            i++;
+	        }
+	        out.close();
+
+	    }catch(Exception e){
+	        e.printStackTrace();
+	    }
 		ServiceManager.getInstance().getService(ILoggingManager.class)
 				.log("GET is not supported by this Servlet");
 		response.getWriter().print("GET is not supported by this Servlet");
@@ -85,8 +112,10 @@ public class PlayerServlet extends HttpServlet {
 			}
 		}
 		// playerlist
+		
 		if (sc.equals("6")) {
 			PrintWriter out = response.getWriter();
+
 			try {
 				response.setContentType("application/json");
 				JSONObject json = ServiceManager.getInstance()

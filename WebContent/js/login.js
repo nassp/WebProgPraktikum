@@ -34,7 +34,21 @@ var loggedIn = function (e) {
 		loginPhase=false;
 	}
 };
+function testFunc()
+{
+    var source = new EventSource('http://localhost:8080/WebQuiz/PlayerServlet');  
+    source.onmessage=function(event)
+    {
+    	var data = JSON.parse(event.data);
+    	console.log(data.id, data.msg);
+        //document.getElementById("result").innerHTML+= + "<br />";
+        //$("#highscore table tbody").append("<tr><td>"+event.data+"</td><td>0</td></tr>");
+    };
 
+    /*source.addEventListener('server-time',function (e){
+        alert('ea');
+    },true);*/
+}
 
 
 

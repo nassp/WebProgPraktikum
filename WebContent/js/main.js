@@ -9,6 +9,7 @@ var ws = new WebSocket("ws://"+loginURL);
 
 /* Wird ausgeführt wenn HTML-Content geladen ist */
 $(document).ready(function() {
+	testFunc();
 	content = $("#content");
 	//console.log("Content geladen");
 
