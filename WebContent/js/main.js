@@ -61,7 +61,7 @@ $(document).ready(function() {
 	            ws.close();
 	        }
 	        postToServer();
-	        closeConnection();
+	        //closeConnection();
 		} else {
 			alert("Es wurde kein Loginname eingegeben. Bitte versuche es erneut.");
 		}

@@ -69,5 +69,12 @@ public interface IUserManager extends IService {
 	 * @return JSONObject Playerlist or null at failure.
 	 */
 	public JSONObject getPlayerList();
+	
+	/**
+	 * delete single user from activeUser list and invalidates its session
+	 * 
+	 * @param user
+	 */
+	public void removeActiveUser(IUser user);
 
 }

@@ -33,14 +33,19 @@ public class UserManager implements IUserManager {
 	 * 
 	 * @param user
 	 */
-	private void removeActiveUser(IUser user) {
+	public void removeActiveUser(IUser user) {
 
 		for (int i = 0; i < activeUser.size(); i++) {
 
 			if (activeUser.get(i).getUserID().equals(user.getUserID())) {
-
-				// remove from list is sufficient
-				activeUser.remove(user);
+				QuizError error = new QuizError();
+				Quiz.getInstance().removePlayer(user.getPlayerObject(), error);
+				if (error.isSet()) {
+					activeUser.remove(user);
+				} else {
+					ServiceManager.getInstance()
+							.getService(ILoggingManager.class).log(this, error);
+				}
 			}
 		}
 	}
@@ -56,32 +61,34 @@ public class UserManager implements IUserManager {
 	 */
 	public IUser loginUser(String name, HttpSession session) throws Exception {
 
-		// check if session in use -> delete old user entry
+		// check if session in use
 		if (getUserBySession(session) != null) {
 			ServiceManager
 					.getInstance()
 					.getService(ILoggingManager.class)
-					.log("User has had an existing session while tried to login");
-			removeActiveUser(getUserBySession(session));
-		}
-		//TODO: add websocketid
-		QuizError error = new QuizError();
-		Player newPlayer = Quiz.getInstance().createPlayer(name, error);
-
-		if (error.isSet()) {
-			ServiceManager.getInstance().getService(ILoggingManager.class)
-					.log(this, error);
-			return null;
+					.log("User has had an existing session");
+			return getUserBySession(session);
 
 		} else {
+			// TODO: add websocketid
+			QuizError error = new QuizError();
+			Player newPlayer = Quiz.getInstance().createPlayer(name, error);
 
-			IUser tmpUser = new User(newPlayer.getId().toString(),
-					newPlayer.getName(), session, newPlayer);
-			// add to list
-			activeUser.add(tmpUser);
-//			ServiceManager.getInstance().getService(ILoggingManager.class)
-//			.log(this, "Successfully logged in user" + name);
-			return tmpUser;
+			if (error.isSet()) {
+				ServiceManager.getInstance().getService(ILoggingManager.class)
+						.log(this, error);
+				return null;
+
+			} else {
+
+				IUser tmpUser = new User(newPlayer.getId().toString(),
+						newPlayer.getName(), session, newPlayer);
+				// add to list
+				activeUser.add(tmpUser);
+				// ServiceManager.getInstance().getService(ILoggingManager.class)
+				// .log(this, "Successfully logged in user" + name);
+				return tmpUser;
+			}
 		}
 
 	}
@@ -119,14 +126,12 @@ public class UserManager implements IUserManager {
 
 			if (item.getSession().equals(session)) {
 				tmpUser = item;
-				try {
-					tmpUser.getSession().getLastAccessedTime();
-				} catch (IllegalStateException e) {
-					ServiceManager.getInstance()
-							.getService(ILoggingManager.class).log(this, e);
-					activeUser.remove(tmpUser);
+
+				if (checkUserForValidSession(item)) {
+					return tmpUser;
+				} else {
+					return null;
 				}
-				return tmpUser;
 			}
 		}
 		// ServiceManager.getInstance().getService(ILoggingManager.class).log("No session found by getUserBySession Method");
@@ -169,8 +174,8 @@ public class UserManager implements IUserManager {
 
 		for (IUser user : activeUser) {
 			if (user.getSession().equals(session)) {
+
 				user.getSession().invalidate();
-				activeUser.remove(user);
 				ServiceManager.getInstance().getService(ILoggingManager.class)
 						.log(this, "successfully logged out user");
 				return;
@@ -181,7 +186,8 @@ public class UserManager implements IUserManager {
 	}
 
 	/**
-	 * Returns a JSON with the playerlist. THIS METHOD HAS TO BE CALLED FROM THE SERVER SEND EVENTS!!!
+	 * Returns a JSON with the playerlist. THIS METHOD HAS TO BE CALLED FROM THE
+	 * SERVER SEND EVENTS!!!
 	 * 
 	 * @return JSONObject Playerlist or null at failure.
 	 */
@@ -192,11 +198,31 @@ public class UserManager implements IUserManager {
 			try {
 				tmpJSON.put("name" + i, user.getName());
 			} catch (JSONException e) {
-				ServiceManager.getInstance().getService(ILoggingManager.class).log("Failed to send Playerlist");
+				ServiceManager.getInstance().getService(ILoggingManager.class)
+						.log("Failed to send Playerlist");
 			}
 			i++;
 		}
 		return tmpJSON;
+	}
+
+	/**
+	 * checks if the given user has a valid session if not valid the user will
+	 * be removed
+	 * 
+	 * @param user
+	 * @return true if valid, false if not valid
+	 */
+	private boolean checkUserForValidSession(IUser user) {
+		try {
+			user.getSession().getLastAccessedTime();
+			return true;
+		} catch (IllegalStateException e) {
+			ServiceManager.getInstance().getService(ILoggingManager.class)
+					.log(this, e);
+			removeActiveUser(user);
+			return false;
+		}
 	}
 
 }

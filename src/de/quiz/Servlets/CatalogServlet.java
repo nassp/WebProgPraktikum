@@ -65,6 +65,7 @@ public class CatalogServlet extends HttpServlet {
 			response.setContentType("application/json");
 			PrintWriter out = response.getWriter();
 			JSONObject json = new JSONObject(this.getCatalogList());
+//			ServiceManager.getInstance().getService(ILoggingManager.class).log(json.toString());
 			out.print(json);
 		}
 		
@@ -83,7 +84,7 @@ public class CatalogServlet extends HttpServlet {
 	 * @return map <String, Catalog>
 	 */
 	protected Map<String, Catalog> getCatalogList() {
-		try {
+		try { 
 			return Quiz.getInstance().getCatalogList();
 		} catch (LoaderException e) {
 			ServiceManager.getInstance().getService(ILoggingManager.class)

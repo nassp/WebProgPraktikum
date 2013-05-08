@@ -41,7 +41,7 @@ public class PlayerServlet extends HttpServlet {
 			HttpServletResponse response) throws ServletException, IOException {
 	    try
 	    {
-	        System.out.println("SSE Demo");
+//	        System.out.println("SSE Demo");
 	        response.setContentType("text/event-stream");
 			response.setCharacterEncoding("UTF-8");
 	        PrintWriter out = response.getWriter();
@@ -66,8 +66,8 @@ public class PlayerServlet extends HttpServlet {
 	    }catch(Exception e){
 	        e.printStackTrace();
 	    }
-		ServiceManager.getInstance().getService(ILoggingManager.class)
-				.log("GET is not supported by this Servlet");
+//		ServiceManager.getInstance().getService(ILoggingManager.class)
+//				.log("GET is not supported by this Servlet");
 		response.getWriter().print("GET is not supported by this Servlet");
 	}
 
@@ -149,7 +149,7 @@ public class PlayerServlet extends HttpServlet {
 				ServiceManager.getInstance().getService(ILoggingManager.class)
 						.log("Started game!");
 				response.setContentType("text/plain");
-				out.print(7);
+				out.print(200);
 			}
 		}
 	}
