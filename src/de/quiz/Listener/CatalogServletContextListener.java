@@ -48,7 +48,7 @@ public class CatalogServletContextListener implements ServletContextListener {
 					.log(this, "Instantiation of FileSystemLoader: success");
 		} catch (LoaderException e) {
 			ServiceManager.getInstance().getService(ILoggingManager.class)
-					.log(this, "Instantiation of CatalogLoader failed");
+					.log(this, "Instantiation of FileSystemLoader: fail");
 		}
 
 	}
