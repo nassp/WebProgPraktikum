@@ -40,7 +40,7 @@ public class UserManager implements IUserManager {
 			if (activeUser.get(i).getUserID().equals(user.getUserID())) {
 				QuizError error = new QuizError();
 				Quiz.getInstance().removePlayer(user.getPlayerObject(), error);
-				if (error.isSet()) {
+				if (!error.isSet()) {
 					activeUser.remove(user);
 				} else {
 					ServiceManager.getInstance()
