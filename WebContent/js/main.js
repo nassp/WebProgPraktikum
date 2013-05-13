@@ -9,7 +9,6 @@ var ws = new WebSocket("ws://"+loginURL);
 
 /* Wird ausgeführt wenn HTML-Content geladen ist */
 $(document).ready(function() {
-	testFunc();
 	content = $("#content");
 	//console.log("Content geladen");
 
@@ -24,13 +23,13 @@ $(document).ready(function() {
 			    data: { rID: '1' , name: $("#nameInput").val() }, 
 			    dataType: 'json',
 			    success: function (data) { 
-			        $.each(data, function(index, element) {
-			        	if(index==255) {
-			        		alert("bla");
-			        	}
-			        	loggedIn();
-			        	$("#highscore table tbody").append("<tr><td>"+element+"</td><td>0</td></tr>");
-			        });
+			    	console.log(data);
+			     	if(data==255) {
+		        		alert("Fehler, Spieler konnte nicht eingeloggt werden");
+		        	}else if (data == 2){
+		        		loggedIn();
+		        		//$("#highscore table tbody").append("<tr><td>"+element+"</td><td>0</td></tr>"); 
+		        	}
 			    }
 			});
 			// Katalogliste anfragen

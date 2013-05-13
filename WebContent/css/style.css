@@ -148,7 +148,8 @@ p, ul, ol, dl {
 	border-radius: 10px;
 	margin-bottom: 2em;
 	position: relative;
-
+    height: 400px;
+    display: table
 }
 #content .startButton {
 	margin: 8em auto;
@@ -254,6 +255,8 @@ p, ul, ol, dl {
 .center {
     margin-left: auto;
     margin-right: auto;
+    display:table-cell;
+    vertical-align:middle;
 }
 
 

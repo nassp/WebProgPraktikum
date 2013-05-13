@@ -31,18 +31,26 @@ var loggedIn = function (e) {
 	if(loginPhase==true){
 		content.empty();
 		content.wrapInner("<table class=\"center\" id=\"loginEingabe\"><td>Bitte w&aumlhle einen Fragekatalog aus.</td></table>");	
+		testFunc();
 		loginPhase=false;
 	}
 };
 function testFunc()
 {
+	$("#highscore table tbody").empty();
     var source = new EventSource('http://localhost:8080/WebQuiz/PlayerServlet');  
     source.onmessage=function(event)
-    {
+    {	
+    	$("#highscore table tbody").empty();
     	var data = JSON.parse(event.data);
-    	console.log(data.id, data.msg);
-        //document.getElementById("result").innerHTML+= + "<br />";
-        //$("#highscore table tbody").append("<tr><td>"+event.data+"</td><td>0</td></tr>");
+    	if (data.id==6){
+	    	$.each(data, function(index, element) {
+	    		if(index!="id"){
+			    	console.log("SSE: "+index+" "+element);
+			        $("#highscore table tbody").append("<tr><td>"+element+"</td><td>0</td></tr>");
+	    		}
+	    	});
+    	}
     };
 
     /*source.addEventListener('server-time',function (e){

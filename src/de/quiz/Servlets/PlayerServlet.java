@@ -41,26 +41,32 @@ public class PlayerServlet extends HttpServlet {
 			HttpServletResponse response) throws ServletException, IOException {
 	    try
 	    {
-//	        System.out.println("SSE Demo");
 	        response.setContentType("text/event-stream");
 			response.setCharacterEncoding("UTF-8");
 	        PrintWriter out = response.getWriter();
-	        int i=0;
-	        while(i>5)
-	        {
-
-	            
-				IUser currentUser = ServiceManager.getInstance().getService(IUserManager.class).getUserById(String.valueOf(i));
-				//out.print(json);
-				out.write("data: {\n");
-				out.write("data: \"msg\": \""+currentUser.getName()+"\",\n");
-				out.write("data: \"id\": "+currentUser.getUserID()+"\n");
-				out.write("data: }\n\n");
-	            //out.write("event: server-time\n\n"); 
-	            //out.write("data: "+ i + "\n\n");
-	            //System.out.println("Data Sent!!!"+i);
-	            i++;
+	        JSONObject json = ServiceManager.getInstance().getService(IUserManager.class).getPlayerList();
+			
+	        //IUser currentUser = ServiceManager.getInstance().getService(IUserManager.class).getUserById(String.valueOf(i));
+			//out.print(json);
+	        int i = 0;
+	        boolean data;
+	        out.write("data: {\n");
+	        out.write("data: \"id\": 6");
+	        for(i=0;i<6;i++){
+	        	if(json.has("name"+i)){
+					out.write(",\n");
+	        		out.write("data: \"name"+i+"\": \""+json.get("name"+i)+"\"");
+					
+	        	}
 	        }
+	        out.write("\n");
+	        out.write("data: }\n\n");
+	        
+	        
+            //out.write("event: server-time\n\n"); 
+            //out.write("data: "+ i + "\n\n");
+            //System.out.println("Data Sent!!!"+i);
+	       
 	        out.close();
 
 	    }catch(Exception e){
@@ -93,17 +99,19 @@ public class PlayerServlet extends HttpServlet {
 				tmpUser = ServiceManager.getInstance()
 						.getService(IUserManager.class)
 						.loginUser(request.getParameter("name"), session);
+				System.out.println("session: "+session);
 				// send playerlist
-				response.setContentType("application/json");
-				JSONObject json = ServiceManager.getInstance()
-						.getService(IUserManager.class).getPlayerList();
-				out.print(json);
+				//response.setContentType("application/json");
+				//JSONObject json = ServiceManager.getInstance()
+				//		.getService(IUserManager.class).getPlayerList();
+				//out.print(json);
+				
+				out.print(2);
 				ServiceManager
 						.getInstance()
 						.getService(ILoggingManager.class)
 						.log("Successfully logged in User with ID: "
 								+ tmpUser.getUserID() + " and name: "+tmpUser.getName());
-				;
 			} catch (Exception e) {
 				ServiceManager.getInstance().getService(ILoggingManager.class)
 						.log("User login failed!");
