@@ -16,6 +16,7 @@ $(document).ready(function() {
 		//send(event,"name",$("#nameInput").val());
 		if(document.getElementById("nameInput").value.length > 0){
 			// Spielername senden
+			testFunc();
 			$("#highscore table tbody").empty();
 			$.ajax({ 
 			    type: 'POST', 

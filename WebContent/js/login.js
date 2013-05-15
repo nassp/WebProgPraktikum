@@ -31,7 +31,7 @@ var loggedIn = function (e) {
 	if(loginPhase==true){
 		content.empty();
 		content.wrapInner("<table class=\"center\" id=\"loginEingabe\"><td>Bitte w&aumlhle einen Fragekatalog aus.</td></table>");	
-		testFunc();
+		
 		loginPhase=false;
 	}
 };
@@ -39,8 +39,7 @@ function testFunc()
 {
 	$("#highscore table tbody").empty();
     var source = new EventSource('http://localhost:8080/WebQuiz/PlayerServlet');  
-    source.onmessage=function(event)
-    {	
+    source.onmessage=function(event){	
     	$("#highscore table tbody").empty();
     	var data = JSON.parse(event.data);
     	if (data.id==6){
