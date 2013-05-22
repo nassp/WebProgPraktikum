@@ -19,7 +19,7 @@ import de.quiz.LoggingManager.ILoggingManager;
 import de.quiz.ServiceManager.ServiceManager;
 
 /**
- * Servlet implementation class CatalogServlet This servlet handles catalogs.
+ * Servlet implementation class CatalogServlet. This servlet handles catalogs.
  * 
  * 
  * @author Patrick Na§

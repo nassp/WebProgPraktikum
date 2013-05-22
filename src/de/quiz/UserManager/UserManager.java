@@ -35,19 +35,21 @@ public class UserManager implements IUserManager {
 	 */
 	public void removeActiveUser(IUser user) {
 
-		for (int i = 0; i < activeUser.size(); i++) {
-
-			if (activeUser.get(i).getUserID().equals(user.getUserID())) {
-				QuizError error = new QuizError();
-				Quiz.getInstance().removePlayer(user.getPlayerObject(), error);
-				if (!error.isSet()) {
-					activeUser.remove(user);
-				} else {
-					ServiceManager.getInstance()
-							.getService(ILoggingManager.class).log(this, error);
-				}
+		QuizError error = new QuizError();
+		Quiz.getInstance().removePlayer(user.getPlayerObject(), error);
+		if (!error.isSet()) {
+			activeUser.remove(user);
+//			ServiceManager.getInstance().getService(ILoggingManager.class)
+//			.log(user.getName() + "removed because of session timeout!");
+		} else {
+			ServiceManager.getInstance().getService(ILoggingManager.class)
+					.log(this, error);
+			//if superuser left error is also set
+			if(error.getType().equals(7)){
+				activeUser.remove(user);
 			}
 		}
+
 	}
 
 	/**
@@ -63,14 +65,12 @@ public class UserManager implements IUserManager {
 
 		// check if session in use
 		if (getUserBySession(session) != null) {
-			ServiceManager
-					.getInstance()
-					.getService(ILoggingManager.class)
+			ServiceManager.getInstance().getService(ILoggingManager.class)
 					.log("User has had an existing session");
 			return getUserBySession(session);
 
 		} else {
-			// TODO: add websocketid
+
 			QuizError error = new QuizError();
 			Player newPlayer = Quiz.getInstance().createPlayer(name, error);
 
@@ -83,6 +83,7 @@ public class UserManager implements IUserManager {
 
 				IUser tmpUser = new User(newPlayer.getId().toString(),
 						newPlayer.getName(), session, newPlayer);
+				tmpUser.setWSID(-1);
 				// add to list
 				activeUser.add(tmpUser);
 				// ServiceManager.getInstance().getService(ILoggingManager.class)
@@ -114,24 +115,18 @@ public class UserManager implements IUserManager {
 	}
 
 	/**
-	 * check if the users session timed out!
+	 * Returns a player object if found by session.
 	 * 
 	 * @param session
 	 *            the requested user's session return the user object or null
 	 */
 	public IUser getUserBySession(HttpSession session) {
 
-		IUser tmpUser = null;
 		for (IUser item : activeUser) {
 
 			if (item.getSession().equals(session)) {
-				tmpUser = item;
+				return item;
 
-				if (checkUserForValidSession(item)) {
-					return tmpUser;
-				} else {
-					return null;
-				}
 			}
 		}
 		// ServiceManager.getInstance().getService(ILoggingManager.class).log("No session found by getUserBySession Method");
@@ -223,6 +218,26 @@ public class UserManager implements IUserManager {
 			removeActiveUser(user);
 			return false;
 		}
+	}
+
+	/**
+	 * Returns the user with given websocket id
+	 * 
+	 * @param id
+	 * @return IUser
+	 */
+	public IUser getUserByWSID(int id) {
+
+		IUser tmpUser = null;
+		for (IUser item : activeUser) {
+
+			if (item.getWSID() == id) {
+				return tmpUser;
+			}
+
+		}
+		// ServiceManager.getInstance().getService(ILoggingManager.class).log("No user with given wsID found!");
+		return null;
 	}
 
 }

@@ -5,6 +5,7 @@ import javax.servlet.http.HttpSessionEvent;
 import javax.servlet.http.HttpSessionListener;
 
 import de.quiz.ServiceManager.ServiceManager;
+import de.quiz.User.IUser;
 import de.quiz.UserManager.IUserManager;
 
 /**
@@ -32,13 +33,14 @@ public class SessionListener implements HttpSessionListener {
 	 * @see HttpSessionListener#sessionDestroyed(HttpSessionEvent)
 	 */
 	public void sessionDestroyed(HttpSessionEvent arg0) {
-		ServiceManager
-				.getInstance()
+		IUser tmpUser = ServiceManager.getInstance()
 				.getService(IUserManager.class)
-				.removeActiveUser(
-						ServiceManager.getInstance()
-								.getService(IUserManager.class)
-								.getUserBySession(arg0.getSession()));
+				.getUserBySession(arg0.getSession());
+		//dont know why but sometimes the same session is destroyed several times... but it works
+		if (tmpUser != null)
+		ServiceManager.getInstance().getService(IUserManager.class)
+				.removeActiveUser(tmpUser);
+
 	}
 
 }

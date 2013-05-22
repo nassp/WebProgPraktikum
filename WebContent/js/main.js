@@ -29,7 +29,7 @@ $(document).ready(function() {
 		        		alert("Fehler, Spieler konnte nicht eingeloggt werden");
 		        	}else if (data == 2){
 		        		loggedIn();
-		        		//$("#highscore table tbody").append("<tr><td>"+element+"</td><td>0</td></tr>"); 
+//		        		$("#highscore table tbody").append("<tr><td>"+element+"</td><td>0</td></tr>"); 
 		        	}
 			    }
 			});

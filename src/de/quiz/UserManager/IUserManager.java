@@ -44,7 +44,7 @@ public interface IUserManager extends IService {
     public IUser getUserById(String id) throws Exception;
 
     /**
-     * check if the users session timed out!
+     * Returns a player object if found by session.
      * 
      * @param session
      *            the requested user's session return the user object or null
@@ -76,5 +76,13 @@ public interface IUserManager extends IService {
 	 * @param user
 	 */
 	public void removeActiveUser(IUser user);
+	
+	/**
+	 * Returns the user with given websocket id
+	 * 
+	 * @param id
+	 * @return IUser
+	 */
+	public IUser getUserByWSID(int id);
 
 }

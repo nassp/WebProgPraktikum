@@ -38,7 +38,7 @@ public class LoggingManager implements ILoggingManager {
 	 */
 	public void log(Object clazz, String string) {
 
-		logContainer.add(generateDateAndTimeInfo()
+		logContainer.add(generateDateAndTimeInfo() + ": "
 				+ clazz.getClass().getSimpleName() + ": " + string);
 	}
 

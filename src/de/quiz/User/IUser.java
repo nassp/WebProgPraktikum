@@ -47,6 +47,13 @@ public interface IUser {
      */
     public void setPlayerObject(Player _player);
     
+    /**
+     * set the websocket id
+     * 
+     * @param id
+     */
+    public void setWSID (int id);
+    
     
     /*##################################
      * getter
@@ -76,6 +83,13 @@ public interface IUser {
      * 
      */
     public Player getPlayerObject ();
+    
+    /**
+     * getter for the websocket id
+     * 
+     * @return int
+     */
+    public int getWSID ();
     
     
     

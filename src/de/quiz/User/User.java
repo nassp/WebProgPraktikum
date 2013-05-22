@@ -18,7 +18,7 @@ public class User implements IUser {
 	private String userID;
 	private String name;
 	private Player playerObject;
-	//TODO: WebsocketID fehlt noch
+	private int wsID;
 
 
 	/**
@@ -93,6 +93,15 @@ public class User implements IUser {
     public void setPlayerObject(Player _player) {
     	playerObject = _player;
     }
+    
+    /**
+     * set the websocket id
+     * 
+     * @param id
+     */
+    public void setWSID (int id) {
+    	wsID = id;
+    }
 
 	/*
 	 * ################################## getter
@@ -101,6 +110,8 @@ public class User implements IUser {
 
 	/**
 	 * getter for session
+	 * 
+	 * @return HttpSession
 	 */
 	public HttpSession getSession() {
 		return session;
@@ -109,14 +120,16 @@ public class User implements IUser {
 	/**
 	 * getter for the user ID
 	 * 
+	 * @return String
 	 */
 	public String getUserID() {
 		return userID;
 	}
 
 	/**
-	 * getter for the user's firstname
+	 * getter for the user's name
 	 * 
+	 * @return String
 	 */
 	public String getName() {
 		return name;
@@ -125,9 +138,19 @@ public class User implements IUser {
     /**
      * getter for the player object
      * 
+     *  @return player
      */
     public Player getPlayerObject () {
     	return playerObject;
+    }
+    
+    /**
+     * getter for the websocket id
+     * 
+     * @return int
+     */
+    public int getWSID () {
+    	return wsID;
     }
 
 	// methods

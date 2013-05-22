@@ -183,11 +183,12 @@ p, ul, ol, dl {
 	margin-left:auto;
 	margin-top:115px;
 	width:300px;
+	padding-left:186px;
 }
 #content #login input {
 	font-size: 20px;
 	display: block;
-	width: 100%;
+	width: 50%;
 	margin: 0.5em 0;
 }
 
