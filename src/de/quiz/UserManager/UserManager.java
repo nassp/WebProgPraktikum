@@ -39,13 +39,13 @@ public class UserManager implements IUserManager {
 		Quiz.getInstance().removePlayer(user.getPlayerObject(), error);
 		if (!error.isSet()) {
 			activeUser.remove(user);
-//			ServiceManager.getInstance().getService(ILoggingManager.class)
-//			.log(user.getName() + "removed because of session timeout!");
+			ServiceManager.getInstance().getService(ILoggingManager.class)
+			.log(user.getName() + " removed because of session timeout!");
 		} else {
 			ServiceManager.getInstance().getService(ILoggingManager.class)
 					.log(this, error);
 			//if superuser left error is also set
-			if(error.getType().equals(7)){
+			if(error.getStatus()==7){
 				activeUser.remove(user);
 			}
 		}
