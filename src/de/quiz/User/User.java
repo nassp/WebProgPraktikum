@@ -138,7 +138,7 @@ public class User implements IUser {
     /**
      * getter for the player object
      * 
-     *  @return player
+     *  @return Player
      */
     public Player getPlayerObject () {
     	return playerObject;

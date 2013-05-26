@@ -8,6 +8,8 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+
 import org.apache.catalina.websocket.MessageInbound;
 import org.apache.catalina.websocket.StreamInbound;
 import org.apache.catalina.websocket.WebSocketServlet;
@@ -15,6 +17,8 @@ import org.apache.catalina.websocket.WsOutbound;
 
 import de.quiz.LoggingManager.ILoggingManager;
 import de.quiz.ServiceManager.ServiceManager;
+import de.quiz.User.IUser;
+import de.quiz.UserManager.IUserManager;
 import de.quiz.Utility.HTMLFilter;
 
 /**
@@ -32,23 +36,24 @@ public class LogicServlet extends WebSocketServlet {
 	@Override
 	protected StreamInbound createWebSocketInbound(String arg0,
 			HttpServletRequest arg1) {
-		return new LogicMessageInbound(connectionIds.incrementAndGet());
-
+		return new LogicMessageInbound(connectionIds.incrementAndGet(),
+				arg1.getSession());
 	}
 
 	private class LogicMessageInbound extends MessageInbound {
 		private WsOutbound myOutbound;
 
 		private final int playerID;
+		private final HttpSession playerSession;
 
-
-		private LogicMessageInbound(int id) {
+		private LogicMessageInbound(int id, HttpSession session) {
 			this.playerID = id;
+			this.playerSession = session;
 		}
 
 		@Override
 		protected void onClose(int status) {
-//			this.getUserObject().setWSID(-1);
+			this.getUserObject().setWSID(-1);
 			myInList.remove(this);
 			ServiceManager.getInstance().getService(ILoggingManager.class)
 					.log("Login client closed.");
@@ -58,17 +63,19 @@ public class LogicServlet extends WebSocketServlet {
 		protected void onOpen(WsOutbound outbound) {
 			try {
 				this.myOutbound = outbound;
-//				ServiceManager.getInstance().getService(IUserManager.class)
-//				.getUserBySession(userSession).setWSID(playerID);
+
+				ServiceManager.getInstance().getService(IUserManager.class)
+						.getUserBySession(playerSession).setWSID(playerID);
 				myInList.add(this);
 				outbound.writeTextMessage(CharBuffer
 						.wrap("Connection successfully opened!"));
 				ServiceManager.getInstance().getService(ILoggingManager.class)
 						.log("Login client open.");
-//				this.broadcast(this.getUserObject().getName() + " has joined the game!");
+				 this.broadcast(this.getUserObject().getName() +
+				 " has joined the game!");
 			} catch (IOException e) {
 				ServiceManager.getInstance().getService(ILoggingManager.class)
-						.log("Login client opening failed.");
+						.log("Socket opening failed.");
 			}
 		}
 
@@ -108,16 +115,30 @@ public class LogicServlet extends WebSocketServlet {
 			}
 		}
 
-//		/**
-//		 * Returns the user object which belongs to this MessageInbound
-//		 * 
-//		 * @return IUser
-//		 */
-//		private IUser getUserObject() {
-//			return ServiceManager.getInstance().getService(IUserManager.class)
-//					.getUserByWSID(playerID);
-//		}
+		/**
+		 * Returns the user object which belongs to this MessageInbound
+		 * 
+		 * @return IUser
+		 */
+		public IUser getUserObject() {
+			return ServiceManager.getInstance().getService(IUserManager.class)
+					.getUserByWSID(playerID);
+		}
 
+	}
+
+	/**
+	 * Returns the stream object found with the given user id
+	 * 
+	 * @param id
+	 * @return LogicMessageInbound
+	 */
+	public LogicMessageInbound getStreamByUserID(int id) {
+		for (LogicMessageInbound connection : myInList) {
+			if (connection.playerID == id)
+				return connection;
+		}
+		return null;
 	}
 
 }

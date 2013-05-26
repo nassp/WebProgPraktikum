@@ -86,7 +86,7 @@ public class PlayerServlet extends HttpServlet {
 				//		.getService(IUserManager.class).getPlayerList();
 				//out.print(json);
 				
-				//out.print(2);
+				out.print(2);
 				ServiceManager
 						.getInstance()
 						.getService(ILoggingManager.class)

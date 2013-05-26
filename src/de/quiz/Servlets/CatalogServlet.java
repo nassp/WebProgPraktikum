@@ -65,12 +65,12 @@ public class CatalogServlet extends HttpServlet {
 			response.setContentType("application/json");
 			PrintWriter out = response.getWriter();
 			JSONObject json = new JSONObject(this.getCatalogList());
-//			ServiceManager.getInstance().getService(ILoggingManager.class).log(json.toString());
+			// ServiceManager.getInstance().getService(ILoggingManager.class).log(json.toString());
 			out.print(json);
 		}
-		
-		//TODO: muss Ÿber server sent events laufen
-		//catalog change
+
+		// TODO: muss Ÿber server sent events laufen
+		// catalog change
 		if (sc.equals("5")) {
 			response.setContentType("text/plain");
 			response.getWriter().print(request.getParameter("actualCatalog"));
@@ -84,7 +84,7 @@ public class CatalogServlet extends HttpServlet {
 	 * @return map <String, Catalog>
 	 */
 	protected Map<String, Catalog> getCatalogList() {
-		try { 
+		try {
 			return Quiz.getInstance().getCatalogList();
 		} catch (LoaderException e) {
 			ServiceManager.getInstance().getService(ILoggingManager.class)
@@ -108,6 +108,5 @@ public class CatalogServlet extends HttpServlet {
 			return null;
 		}
 	}
-	
 
 }

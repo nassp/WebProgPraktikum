@@ -39,13 +39,16 @@ public class UserManager implements IUserManager {
 		Quiz.getInstance().removePlayer(user.getPlayerObject(), error);
 		if (!error.isSet()) {
 			activeUser.remove(user);
-			ServiceManager.getInstance().getService(ILoggingManager.class)
-			.log(user.getName() + " removed because of session timeout!");
+			ServiceManager
+					.getInstance()
+					.getService(ILoggingManager.class)
+					.log(user.getName()
+							+ " removed because of session timeout!");
 		} else {
 			ServiceManager.getInstance().getService(ILoggingManager.class)
 					.log(this, error);
-			//if superuser left error is also set
-			if(error.getStatus()==7){
+			// if superuser left error is also set
+			if (error.getStatus() == 7) {
 				activeUser.remove(user);
 			}
 		}
@@ -201,24 +204,24 @@ public class UserManager implements IUserManager {
 		return tmpJSON;
 	}
 
-	/**
-	 * checks if the given user has a valid session if not valid the user will
-	 * be removed
-	 * 
-	 * @param user
-	 * @return true if valid, false if not valid
-	 */
-	private boolean checkUserForValidSession(IUser user) {
-		try {
-			user.getSession().getLastAccessedTime();
-			return true;
-		} catch (IllegalStateException e) {
-			ServiceManager.getInstance().getService(ILoggingManager.class)
-					.log(this, e);
-			removeActiveUser(user);
-			return false;
-		}
-	}
+//	/**
+//	 * checks if the given user has a valid session if not valid the user will
+//	 * be removed
+//	 * 
+//	 * @param user
+//	 * @return true if valid, false if not valid
+//	 */
+//	private boolean checkUserForValidSession(IUser user) {
+//		try {
+//			user.getSession().getLastAccessedTime();
+//			return true;
+//		} catch (IllegalStateException e) {
+//			ServiceManager.getInstance().getService(ILoggingManager.class)
+//					.log(this, e);
+//			removeActiveUser(user);
+//			return false;
+//		}
+//	}
 
 	/**
 	 * Returns the user with given websocket id
@@ -228,15 +231,14 @@ public class UserManager implements IUserManager {
 	 */
 	public IUser getUserByWSID(int id) {
 
-		IUser tmpUser = null;
 		for (IUser item : activeUser) {
 
 			if (item.getWSID() == id) {
-				return tmpUser;
+				return item;
 			}
 
 		}
-		// ServiceManager.getInstance().getService(ILoggingManager.class).log("No user with given wsID found!");
+//		ServiceManager.getInstance().getService(ILoggingManager.class).log("No user with given wsID found!");
 		return null;
 	}
 

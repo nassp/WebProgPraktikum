@@ -5,7 +5,7 @@ var content;
 
 //Websocket 
 var loginURL = "localhost:8080/WebQuiz/LogicServlet";
-var ws = new WebSocket("ws://"+loginURL);
+var ws;
 
 /* Wird ausgeführt wenn HTML-Content geladen ist */
 $(document).ready(function() {
@@ -16,7 +16,7 @@ $(document).ready(function() {
 		//send(event,"name",$("#nameInput").val());
 		if(document.getElementById("nameInput").value.length > 0){
 			// Spielername senden
-			testFunc();
+			testFunc(); //GIBTS DIE NOCH?
 			$("#highscore table tbody").empty();
 			$.ajax({ 
 			    type: 'POST', 
@@ -29,6 +29,13 @@ $(document).ready(function() {
 		        		alert("Fehler, Spieler konnte nicht eingeloggt werden");
 		        	}else if (data == 2){
 		        		loggedIn();
+		    			ws  = new WebSocket("ws://"+loginURL);
+		    			ws.onopen = function(){
+		    	        };
+		    	        ws.onmessage = function(message){
+		    	        	//MUSS AUSGEBAUT WERDEN !!!!
+//		    	        	$(".catList").append("<li>"+message.data+"</li>");
+		    	        };
 //		        		$("#highscore table tbody").append("<tr><td>"+element+"</td><td>0</td></tr>"); 
 		        	}
 			    }
@@ -49,19 +56,9 @@ $(document).ready(function() {
 			});
 	
 			
-			ws.onopen = function(){
-	        };
-	        ws.onmessage = function(message){
-	        	$(".catList").append("<li>"+message.data+"</li>");
-	        };
-	        function postToServer(){
-	            ws.send("LoginServlet(WebSocket): "+$("#nameInput").val());
-	        }
-	        function closeConnection(){
-	            ws.close();
-	        }
-	        postToServer();
-	        //closeConnection();
+
+//			ws.send("LoginServlet(WebSocket): "+$("#nameInput").val());
+	   
 		} else {
 			alert("Es wurde kein Loginname eingegeben. Bitte versuche es erneut.");
 		}
