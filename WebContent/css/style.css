@@ -158,6 +158,11 @@ p, ul, ol, dl {
 	width: 20em;
 	height: 5em;
 }
+
+#content table {
+	padding-left:150px;
+	padding-right:150px;
+}
 #content #quizTable {
 	margin-top:15px;
 	text-align: center;

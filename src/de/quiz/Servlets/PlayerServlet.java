@@ -94,7 +94,7 @@ public class PlayerServlet extends HttpServlet {
 								+ tmpUser.getUserID() + " and name: "+tmpUser.getName());
 //				response.reset();
 //				response.resetBuffer();
-				doGet(request,response);
+//				doGet(request,response);
 			} catch (Exception e) {
 				ServiceManager.getInstance().getService(ILoggingManager.class)
 						.log("User login failed!");
