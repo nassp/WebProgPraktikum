@@ -12,11 +12,19 @@
   <servlet>
     <servlet-name>PlayerServlet</servlet-name>
     <servlet-class>de.quiz.Servlets.PlayerServlet</servlet-class>
-    <async-supported>true</async-supported>
   </servlet>
   <servlet-mapping>
     <servlet-name>PlayerServlet</servlet-name>
     <url-pattern>/PlayerServlet</url-pattern>
+  </servlet-mapping>
+    <servlet>
+    <servlet-name>SSEServlet</servlet-name>
+    <servlet-class>de.quiz.Servlets.SSEServlet</servlet-class>
+    <async-supported>true</async-supported>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>SSEServlet</servlet-name>
+    <url-pattern>/SSEServlet</url-pattern>
   </servlet-mapping>
   <servlet>
     <servlet-name>CatalogServlet</servlet-name>

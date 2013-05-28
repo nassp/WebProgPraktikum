@@ -42,18 +42,8 @@ public class PlayerServlet extends HttpServlet {
 	 */
 	protected void doGet(HttpServletRequest request,
 			HttpServletResponse response) throws ServletException, IOException {
-	    try
-	    {	
-	    	asyncCo = request.startAsync(request,response);
-	    	System.out.println("async "+request.isAsyncStarted());
-	    	//asyncCo = request.getAsyncContext();
-
-	    }catch(Exception e){
-	        e.printStackTrace();
-	    }
-//		ServiceManager.getInstance().getService(ILoggingManager.class)
-//				.log("GET is not supported by this Servlet");
-		//response.getWriter().print("GET is not supported by this Servlet");
+		ServiceManager.getInstance().getService(ILoggingManager.class).log("GET is not supported by this Servlet");
+		response.getWriter().print("GET is not supported by this Servlet");
 	}
 
 	/**
@@ -86,7 +76,7 @@ public class PlayerServlet extends HttpServlet {
 				//		.getService(IUserManager.class).getPlayerList();
 				//out.print(json);
 				
-				out.print(2);
+//				out.print(2);
 				ServiceManager
 						.getInstance()
 						.getService(ILoggingManager.class)

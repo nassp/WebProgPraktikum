@@ -37,20 +37,41 @@ var loggedIn = function (e) {
 };
 function testFunc()
 {
+	var eventSource = new EventSource('http://localhost:8080/WebQuiz/SSEServlet');
+	//var eventSource = new EventSource('http://localhost:8080/WebQuiz/SSEServlet');
+//	eventSource.addEventListener('simpleEvent', function(event) {
+    	//$("#highscore table tbody").empty();
+//    	console.log(event);
+    	//console.log(event.data);
+    	//var data = JSON.parse(event);
+    	//$("#highscore table tbody").append("<tr><td>"+data.data+"</td><td>0</td></tr>");
+    	//if (data.id==6){
+//    	$.each(data, function(index, element) {
+//    		if(index!="id"){
+//		    	console.log("SSE: "+index+" "+element);
+//		        
+//    		}
+//    	});
+    	//}
+//	}, false);
+	eventSource.addEventListener('simpleEvent', function(simpleEvent) {
+		  //console.log(simpleEvent);
+	    	$("#highscore table tbody").empty();
+	    	var data = JSON.parse(simpleEvent.data);
+	    	if (data.id==6){
+		    	$.each(data, function(index, element) {
+		    		if(index!="id"){
+				    	console.log("SSE: "+index+" "+element);
+				        $("#highscore table tbody").append("<tr><td>"+element+"</td><td>0</td></tr>");
+		    		}
+		    	});
+	    	}
+	},false);
 	$("#highscore table tbody").empty();
-    var source = new EventSource('http://localhost:8080/WebQuiz/PlayerServlet');  
-    source.onmessage=function(event){	
-    	$("#highscore table tbody").empty();
-    	var data = JSON.parse(event.data);
-    	if (data.id==6){
-	    	$.each(data, function(index, element) {
-	    		if(index!="id"){
-			    	console.log("SSE: "+index+" "+element);
-			        $("#highscore table tbody").append("<tr><td>"+element+"</td><td>0</td></tr>");
-	    		}
-	    	});
-    	}
-    };
+//    var source = new EventSource('http://localhost:8080/WebQuiz/PlayerServlet');  
+//    source.onmessage=function(event){	
+//
+//    };
 
     /*source.addEventListener('server-time',function (e){
         alert('ea');
