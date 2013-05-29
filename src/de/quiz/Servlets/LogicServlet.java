@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.CharBuffer;
 import java.util.ArrayList;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.servlet.annotation.WebServlet;
@@ -30,7 +31,7 @@ import de.quiz.Utility.HTMLFilter;
 @WebServlet(description = "connection to game the logic", urlPatterns = { "/LogicServlet" })
 public class LogicServlet extends WebSocketServlet {
 	private static final long serialVersionUID = 1L;
-	private static ArrayList<LogicMessageInbound> myInList = new ArrayList<LogicMessageInbound>();
+	private static CopyOnWriteArrayList<LogicMessageInbound> myInList = new CopyOnWriteArrayList<LogicMessageInbound>();
 	private final AtomicInteger connectionIds = new AtomicInteger(0);
 
 	@Override
