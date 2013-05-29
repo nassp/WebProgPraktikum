@@ -2,6 +2,7 @@ package de.quiz.Servlets;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.ArrayList;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -31,7 +32,8 @@ import de.quiz.UserManager.IUserManager;
 public class SSEServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	private AsyncContext asyncContext;
-	private AsyncContext asyncArr[];
+	private static ArrayList<AsyncContext> asyncArr = new ArrayList<AsyncContext>();
+	//synchronisierte ArrayList benutzen concurrentpaket
 	private int index;
 
 	/**
@@ -40,7 +42,7 @@ public class SSEServlet extends HttpServlet {
 	public SSEServlet() {
 		super();
 		asyncContext=null;
-		asyncArr=new AsyncContext[10];
+		//asyncArr=new AsyncContext[10];
 		index=0;
 	}
 
@@ -49,18 +51,29 @@ public class SSEServlet extends HttpServlet {
 	 *      response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		asyncContext = request.startAsync();
-		boolean respCheck = true;
-		for(int i=0;i<asyncArr.length;i++){
-			if(asyncArr[i]==asyncContext){
-				respCheck = false;
-			}
-		}
-		if(respCheck!=false) {
-			asyncArr[index]=asyncContext;
-			index++;
-		}
-
+		
+		// cache abstellen
+		response.setHeader("pragma", "no-cache,no-store");  
+        response.setHeader("cache-control", "no-cache,no-store,max-age=0,max-stale=0");  
+        
+        // Protokoll auf Server Sent Events einstellen
+		response.setContentType("text/event-stream");
+		response.setCharacterEncoding("UTF-8");
+		
+		System.out.println("AsyncSupported: "+request.isAsyncSupported());
+		
+		AsyncContext sse= request.startAsync(request,response);	
+		
+		System.out.println("Timeout: "+sse.getTimeout());
+		
+		sse.setTimeout(0);     // kein Timeout!!
+		asyncArr.add(sse);
+		
+		// so geht es zwar. Ist aber nicht im Standard vorgesehen
+		// clientliste.add(response);
+		
+		//AsyncContext channel;
+		
 		//final Asyn
 		final ScheduledExecutorService executorService = Executors.newScheduledThreadPool(10);
 		//executorService.scheduleWithFixedDelay(new ServerSendEvent(asyncContext.getResponse()), 0, 2,TimeUnit.SECONDS)
