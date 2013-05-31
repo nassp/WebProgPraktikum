@@ -33,20 +33,20 @@
   <servlet-mapping>
     <servlet-name>CatalogServlet</servlet-name>
     <url-pattern>/CatalogServlet</url-pattern>
+  </servlet-mapping><servlet>
+    <servlet-name>LogicServlet</servlet-name>
+    <servlet-class>de.quiz.Servlets.LogicServlet</servlet-class>
+  </servlet><servlet-mapping>
+    <servlet-name>LogicServlet</servlet-name>
+    <url-pattern>/LogicServlet</url-pattern>
   </servlet-mapping>
   <listener>
     <listener-class>de.quiz.Listener.CatalogServletContextListener</listener-class>
   </listener>
   <listener>
   	<listener-class>de.quiz.Listener.SessionListener</listener-class>
-  </listener><servlet>
-    <servlet-name>LogicServlet</servlet-name>
-    <servlet-class>de.quiz.Servlets.LogicServlet</servlet-class>
-  </servlet>
-  <servlet-mapping>
-    <servlet-name>LogicServlet</servlet-name>
-    <url-pattern>/LogicServlet</url-pattern>
-  </servlet-mapping>
+  </listener>
+  
   <session-config>
     <session-timeout>20</session-timeout>
   </session-config>

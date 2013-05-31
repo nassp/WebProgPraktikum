@@ -54,7 +54,9 @@ public class LogicServlet extends WebSocketServlet {
 
 		@Override
 		protected void onClose(int status) {
-			this.getUserObject().setWSID(-1);
+			IUser tmp = this.getUserObject();
+			if (tmp != null)
+				this.getUserObject().setWSID(-1);
 			myInList.remove(this);
 			ServiceManager.getInstance().getService(ILoggingManager.class)
 					.log("Login client closed.");
@@ -72,8 +74,8 @@ public class LogicServlet extends WebSocketServlet {
 						.wrap("Connection successfully opened!"));
 				ServiceManager.getInstance().getService(ILoggingManager.class)
 						.log("Login client open.");
-				 this.broadcast(this.getUserObject().getName() +
-				 " has joined the game!");
+				this.broadcast(this.getUserObject().getName()
+						+ " has joined the game!");
 			} catch (IOException e) {
 				ServiceManager.getInstance().getService(ILoggingManager.class)
 						.log("Socket opening failed.");

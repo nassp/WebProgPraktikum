@@ -266,6 +266,41 @@ p, ul, ol, dl {
 }
 
 
+/* -------------QUIT GAME HTML------------ */
+
+#logout {
+	float: left;
+	margin-right:20px;
+}
+
+#logout a:link, #logout a:visited { text-decoration:none; color:#666; }
+
+#logout a:focus, #logout a:hover, #logout a:active { 
+	text-decoration:none; 
+	color:#0B330D;
+}
+
+/* -------------QUIT GAME JSP------------ */
+
+#logoutJSP {
+	margin: 0 auto;
+	width: auto;
+	text-align: center;
+	padding: 0 0 30px 0;
+}
+
+#logoutJSP p {
+	font-size: 20px;
+	color: black;
+	text-align: center;
+}
+
+#logoutJSP a:link, #logoutJSP a:visited { text-decoration:none; color:#666; }
+
+#logoutJSP a:focus, #logoutJSP a:hover, #logoutJSP a:active { 
+	text-decoration:none; 
+	color:#0B330D;
+}
 
 /* -------------LOG------------ */
 #log {

@@ -10,6 +10,7 @@ var ws;
 /* Wird ausgeführt wenn HTML-Content geladen ist */
 $(document).ready(function() {
 	content = $("#content");
+	$(this).scrollTop(185);
 	//console.log("Content geladen");
 
 	$("#loginButton").click(function(event){

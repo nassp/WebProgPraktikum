@@ -38,12 +38,14 @@ public class UserManager implements IUserManager {
 		QuizError error = new QuizError();
 		Quiz.getInstance().removePlayer(user.getPlayerObject(), error);
 		if (!error.isSet()) {
-			activeUser.remove(user);
+
 			ServiceManager
 					.getInstance()
 					.getService(ILoggingManager.class)
 					.log(user.getName()
 							+ " removed because of session timeout!");
+			activeUser.remove(user);
+
 		} else {
 			ServiceManager.getInstance().getService(ILoggingManager.class)
 					.log(this, error);
@@ -169,17 +171,14 @@ public class UserManager implements IUserManager {
 	 */
 	@Override
 	public void logoutUser(HttpSession session) throws Exception {
+		if (session != null) {
+			session.invalidate();
 
-		for (IUser user : activeUser) {
-			if (user.getSession().equals(session)) {
-
-				user.getSession().invalidate();
-				ServiceManager.getInstance().getService(ILoggingManager.class)
-						.log(this, "successfully logged out user");
-				return;
-			}
+			ServiceManager.getInstance().getService(ILoggingManager.class)
+					.log(this, "successfully logged out user");
+			return;
 		}
-		throw new Exception("unable to logout user");
+		throw new Exception("Unable to logout user!");
 
 	}
 
@@ -204,24 +203,24 @@ public class UserManager implements IUserManager {
 		return tmpJSON;
 	}
 
-//	/**
-//	 * checks if the given user has a valid session if not valid the user will
-//	 * be removed
-//	 * 
-//	 * @param user
-//	 * @return true if valid, false if not valid
-//	 */
-//	private boolean checkUserForValidSession(IUser user) {
-//		try {
-//			user.getSession().getLastAccessedTime();
-//			return true;
-//		} catch (IllegalStateException e) {
-//			ServiceManager.getInstance().getService(ILoggingManager.class)
-//					.log(this, e);
-//			removeActiveUser(user);
-//			return false;
-//		}
-//	}
+	// /**
+	// * checks if the given user has a valid session if not valid the user will
+	// * be removed
+	// *
+	// * @param user
+	// * @return true if valid, false if not valid
+	// */
+	// private boolean checkUserForValidSession(IUser user) {
+	// try {
+	// user.getSession().getLastAccessedTime();
+	// return true;
+	// } catch (IllegalStateException e) {
+	// ServiceManager.getInstance().getService(ILoggingManager.class)
+	// .log(this, e);
+	// removeActiveUser(user);
+	// return false;
+	// }
+	// }
 
 	/**
 	 * Returns the user with given websocket id
@@ -238,7 +237,7 @@ public class UserManager implements IUserManager {
 			}
 
 		}
-//		ServiceManager.getInstance().getService(ILoggingManager.class).log("No user with given wsID found!");
+		// ServiceManager.getInstance().getService(ILoggingManager.class).log("No user with given wsID found!");
 		return null;
 	}
 
