@@ -73,7 +73,7 @@ public class PlayerServlet extends HttpServlet {
 				// create answer
 				JSONObject obj = new JSONObject();
 
-				obj.put("id", "2");
+				obj.put("id", 2);
 				obj.put("userID", tmpUser.getUserID());
 
 				// send answer
@@ -93,7 +93,7 @@ public class PlayerServlet extends HttpServlet {
 				JSONObject error = new JSONObject();
 
 				try {
-					error.put("id", "255");
+					error.put("id", 255);
 				} catch (JSONException e1) {
 					ServiceManager.getInstance()
 							.getService(ILoggingManager.class)
@@ -127,7 +127,7 @@ public class PlayerServlet extends HttpServlet {
 				JSONObject error = new JSONObject();
 
 				try {
-					error.put("id", "255");
+					error.put("id", 255);
 				} catch (JSONException e1) {
 					ServiceManager.getInstance()
 							.getService(ILoggingManager.class)
@@ -159,7 +159,7 @@ public class PlayerServlet extends HttpServlet {
 				JSONObject errorA = new JSONObject();
 
 				try {
-					errorA.put("id", "255");
+					errorA.put("id", 255);
 				} catch (JSONException e1) {
 					ServiceManager.getInstance()
 							.getService(ILoggingManager.class)
@@ -178,7 +178,7 @@ public class PlayerServlet extends HttpServlet {
 				JSONObject answer = new JSONObject();
 
 				try {
-					answer.put("id", "200");
+					answer.put("id", 200);
 					answer.put("CatalogName", Quiz.getInstance()
 							.getCurrentCatalog());
 				} catch (JSONException e) {
@@ -187,7 +187,7 @@ public class PlayerServlet extends HttpServlet {
 					JSONObject errorA = new JSONObject();
 
 					try {
-						errorA.put("id", "255");
+						errorA.put("id", 255);
 					} catch (JSONException e1) {
 						ServiceManager.getInstance()
 								.getService(ILoggingManager.class)
