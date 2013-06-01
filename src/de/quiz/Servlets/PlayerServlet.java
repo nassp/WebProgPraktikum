@@ -2,6 +2,7 @@ package de.quiz.Servlets;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.io.StringWriter;
 
 import javax.servlet.AsyncContext;
 import javax.servlet.ServletException;
@@ -58,11 +59,18 @@ public class PlayerServlet extends HttpServlet {
 		}
 		// login request
 		if (sc.equals("1")) {
-			response.setContentType("text/plain");
+			response.setContentType("application/json");
+			//response.setContentType("text/plain");
+			//response.setContentType("text/event-stream");
+			//response.setCharacterEncoding("UTF-8");
 			
 			PrintWriter out = response.getWriter();
 			HttpSession session = request.getSession(true);
 			IUser tmpUser;
+			
+			//response.setContentType("text/event-stream");
+			//response.setCharacterEncoding("UTF-8");
+			//PrintWriter out2 = response.getWriter();
 			try {
 
 				// create user
@@ -76,7 +84,17 @@ public class PlayerServlet extends HttpServlet {
 				//		.getService(IUserManager.class).getPlayerList();
 				//out.print(json);
 				
-				out.print(2);
+				//out.print("event: LoginResponseOK\n");
+				//out.print("data: {\n data: \"id\": 2,\n data: \"clientId\": "+"\n data: }\n\n");
+				//out2.flush();
+				
+				JSONObject obj = new JSONObject();
+				obj.append("id", "2");
+				//obj.put("id", "2");
+				//obj.put("userID", "hier user id einfügen");
+				//out.print(obj);
+				
+				out.print(obj);
 				ServiceManager
 						.getInstance()
 						.getService(ILoggingManager.class)

@@ -19,42 +19,10 @@ $(document).ready(function() {
 			// Spielername senden
 			testFunc(); //GIBTS DIE NOCH?
 			$("#highscore table tbody").empty();
-			$.ajax({ 
-			    type: 'POST', 
-			    url: 'PlayerServlet', 
-			    data: { rID: '1' , name: $("#nameInput").val() }, 
-			    dataType: 'json',
-			    success: function (data) { 
-			    	console.log(data);
-			     	if(data==255) {
-		        		alert("Fehler, Spieler konnte nicht eingeloggt werden");
-		        	}else if (data == 2){
-		        		loggedIn();
-		    			ws  = new WebSocket("ws://"+loginURL);
-		    			ws.onopen = function(){
-		    	        };
-		    	        ws.onmessage = function(message){
-		    	        	//MUSS AUSGEBAUT WERDEN !!!!
-//		    	        	$(".catList").append("<li>"+message.data+"</li>");
-		    	        };
-//		        		$("#highscore table tbody").append("<tr><td>"+element+"</td><td>0</td></tr>"); 
-		        	}
-			    }
-			});
+			sendMessages(1);
 			// Katalogliste anfragen
 			$(".catList").empty();
-			$.ajax({ 
-			    type: 'POST', 
-			    url: 'CatalogServlet', 
-			    data: { rID: '3' }, 
-			    dataType: 'json',
-			    success: function (data) { 
-			        $.each(data, function(index, element) {
-			        	$(".catList").append("<li>"+element.name+"</li>");
-			        });
-			        initCatalogList();
-			    }
-			});
+			sendMessages(3);
 	
 			
 

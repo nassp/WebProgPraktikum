@@ -25,21 +25,9 @@ var showQuestion = function(question, answer1, answer2, answer3, answer4,
 		$(".answer").prop("disabled", true);
 
 		alert($(".answer").index(this));
+		
+		sendMessages(10);
 
-		$.ajax({
-			type : 'POST',
-			url : 'LogicServlet',
-			data : {
-				rID : '10',
-				value : $(".answer").index(this)
-			},
-			dataType : 'json',
-			success : function(data) {
-				$.each(data, function(index, element) {
-
-				});
-			}
-		});
 	});
 };
 /* Startet das Spiel und l‰dt erste Frage */
@@ -51,20 +39,7 @@ var startGame = function() {
 	gamePhase = true;
 	loginPhase = false;
 	// Spielstart Paket senden
-	$.ajax({
-		type : 'POST',
-		url : 'CatalogServlet',
-		data : {
-			rID : '7',
-			filename : $(".catList .selected").text()
-		},
-		dataType : 'json',
-		success : function(data) {
-			$.each(data, function(index, element) {
-
-			});
-		}
-	});
+	sendMessages(7);
 	// Quizfrage zum testen
 	var question = "Ein Thread soll auf ein durch einen anderen Thread ausgel√∂stes Ereignis warten. Welcher Mechanismus ist geeignet?";
 	var answer1 = '<input class="answer" type="button" name="Antwort 1" value="Nur Semaphore"></input>';
