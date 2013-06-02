@@ -87,8 +87,6 @@ public class PlayerServlet extends HttpServlet {
 								+ tmpUser.getName());
 			} catch (Exception e) {
 
-				response.setContentType("application/json");
-
 				// create answer
 				JSONObject error = new JSONObject();
 
@@ -110,18 +108,17 @@ public class PlayerServlet extends HttpServlet {
 		// playerlist
 
 		if (sc.equals("6")) {
+			response.setContentType("application/json");
 			PrintWriter out = response.getWriter();
 
 			try {
-				response.setContentType("application/json");
-				JSONObject json = ServiceManager.getInstance()
-						.getService(IUserManager.class).getPlayerList();
-				out.print(json);
-				ServiceManager.getInstance().getService(ILoggingManager.class)
-						.log("Send Playerlist!");
+				JSONObject answer = new JSONObject(ServiceManager.getInstance()
+						.getService(IUserManager.class).getPlayerList());
+				answer.put("id", 200);
+				out.print(answer);
+//				ServiceManager.getInstance().getService(ILoggingManager.class)
+//						.log("Send Playerlist!");
 			} catch (Exception e) {
-
-				response.setContentType("application/json");
 
 				// create answer
 				JSONObject error = new JSONObject();
@@ -145,6 +142,9 @@ public class PlayerServlet extends HttpServlet {
 		// start game
 		// TODO: MUSS †BER SERVER SENT EVENTS LAUFEN!!!
 		if (sc.equals("7") && request.getParameter("uID").equals("0")) {
+
+			response.setContentType("application/json");
+
 			PrintWriter out = response.getWriter();
 			QuizError error = new QuizError();
 			Quiz.getInstance().startGame(
@@ -152,8 +152,6 @@ public class PlayerServlet extends HttpServlet {
 							.getUserBySession(request.getSession())
 							.getPlayerObject(), error);
 			if (error.isSet()) {
-
-				response.setContentType("application/json");
 
 				// create answer
 				JSONObject errorA = new JSONObject();
@@ -173,7 +171,6 @@ public class PlayerServlet extends HttpServlet {
 						.log("Failed starting game!");
 			} else {
 
-				response.setContentType("application/json");
 				// create answer
 				JSONObject answer = new JSONObject();
 

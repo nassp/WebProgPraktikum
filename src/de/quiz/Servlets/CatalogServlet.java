@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import de.fhwgt.quiz.application.Catalog;
@@ -64,49 +65,63 @@ public class CatalogServlet extends HttpServlet {
 		if (sc.equals("3")) {
 			response.setContentType("application/json");
 			PrintWriter out = response.getWriter();
-			JSONObject json = new JSONObject(this.getCatalogList());
-			// ServiceManager.getInstance().getService(ILoggingManager.class).log(json.toString());
-			out.print(json);
+			try {
+				Map<String, Catalog> catalogList = Quiz.getInstance()
+						.getCatalogList();
+				JSONObject answer = new JSONObject(catalogList);
+				answer.put("id", 200);
+				out.print(answer);
+
+			} catch (LoaderException e3) {
+
+				JSONObject error = new JSONObject();
+				try {
+					error.put("id", 255);
+					ServiceManager.getInstance()
+							.getService(ILoggingManager.class)
+							.log("Failed sending catalog request!");
+
+				} catch (JSONException e1) {
+
+					try {
+						error.put("id", 255);
+					} catch (JSONException e2) {
+						ServiceManager.getInstance()
+								.getService(ILoggingManager.class)
+								.log("Failed sending catalog request error!");
+					}
+					out.print(error);
+				}
+			} catch (JSONException e) {
+
+				JSONObject error = new JSONObject();
+				try {
+					error.put("id", 255);
+					ServiceManager.getInstance()
+							.getService(ILoggingManager.class)
+							.log("Failed sending catalog request!");
+
+				} catch (JSONException e1) {
+
+					try {
+						error.put("id", 255);
+					} catch (JSONException e2) {
+						ServiceManager.getInstance()
+								.getService(ILoggingManager.class)
+								.log("Failed sending catalog request error!");
+					}
+					out.print(error);
+				}
+			}
+
 		}
 
-		// TODO: muss über server sent events laufen
+		// TODO: muss über server sent events laufen und muss gefüllt werden
 		// catalog change
 		if (sc.equals("5")) {
-			response.setContentType("text/plain");
-			response.getWriter().print(request.getParameter("actualCatalog"));
+//			Quiz.getInstance().changeCatalog(player, catalogName, error)
 		}
 
-	}
-
-	/**
-	 * Returns a map object with available catalogs.
-	 * 
-	 * @return map <String, Catalog>
-	 */
-	protected Map<String, Catalog> getCatalogList() {
-		try {
-			return Quiz.getInstance().getCatalogList();
-		} catch (LoaderException e) {
-			ServiceManager.getInstance().getService(ILoggingManager.class)
-					.log(this, "Failed fetching catalog list");
-			return null;
-		}
-
-	}
-
-	/**
-	 * Returns a catalog with given name
-	 * 
-	 * @param String
-	 *            Name of the catalog.
-	 * @return Catalog Catalog object or null.
-	 */
-	protected Catalog getCatalogByName(String name) {
-		try {
-			return Quiz.getInstance().getCatalogByName(name);
-		} catch (LoaderException e) {
-			return null;
-		}
 	}
 
 }
