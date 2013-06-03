@@ -1,9 +1,11 @@
+var userID;
+
 function readMessages(data) {
 
 	switch (data.id) {
 	case 2:
-		//alert(data.userID);
-		loggedIn();
+		userID = data.userID;
+		loggedIn(data.userID);
 		ws = new WebSocket("ws://" + loginURL);
 		ws.onopen = function() {
 		};
@@ -15,15 +17,23 @@ function readMessages(data) {
 		// tbody").append("<tr><td>"+element+"</td><td>0</td></tr>");
 		break;
 	case 4:
+		$.each(data, function(index, element) {
+			if(element.name != undefined)
+				{
+					$(".catList").append("<li>" + element.name + "</li>");
+				}
+		});
+		initCatalogList();
 		break;
 	case 5:
-		var catElements = $(".catList");
 		$(".catList .selected").removeClass("selected");
-		catElements.children().each(function() {   			
-	    	if($(this).text()==data.filename){
-	    		$(this).addClass("selected");
-	    	}
-		});
+		$(".catList").children().each(function() {
+			if($(this).text() == data.filename)
+				{
+				$(this).addClass("selected");
+				}
+			});
+			break;
 		break;
 	case 6:
 		$("#highscore table tbody").empty();
@@ -36,14 +46,22 @@ function readMessages(data) {
 		});
 		break;
 	case 7:
+		gamePhase = true;
+		loginPhase = false;
+		sendMessages(8);
 		break;
 	case 9:
+		showQuestion(data.question, data.answer1, data.answer2, data.answer3, data.answer4, data.timeout);
 		break;
 	case 11:
+		//alert(data.selection);
+		//alert(data.correct);
 		break;
 	case 12:
+		//alert("Herzlichen Glückwunsch, Sie sind: " + data.rank + ".");
 		break;
 	case 255:
+		alert(data.message);
 		break;
 
 	default:
@@ -66,7 +84,7 @@ function sendMessages(id) {
 			success : function(data) {
 				console.log(data);
 				readMessages(data);
-				
+
 			}
 		});
 		break;
@@ -79,31 +97,29 @@ function sendMessages(id) {
 			},
 			dataType : 'json',
 			success : function(data) {
-				$.each(data, function(index, element) {
-					$(".catList").append("<li>" + element.name + "</li>");
-				});
-				initCatalogList();
+				readMessages(data);
 			}
 		});
 		break;
-	case 5:		
-		var selectedElem = $(".catList .selected");
-		
-		$.ajax({
-			type : 'POST',
-			url : 'CatalogServlet',
-			data : {
-				rID : '5',
-				filename : selectedElem.text()
-			},
-			dataType : 'json',
-			success : function(data) {
+	case 5:
+		// == 0 klappt aus mir unbekannten Gründen nicht.
+		if (userID == "0") {
+			$.ajax({
+				type : 'POST',
+				url : 'CatalogServlet',
+				data : {
+					rID : '5',
+					filename : $(".catList .selected").text()
+				},
+				dataType : 'json',
+				success : function(data) {
+					readMessages(data);
+					$.each(data, function(index, element) {
 
-				$.each(data, function(index, element) {
-
-				});
-			}
-		});
+					});
+				}
+			});
+		}
 		break;
 	case 7:
 		$.ajax({
@@ -115,6 +131,7 @@ function sendMessages(id) {
 			},
 			dataType : 'json',
 			success : function(data) {
+				readMessages(data);
 				$.each(data, function(index, element) {
 
 				});
@@ -130,6 +147,7 @@ function sendMessages(id) {
 			},
 			dataType : 'json',
 			success : function(data) {
+				readMessages(data);
 				$.each(data, function(index, element) {
 
 				});
@@ -137,15 +155,17 @@ function sendMessages(id) {
 		});
 		break;
 	case 10:
+		alert("Es wurde die Frage mit index: " + answered + " gewaehlt!");
 		$.ajax({
 			type : 'POST',
 			url : 'LogicServlet',
 			data : {
 				rID : '10',
-				value : $(".answer").index(this)
+				value : answered
 			},
 			dataType : 'json',
 			success : function(data) {
+				readMessages(data);
 				$.each(data, function(index, element) {
 
 				});

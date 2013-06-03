@@ -75,7 +75,7 @@ public class CatalogServlet extends HttpServlet {
 				Map<String, Catalog> catalogList = Quiz.getInstance()
 						.getCatalogList();
 				JSONObject answer = new JSONObject(catalogList);
-				answer.put("id", 200);
+				answer.put("id", 4);
 				out.print(answer);
 
 			} catch (LoaderException e3) {
@@ -83,6 +83,7 @@ public class CatalogServlet extends HttpServlet {
 				JSONObject error = new JSONObject();
 				try {
 					error.put("id", 255);
+					error.put("message", "Fehler beim Versenden des catalogue request");
 					ServiceManager.getInstance()
 							.getService(ILoggingManager.class)
 							.log("Failed sending catalog request!");
@@ -91,6 +92,7 @@ public class CatalogServlet extends HttpServlet {
 
 					try {
 						error.put("id", 255);
+						error.put("message", "Fehler beim Versenden der catalogue request Fehler-Nachricht.");
 					} catch (JSONException e2) {
 						ServiceManager.getInstance()
 								.getService(ILoggingManager.class)
@@ -103,6 +105,7 @@ public class CatalogServlet extends HttpServlet {
 				JSONObject error = new JSONObject();
 				try {
 					error.put("id", 255);
+					error.put("message", "Fehler beim Versenden des catalogue request");
 					ServiceManager.getInstance()
 							.getService(ILoggingManager.class)
 							.log("Failed sending catalog request!");
@@ -111,6 +114,7 @@ public class CatalogServlet extends HttpServlet {
 
 					try {
 						error.put("id", 255);
+						error.put("message", "Fehler beim Versenden der catalogue request Fehler-Nachricht.");
 					} catch (JSONException e2) {
 						ServiceManager.getInstance()
 								.getService(ILoggingManager.class)
@@ -124,39 +128,62 @@ public class CatalogServlet extends HttpServlet {
 
 		// TODO: muss über server sent events laufen und muss gefüllt werden
 		// catalog change
-		if (sc.equals("5")) {
-			HttpSession session = request.getSession(true);
-			if (request.getParameter("filename") != null) {
-				sc = request.getParameter("filename");
-				System.out.println("string:"+sc);
-			}else {
-				sc = "error";
-			}
+		else if (sc.equals("5")) {
+			response.setContentType("application/json");
+			PrintWriter out = response.getWriter();
+			JSONObject json = new JSONObject();
+			String s = "";
 			try {
-				//System.out.println(sc);
-				
-				Player player = ServiceManager.getInstance().getService(IUserManager.class).getUserBySession(session).getPlayerObject();
-				if(player != null){
-					System.out.println(player.isSuperuser());
-
-				}else {
-					System.out.println("Player ist null");
-				}
-				QuizError error = new QuizError();
-				error.set(QuizErrorType.NOT_SUPERUSER);
-				
-				Catalog cat = Quiz.getInstance().changeCatalog(player,sc,error);
-				if(cat != null){
-					SSEServlet.broadcast(5);
-				}else{
-					System.out.println("catalog not changed");
-				}
-			} catch (Exception e) {
+				s = request.getParameter("filename");
+				json.put("id", 5);
+				json.put("filename", s);
+			} catch (JSONException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			
+			out.print(json);
 		}
+		
+		else if(sc.equals("7"))
+		{
+			response.setContentType("application/json");
+			PrintWriter out = response.getWriter();
+			JSONObject json = new JSONObject();
+			try {
+				json.put("id", 7);
+			} catch (JSONException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			out.print(json);
+		}
+		
+		else if(sc.equals("8"))
+		{
+			response.setContentType("application/json");
+			PrintWriter out = response.getWriter();
+			JSONObject json = new JSONObject();
+			int timeout = 30;
+			String question = "Ein Thread soll auf ein durch einen anderen Thread ausgel√∂stes Ereignis warten. Welcher Mechanismus ist geeignet?";
+			String answer1 = "Nur Semaphore";
+			String answer2 = "Nur Mutexe";
+			String answer3 = "Weder Semaphore noch Mutexe";
+			String answer4 = "Sowohl Semaphore als auch Mutexe";
+			try {
+				json.put("id", 9);
+				json.put("question", question);
+				json.put("answer1", answer1);
+				json.put("answer2", answer2);
+				json.put("answer3", answer3);
+				json.put("answer4", answer4);
+				json.put("timeout", timeout);
+			} catch (JSONException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			out.print(json);
+		}
+
 
 	}
 

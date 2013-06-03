@@ -92,6 +92,7 @@ public class PlayerServlet extends HttpServlet {
 
 				try {
 					error.put("id", 255);
+					error.put("message", "Fehler beim Einloggen. Das tut uns leid :(");
 				} catch (JSONException e1) {
 					ServiceManager.getInstance()
 							.getService(ILoggingManager.class)
@@ -125,6 +126,7 @@ public class PlayerServlet extends HttpServlet {
 
 				try {
 					error.put("id", 255);
+					error.put("message", "Fehler beim Versenden der Spielerliste.");
 				} catch (JSONException e1) {
 					ServiceManager.getInstance()
 							.getService(ILoggingManager.class)
@@ -158,6 +160,7 @@ public class PlayerServlet extends HttpServlet {
 
 				try {
 					errorA.put("id", 255);
+					errorA.put("message", "Das Spiel konnte nicht gestartet werden.");
 				} catch (JSONException e1) {
 					ServiceManager.getInstance()
 							.getService(ILoggingManager.class)
@@ -185,6 +188,7 @@ public class PlayerServlet extends HttpServlet {
 
 					try {
 						errorA.put("id", 255);
+						errorA.put("message", "Fehler beim Senden der Start Game message.");
 					} catch (JSONException e1) {
 						ServiceManager.getInstance()
 								.getService(ILoggingManager.class)

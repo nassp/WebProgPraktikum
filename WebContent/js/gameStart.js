@@ -1,15 +1,22 @@
+var answered = 0;
 /* Quizfrage anzeigen */
 var showQuestion = function(question, answer1, answer2, answer3, answer4,
 		timeout) {
+	
+	var a1 = '<input class="answer" type="button" name="Antwort 1" value=';
+	var a2 = '<input class="answer" type="button" name="Antwort 2" value=';
+	var a3 = '<input class="answer" type="button" name="Antwort 3" value=';
+	var a4 = '<input class="answer" type="button" name="Antwort 4" value=';
+	var input = '></input>';
 
 	content.empty();
 	content.append('<table id="quizTable"></table>');
 	var contentTable = $("#content table");
 	contentTable.append("<tr><th>" + question + "</th></tr>");
-	contentTable.append("<tr><td>" + answer1 + "</td></tr>");
-	contentTable.append("<tr><td>" + answer2 + "</td></tr>");
-	contentTable.append("<tr><td>" + answer3 + "</td></tr>");
-	contentTable.append("<tr><td>" + answer4 + "</td></tr>");
+	contentTable.append("<tr><td>" + a1 + "\"" + answer1 + "\"" + input + "</td></tr>");
+	contentTable.append("<tr><td>" + a2 + "\"" + answer2 + "\"" + input + "</td></tr>");
+	contentTable.append("<tr><td>" + a3 + "\"" + answer3 + "\"" + input + "</td></tr>");
+	contentTable.append("<tr><td>" + a4 + "\"" + answer4 + "\"" + input + "</td></tr>");
 	content.append('<div id="countdownWrap"><div id="countdown"></div></div>');
 	jQuery("#content #countdown").countDown({
 		startNumber : timeout,
@@ -24,7 +31,8 @@ var showQuestion = function(question, answer1, answer2, answer3, answer4,
 
 		$(".answer").prop("disabled", true);
 
-		alert($(".answer").index(this));
+		//alert($(".answer").index(this));
+		answered = $(".answer").index(this);
 		
 		sendMessages(10);
 
@@ -36,19 +44,17 @@ var startGame = function() {
 	catElements.children().each(function() {
 		$(this).removeClass("active");
 	});
-	gamePhase = true;
-	loginPhase = false;
 	// Spielstart Paket senden
 	sendMessages(7);
 	// Quizfrage zum testen
-	var question = "Ein Thread soll auf ein durch einen anderen Thread ausgelöstes Ereignis warten. Welcher Mechanismus ist geeignet?";
+	/*var question = "Ein Thread soll auf ein durch einen anderen Thread ausgelöstes Ereignis warten. Welcher Mechanismus ist geeignet?";
 	var answer1 = '<input class="answer" type="button" name="Antwort 1" value="Nur Semaphore"></input>';
 	var answer2 = '<input class="answer" type="button" name="Antwort 2" value="Nur Mutexe"></input>';
 	var answer3 = '<input class="answer" type="button" name="Antwort 3" value="Weder Semaphore noch Mutexe"></input>';
 	var answer4 = '<input class="answer" type="button" name="Antwort 4" value="Sowohl Semaphore als auch Mutexe"></input>';
-	var timeout = 30;
+	var timeout = 30;*/
 
-	showQuestion(question, answer1, answer2, answer3, answer4, timeout);
+	//showQuestion(question, answer1, answer2, answer3, answer4, timeout);
 };
 /* Spielstart Button anzeigen */
 var initGameStartButton = function() {
