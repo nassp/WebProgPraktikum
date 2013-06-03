@@ -3,6 +3,7 @@ package de.quiz.Servlets;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -32,7 +33,7 @@ import de.quiz.UserManager.IUserManager;
 public class SSEServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	private AsyncContext asyncContext;
-	private static ArrayList<AsyncContext> asyncArr = new ArrayList<AsyncContext>();
+	private static CopyOnWriteArrayList<AsyncContext> asyncArr = new CopyOnWriteArrayList<AsyncContext>();
 	//synchronisierte ArrayList benutzen concurrentpaket
 	private int index;
 
@@ -69,11 +70,25 @@ public class SSEServlet extends HttpServlet {
 		sse.setTimeout(0);     // kein Timeout!!
 		asyncArr.add(sse);
 		
+		broadcast();
 		// so geht es zwar. Ist aber nicht im Standard vorgesehen
 		// clientliste.add(response);
 		
 		//AsyncContext channel;
 		
+
+//		executorService.execute(new Runnable() {
+//			@Override
+//			public void run() {
+//
+//			}
+//		});
+	}
+	protected void doPost(HttpServletRequest request,
+			HttpServletResponse response) throws ServletException, IOException {
+		
+	}
+	public void broadcast(){
 		//final Asyn
 		final ScheduledExecutorService executorService = Executors.newScheduledThreadPool(10);
 		//executorService.scheduleWithFixedDelay(new ServerSendEvent(asyncContext.getResponse()), 0, 2,TimeUnit.SECONDS)
@@ -119,16 +134,6 @@ public class SSEServlet extends HttpServlet {
 			});
 		}
 		executorService.shutdown();
-//		executorService.execute(new Runnable() {
-//			@Override
-//			public void run() {
-//
-//			}
-//		});
-	}
-	protected void doPost(HttpServletRequest request,
-			HttpServletResponse response) throws ServletException, IOException {
-		
 	}
 
 }
