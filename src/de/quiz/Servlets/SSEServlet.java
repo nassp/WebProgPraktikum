@@ -74,7 +74,7 @@ public class SSEServlet extends HttpServlet {
 		
 	}
 
-	public static void broadcast(final int messageId, final String cat){
+	public static void broadcast(final int messageId){
 		System.out.println("Start Broadcast: "+messageId);
 		//final Asyn
 		final ScheduledExecutorService executorService = Executors.newScheduledThreadPool(10);
@@ -131,9 +131,6 @@ public class SSEServlet extends HttpServlet {
 		}
 		
 		executorService.shutdown();
-	}
-	public static void broadcast(final int messageId){
-		broadcast(messageId,"");
 	}
 
 }

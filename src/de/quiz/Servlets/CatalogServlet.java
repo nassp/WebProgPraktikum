@@ -9,6 +9,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -124,6 +125,7 @@ public class CatalogServlet extends HttpServlet {
 		// TODO: muss über server sent events laufen und muss gefüllt werden
 		// catalog change
 		if (sc.equals("5")) {
+			HttpSession session = request.getSession(true);
 			if (request.getParameter("filename") != null) {
 				sc = request.getParameter("filename");
 				System.out.println("string:"+sc);
@@ -133,7 +135,7 @@ public class CatalogServlet extends HttpServlet {
 			try {
 				//System.out.println(sc);
 				
-				Player player = ServiceManager.getInstance().getService(IUserManager.class).getUserById("0").getPlayerObject();
+				Player player = ServiceManager.getInstance().getService(IUserManager.class).getUserBySession(session).getPlayerObject();
 				if(player != null){
 					System.out.println(player.isSuperuser());
 

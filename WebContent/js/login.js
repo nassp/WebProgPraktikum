@@ -6,6 +6,7 @@ var initCatalogList = function () {
 		$(".catList li").addClass("active");
 		$(this).click(function(event){
 			
+			// TODO: Prüfen ob dieser Spieler Spielleiter ist
 			if(gamePhase==false) {
 		    	$(".catList .selected").removeClass("selected");
 		    	$(this).addClass("selected");
