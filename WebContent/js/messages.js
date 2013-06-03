@@ -87,7 +87,7 @@ function sendMessages(id) {
 		});
 		break;
 	case 5:		
-		var selectedElem = $(".catList .active");
+		var selectedElem = $(".catList .selected");
 		
 		$.ajax({
 			type : 'POST',
