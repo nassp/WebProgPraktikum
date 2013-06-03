@@ -2,7 +2,7 @@ function readMessages(data) {
 
 	switch (data.id) {
 	case 2:
-		alert(data.userID);
+		//alert(data.userID);
 		loggedIn();
 		ws = new WebSocket("ws://" + loginURL);
 		ws.onopen = function() {
@@ -17,8 +17,16 @@ function readMessages(data) {
 	case 4:
 		break;
 	case 5:
+		var catElements = $(".catList");
+		$(".catList .selected").removeClass("selected");
+		catElements.children().each(function() {   			
+	    	if($(this).text()==data.filename){
+	    		$(this).addClass("selected");
+	    	}
+		});
 		break;
 	case 6:
+		$("#highscore table tbody").empty();
 		$.each(data, function(index, element) {
 			if (index != "id") {
 				console.log("SSE: " + index + " " + element);
@@ -58,7 +66,7 @@ function sendMessages(id) {
 			success : function(data) {
 				console.log(data);
 				readMessages(data);
-
+				
 			}
 		});
 		break;
@@ -78,16 +86,19 @@ function sendMessages(id) {
 			}
 		});
 		break;
-	case 5:
+	case 5:		
+		var selectedElem = $(".catList .selected");
+		
 		$.ajax({
 			type : 'POST',
 			url : 'CatalogServlet',
 			data : {
 				rID : '5',
-				filename : $(this).text()
+				filename : selectedElem.text()
 			},
 			dataType : 'json',
 			success : function(data) {
+
 				$.each(data, function(index, element) {
 
 				});
@@ -144,4 +155,5 @@ function sendMessages(id) {
 	default:
 		break;
 	}
+
 }

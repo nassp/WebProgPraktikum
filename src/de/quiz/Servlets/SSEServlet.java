@@ -61,34 +61,21 @@ public class SSEServlet extends HttpServlet {
 		response.setContentType("text/event-stream");
 		response.setCharacterEncoding("UTF-8");
 		
-		System.out.println("AsyncSupported: "+request.isAsyncSupported());
-		
 		AsyncContext sse= request.startAsync(request,response);	
-		
-		System.out.println("Timeout: "+sse.getTimeout());
 		
 		sse.setTimeout(0);     // kein Timeout!!
 		asyncArr.add(sse);
 		
-		broadcast();
-		// so geht es zwar. Ist aber nicht im Standard vorgesehen
-		// clientliste.add(response);
-		
-		//AsyncContext channel;
-		
-
-//		executorService.execute(new Runnable() {
-//			@Override
-//			public void run() {
-//
-//			}
-//		});
+		//Spielerliste broadcasten
+		broadcast(6);
 	}
 	protected void doPost(HttpServletRequest request,
 			HttpServletResponse response) throws ServletException, IOException {
 		
 	}
-	public void broadcast(){
+
+	public static void broadcast(final int messageId, final String cat){
+		System.out.println("Start Broadcast: "+messageId);
 		//final Asyn
 		final ScheduledExecutorService executorService = Executors.newScheduledThreadPool(10);
 		//executorService.scheduleWithFixedDelay(new ServerSendEvent(asyncContext.getResponse()), 0, 2,TimeUnit.SECONDS)
@@ -96,18 +83,15 @@ public class SSEServlet extends HttpServlet {
 			executorService.execute(new Runnable() {
 				public void run() {
 					try {
-
-							if(ctx!= null){
-								ctx.getResponse().setContentType("text/event-stream");
-								ctx.getResponse().setCharacterEncoding("UTF-8");
-								PrintWriter out = ctx.getResponse().getWriter();
+						if(ctx!= null){
+							System.out.println("Send Broadcast to "+ctx);
+							ctx.getResponse().setContentType("text/event-stream");
+							ctx.getResponse().setCharacterEncoding("UTF-8");
+							PrintWriter out = ctx.getResponse().getWriter();
+							if(messageId==6){
 								 JSONObject json = ServiceManager.getInstance().getService(IUserManager.class).getPlayerList();
-								
-								 //IUser currentUser = ServiceManager.getInstance().getService(IUserManager.class).getUserById(String.valueOf(i));
-								 //out.print(json);
 								 int i = 0;
-								 boolean data;
-								 out.write("event: simpleEvent\n");
+								 out.write("event: playerListEvent\n");
 								 out.write("data: {\n");
 								 out.write("data: \"id\": 6");
 								 for(i=0;i<6;i++){
@@ -119,21 +103,37 @@ public class SSEServlet extends HttpServlet {
 								 out.write("\n");
 								 out.write("data: }\n\n");
 								 out.flush();
-								 System.out.println("SSE zu Client ");
-							}else {
-								System.out.println("failed");
+							}else if(messageId ==5){
+								//System.out.println(ServiceManager.getInstance().getService(Quiz.class).getPlayerList());
+								String catChanged = Quiz.getInstance().getCurrentCatalog().getName();
+								out.write("event: catalogChangeEvent\n");
+								out.write("data: {\n");
+								out.write("data: \"id\": 5 ,\n");
+								out.write("data: \"filename\": \""+catChanged+"\" \n");
+								out.write("data: }\n\n");
+								out.flush();
+							}else if(messageId == 255){
+								out.write("event: errorEvent\n");
+								out.write("data: {\n");
+								out.write("data: \"id\": 255 ,\n");
+								out.write("data: \"msg\":\"Angefragtes SSE existiert nicht\"\n");
+								out.write("data: }\n\n");
+								out.flush();
 							}
-							//asyncContext[j].complete();
-						//executorService.shutdown();
+						}
 					}catch (Exception e){
 						e.printStackTrace();
-						System.out.println("geht nicht");
+						System.out.println("Broadcast fehlgeschlagen");
 					}
 				}
 
 			});
 		}
+		
 		executorService.shutdown();
+	}
+	public static void broadcast(final int messageId){
+		broadcast(messageId,"");
 	}
 
 }

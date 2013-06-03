@@ -14,10 +14,9 @@ $(document).ready(function() {
 	//console.log("Content geladen");
 
 	$("#loginButton").click(function(event){
-		//send(event,"name",$("#nameInput").val());
+		sseFunc();
 		if(document.getElementById("nameInput").value.length > 0){
 			// Spielername senden
-			testFunc(); //GIBTS DIE NOCH?
 			$("#highscore table tbody").empty();
 			sendMessages(1);
 			// Katalogliste anfragen

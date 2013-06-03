@@ -14,10 +14,15 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import de.fhwgt.quiz.application.Catalog;
+import de.fhwgt.quiz.application.Player;
 import de.fhwgt.quiz.application.Quiz;
+import de.fhwgt.quiz.error.ErrorType;
+import de.fhwgt.quiz.error.QuizError;
+import de.fhwgt.quiz.error.QuizErrorType;
 import de.fhwgt.quiz.loader.LoaderException;
 import de.quiz.LoggingManager.ILoggingManager;
 import de.quiz.ServiceManager.ServiceManager;
+import de.quiz.UserManager.IUserManager;
 
 /**
  * Servlet implementation class CatalogServlet. This servlet handles catalogs.
@@ -119,7 +124,36 @@ public class CatalogServlet extends HttpServlet {
 		// TODO: muss über server sent events laufen und muss gefüllt werden
 		// catalog change
 		if (sc.equals("5")) {
-//			Quiz.getInstance().changeCatalog(player, catalogName, error)
+			if (request.getParameter("filename") != null) {
+				sc = request.getParameter("filename");
+				System.out.println("string:"+sc);
+			}else {
+				sc = "error";
+			}
+			try {
+				//System.out.println(sc);
+				
+				Player player = ServiceManager.getInstance().getService(IUserManager.class).getUserById("0").getPlayerObject();
+				if(player != null){
+					System.out.println(player.isSuperuser());
+
+				}else {
+					System.out.println("Player ist null");
+				}
+				QuizError error = new QuizError();
+				error.set(QuizErrorType.NOT_SUPERUSER);
+				
+				Catalog cat = Quiz.getInstance().changeCatalog(player,sc,error);
+				if(cat != null){
+					SSEServlet.broadcast(5);
+				}else{
+					System.out.println("catalog not changed");
+				}
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
 		}
 
 	}
