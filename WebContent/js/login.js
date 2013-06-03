@@ -3,11 +3,11 @@ var initCatalogList = function () {
 	var catElements = $(".catList");
 	
 	catElements.children().each(function() {   
-		$(".catList li").addClass("active");
+		if(userId==0){
+			$(".catList li").addClass("active");
+		}
 		$(this).click(function(event){
-			
-			// TODO: Prüfen ob dieser Spieler Spielleiter ist
-			if(gamePhase==false) {
+			if(gamePhase==false && userId==0) {
 		    	$(".catList .selected").removeClass("selected");
 		    	$(this).addClass("selected");
 				sendMessages(5);
@@ -39,12 +39,16 @@ var sseFunc = function () {
 	    var data = JSON.parse(catalogChangeEvent.data);
 	    readMessages(data);
 	},false);
+	eventSource.addEventListener('gameStartEvent', function(gameStartEvent) {
+		console.log(gameStartEvent);
+	    var data = JSON.parse(gameStartEvent.data);
+	    readMessages(data);
+	},false);
 	eventSource.addEventListener('errorEvent', function(errorEvent) {
-	    $("#highscore table tbody").empty();
 	    var data = JSON.parse(errorEvent.data);
 	    readMessages(data);
 	},false);
-	$("#highscore table tbody").empty();
+	
 };
 
 

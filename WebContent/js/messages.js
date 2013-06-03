@@ -3,6 +3,7 @@ function readMessages(data) {
 	switch (data.id) {
 	case 2:
 		//alert(data.userID);
+		userId = data.userID;
 		loggedIn();
 		ws = new WebSocket("ws://" + loginURL);
 		ws.onopen = function() {
@@ -36,6 +37,7 @@ function readMessages(data) {
 		});
 		break;
 	case 7:
+		startGame();
 		break;
 	case 9:
 		break;
@@ -108,13 +110,14 @@ function sendMessages(id) {
 	case 7:
 		$.ajax({
 			type : 'POST',
-			url : 'CatalogServlet',
+			url : 'PlayerServlet',
 			data : {
 				rID : '7',
 				filename : $(".catList .selected").text()
 			},
 			dataType : 'json',
 			success : function(data) {
+				console.log("got something")
 				$.each(data, function(index, element) {
 
 				});

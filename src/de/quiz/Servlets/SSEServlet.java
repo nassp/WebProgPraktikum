@@ -112,6 +112,14 @@ public class SSEServlet extends HttpServlet {
 								out.write("data: \"filename\": \""+catChanged+"\" \n");
 								out.write("data: }\n\n");
 								out.flush();
+							}else if(messageId ==7){
+								//System.out.println(ServiceManager.getInstance().getService(Quiz.class).getPlayerList());
+								//String catChanged = Quiz.getInstance().getCurrentCatalog().getName();
+								out.write("event: gameStartEvent\n");
+								out.write("data: {\n");
+								out.write("data: \"id\": 7 \n");
+								out.write("data: }\n\n");
+								out.flush();
 							}else if(messageId == 255){
 								out.write("event: errorEvent\n");
 								out.write("data: {\n");

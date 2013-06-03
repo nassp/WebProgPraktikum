@@ -2,6 +2,7 @@ var loginPhase = true;
 var gamePhase = false;
 var startButtonVisible = false;
 var content;
+var userId = -1;
 
 //Websocket 
 var loginURL = "localhost:8080/WebQuiz/LogicServlet";
