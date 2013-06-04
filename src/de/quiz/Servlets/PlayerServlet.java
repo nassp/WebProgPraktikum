@@ -143,8 +143,9 @@ public class PlayerServlet extends HttpServlet {
 
 		// start game
 		// TODO: MUSS †BER SERVER SENT EVENTS LAUFEN!!!
-		if (sc.equals("7") && request.getParameter("uID").equals("0")) {
-
+		if (sc.equals("7")){ //&& request.getParameter("uID").equals("0")) {
+			System.out.println("hallo!!!!!!!");
+			SSEServlet.broadcast(7); 
 			response.setContentType("application/json");
 
 			PrintWriter out = response.getWriter();

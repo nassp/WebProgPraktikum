@@ -129,19 +129,38 @@ public class CatalogServlet extends HttpServlet {
 		// TODO: muss über server sent events laufen und muss gefüllt werden
 		// catalog change
 		else if (sc.equals("5")) {
-			response.setContentType("application/json");
-			PrintWriter out = response.getWriter();
-			JSONObject json = new JSONObject();
-			String s = "";
-			try {
-				s = request.getParameter("filename");
-				json.put("id", 5);
-				json.put("filename", s);
-			} catch (JSONException e) {
-				// TODO Auto-generated catch block
+			HttpSession session = request.getSession(true); 
+			try{
+				Player player = ServiceManager.getInstance().getService(IUserManager.class).getUserBySession(session).getPlayerObject();
+				if(player != null){
+					System.out.println(player.isSuperuser());
+				}else {
+					System.out.println("Player ist null");
+				}
+				QuizError error = new QuizError();
+				//error.set(QuizErrorType.NOT_SUPERUSER);
+				Catalog cat = Quiz.getInstance().changeCatalog(player,request.getParameter("filename"),error);
+				if(cat != null){
+					SSEServlet.broadcast(5);
+				}else{
+					System.out.println("catalog not changed");
+				}
+			} catch (Exception e) { 
 				e.printStackTrace();
 			}
-			out.print(json);
+//			response.setContentType("application/json");
+//			PrintWriter out = response.getWriter();
+//			JSONObject json = new JSONObject();
+//			String s = "";
+//			try {
+//				s = request.getParameter("filename");
+//				json.put("id", 5);
+//				json.put("filename", s);
+//			} catch (JSONException e) {
+//				// TODO Auto-generated catch block
+//				e.printStackTrace();
+//			}
+//			out.print(json);
 		}
 		
 		else if(sc.equals("7"))

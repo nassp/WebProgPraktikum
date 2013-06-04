@@ -1,10 +1,9 @@
-var userID;
-
 function readMessages(data) {
 
 	switch (data.id) {
 	case 2:
-		userID = data.userID;
+		userId = data.userID;
+		console.log(userId);
 		loggedIn(data.userID);
 		ws = new WebSocket("ws://" + loginURL);
 		ws.onopen = function() {
@@ -26,14 +25,13 @@ function readMessages(data) {
 		initCatalogList();
 		break;
 	case 5:
+		var catElements = $(".catList");
 		$(".catList .selected").removeClass("selected");
-		$(".catList").children().each(function() {
-			if($(this).text() == data.filename)
-				{
-				$(this).addClass("selected");
-				}
-			});
-			break;
+		catElements.children().each(function() {   			
+	    	if($(this).text()==data.filename){
+	    		$(this).addClass("selected");
+	    	}
+		});
 		break;
 	case 6:
 		$("#highscore table tbody").empty();
@@ -46,6 +44,7 @@ function readMessages(data) {
 		});
 		break;
 	case 7:
+		startGame();
 		gamePhase = true;
 		loginPhase = false;
 		sendMessages(8);
@@ -103,7 +102,7 @@ function sendMessages(id) {
 		break;
 	case 5:
 		// == 0 klappt aus mir unbekannten Gründen nicht.
-		if (userID == "0") {
+		if (userId == 0) {
 			$.ajax({
 				type : 'POST',
 				url : 'CatalogServlet',
@@ -124,7 +123,7 @@ function sendMessages(id) {
 	case 7:
 		$.ajax({
 			type : 'POST',
-			url : 'CatalogServlet',
+			url : 'PlayerServlet',
 			data : {
 				rID : '7',
 				filename : $(".catList .selected").text()
