@@ -2,6 +2,8 @@ package de.quiz.Servlets;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+
+import javax.servlet.AsyncContext;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -61,6 +63,9 @@ public class PlayerServlet extends HttpServlet {
 
 			PrintWriter out = response.getWriter();
 			HttpSession session = request.getSession(true);
+			AsyncContext asyncCo= request.startAsync(request,response);
+			SSEServlet.addAsyncCo(asyncCo);
+			
 			IUser tmpUser;
 
 			try {
@@ -79,6 +84,9 @@ public class PlayerServlet extends HttpServlet {
 				// send answer
 				out.print(obj);
 
+				//Spielerliste broadcasten
+				//SSEServlet.broadcast(6);
+				
 				ServiceManager
 						.getInstance()
 						.getService(ILoggingManager.class)
@@ -113,12 +121,7 @@ public class PlayerServlet extends HttpServlet {
 			PrintWriter out = response.getWriter();
 
 			try {
-				JSONObject answer = new JSONObject(ServiceManager.getInstance()
-						.getService(IUserManager.class).getPlayerList());
-				answer.put("id", 200);
-				out.print(answer);
-//				ServiceManager.getInstance().getService(ILoggingManager.class)
-//						.log("Send Playerlist!");
+
 			} catch (Exception e) {
 
 				// create answer

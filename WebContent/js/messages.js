@@ -2,6 +2,7 @@ function readMessages(data) {
 
 	switch (data.id) {
 	case 2:
+		sseFunc();
 		userId = data.userID;
 		console.log(userId);
 		loggedIn(data.userID);

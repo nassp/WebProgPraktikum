@@ -12,6 +12,7 @@
   <servlet>
     <servlet-name>PlayerServlet</servlet-name>
     <servlet-class>de.quiz.Servlets.PlayerServlet</servlet-class>
+    <async-supported>true</async-supported>
   </servlet>
   <servlet-mapping>
     <servlet-name>PlayerServlet</servlet-name>

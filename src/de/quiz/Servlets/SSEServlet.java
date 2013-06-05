@@ -32,19 +32,13 @@ import de.quiz.UserManager.IUserManager;
 @WebServlet(description = "handles everything which has to do with players", urlPatterns = { "/SSEServlet" })
 public class SSEServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-	private AsyncContext asyncContext;
 	private static CopyOnWriteArrayList<AsyncContext> asyncArr = new CopyOnWriteArrayList<AsyncContext>();
-	//synchronisierte ArrayList benutzen concurrentpaket
-	private int index;
 
 	/**
 	 * @see HttpServlet#HttpServlet()
 	 */
 	public SSEServlet() {
 		super();
-		asyncContext=null;
-		//asyncArr=new AsyncContext[10];
-		index=0;
 	}
 
 	/**
@@ -52,21 +46,6 @@ public class SSEServlet extends HttpServlet {
 	 *      response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		
-		// cache abstellen
-		response.setHeader("pragma", "no-cache,no-store");  
-        response.setHeader("cache-control", "no-cache,no-store,max-age=0,max-stale=0");  
-        
-        // Protokoll auf Server Sent Events einstellen
-		response.setContentType("text/event-stream");
-		response.setCharacterEncoding("UTF-8");
-		
-		AsyncContext sse= request.startAsync(request,response);	
-		
-		sse.setTimeout(0);     // kein Timeout!!
-		asyncArr.add(sse);
-		
-		//Spielerliste broadcasten
 		broadcast(6);
 	}
 	protected void doPost(HttpServletRequest request,
@@ -139,6 +118,13 @@ public class SSEServlet extends HttpServlet {
 		}
 		
 		executorService.shutdown();
+	}
+	public static AsyncContext addAsyncCo(AsyncContext sse) {
+		//AsyncContext sse= request.startAsync(request,response);	
+		sse.setTimeout(0);     // kein Timeout!!
+		asyncArr.add(sse);
+		System.out.println("Client added: "+sse);
+		return sse;
 	}
 
 }

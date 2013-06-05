@@ -39,10 +39,12 @@ response.getWriter().println("<html>");
 			response.getWriter().println("<p>Bis zum nächsten mal.</p>");
 
 			HttpSession tmp = request.getSession(false);
+			System.out.println("SESSION:!!!! "+tmp);
 			try {
 				if (tmp != null) {
 					ServiceManager.getInstance().getService(IUserManager.class)
 							.logoutUser(tmp);
+					
 				}
 
 			} catch (Exception e) {

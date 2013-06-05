@@ -14,7 +14,6 @@ $(document).ready(function() {
 	//console.log("Content geladen");
 
 	$("#loginButton").click(function(event){
-		sseFunc();
 		if(document.getElementById("nameInput").value.length > 0){
 			// Spielername senden
 			$("#highscore table tbody").empty();
