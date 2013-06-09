@@ -2,6 +2,9 @@ package de.quiz.Servlets;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
 
 import javax.servlet.AsyncContext;
 import javax.servlet.ServletException;
@@ -27,7 +30,7 @@ import de.quiz.UserManager.IUserManager;
 @WebServlet(description = "handles everything which has to do with players", urlPatterns = { "/PlayerServlet" })
 public class PlayerServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-
+	private static CopyOnWriteArrayList<AsyncContext> asyncArr = new CopyOnWriteArrayList<AsyncContext>();
 	/**
 	 * @see HttpServlet#HttpServlet()
 	 */
@@ -60,11 +63,8 @@ public class PlayerServlet extends HttpServlet {
 		// login request
 		if (sc.equals("1")) {
 			response.setContentType("application/json");
-
-			PrintWriter out = response.getWriter();
 			HttpSession session = request.getSession(true);
-			AsyncContext asyncCo= request.startAsync(request,response);
-			SSEServlet.addAsyncCo(asyncCo);
+			PrintWriter out = response.getWriter();
 			
 			IUser tmpUser;
 
@@ -83,7 +83,7 @@ public class PlayerServlet extends HttpServlet {
 
 				// send answer
 				out.print(obj);
-
+				SSEServlet.addClientConnection(Integer.valueOf(tmpUser.getUserID()), request, response);
 				//Spielerliste broadcasten
 				//SSEServlet.broadcast(6);
 				
@@ -113,6 +113,10 @@ public class PlayerServlet extends HttpServlet {
 				ServiceManager.getInstance().getService(ILoggingManager.class)
 						.log("User login failed!");
 			}
+			
+
+			//SSEServlet.broadcast(6);
+
 		}
 		// playerlist
 
@@ -145,7 +149,6 @@ public class PlayerServlet extends HttpServlet {
 		}
 
 		// start game
-		// TODO: MUSS †BER SERVER SENT EVENTS LAUFEN!!!
 		if (sc.equals("7")){ //&& request.getParameter("uID").equals("0")) {
 			System.out.println("hallo!!!!!!!");
 			SSEServlet.broadcast(7); 
@@ -210,6 +213,72 @@ public class PlayerServlet extends HttpServlet {
 						.log("Started game!");
 			}
 		}
+	}
+	public static void broadcast(final int messageId){
+		System.out.println("Start Broadcast: "+messageId);
+		//final Asyn
+		final ScheduledExecutorService executorService = Executors.newScheduledThreadPool(10);
+		//executorService.scheduleWithFixedDelay(new ServerSendEvent(asyncContext.getResponse()), 0, 2,TimeUnit.SECONDS)
+		for (final AsyncContext ctx : asyncArr) {
+			executorService.execute(new Runnable() {
+				public void run() {
+					try {
+						if(ctx!= null){
+							System.out.println("Send Broadcast to "+ctx);
+							ctx.getResponse().setContentType("text/event-stream");
+							ctx.getResponse().setCharacterEncoding("UTF-8");
+							PrintWriter out = ctx.getResponse().getWriter();
+							if(messageId==6){
+								 JSONObject json = ServiceManager.getInstance().getService(IUserManager.class).getPlayerList();
+								 int i = 0;
+								 out.write("event: playerListEvent\n");
+								 out.write("data: {\n");
+								 out.write("data: \"id\": 6");
+								 for(i=0;i<6;i++){
+									 if(json.has("name"+i)){
+										 out.write(",\n");
+										 out.write("data: \"name"+i+"\": \""+json.get("name"+i)+"\"");
+									 }
+								 }
+								 out.write("\n");
+								 out.write("data: }\n\n");
+								 out.flush();
+							}else if(messageId ==7){
+								//System.out.println(ServiceManager.getInstance().getService(Quiz.class).getPlayerList());
+								//String catChanged = Quiz.getInstance().getCurrentCatalog().getName();
+								out.write("event: gameStartEvent\n");
+								out.write("data: {\n");
+								out.write("data: \"id\": 7 \n");
+								out.write("data: }\n\n");
+								out.flush(); 
+							}else if(messageId ==5){
+								//System.out.println(ServiceManager.getInstance().getService(Quiz.class).getPlayerList());
+								String catChanged = Quiz.getInstance().getCurrentCatalog().getName();
+								out.write("event: catalogChangeEvent\n");
+								out.write("data: {\n");
+								out.write("data: \"id\": 5 ,\n");
+								out.write("data: \"filename\": \""+catChanged+"\" \n");
+								out.write("data: }\n\n");
+								out.flush();
+							}else if(messageId == 255){
+								out.write("event: errorEvent\n");
+								out.write("data: {\n");
+								out.write("data: \"id\": 255 ,\n");
+								out.write("data: \"msg\":\"Angefragtes SSE existiert nicht\"\n");
+								out.write("data: }\n\n");
+								out.flush();
+							}
+						}
+					}catch (Exception e){
+						e.printStackTrace();
+						System.out.println("Broadcast fehlgeschlagen");
+					}
+				}
+
+			});
+		}
+		
+		executorService.shutdown();
 	}
 
 }

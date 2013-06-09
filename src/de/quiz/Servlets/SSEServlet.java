@@ -32,7 +32,8 @@ import de.quiz.UserManager.IUserManager;
 @WebServlet(description = "handles everything which has to do with players", urlPatterns = { "/SSEServlet" })
 public class SSEServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-	private static CopyOnWriteArrayList<AsyncContext> asyncArr = new CopyOnWriteArrayList<AsyncContext>();
+	private static CopyOnWriteArrayList<ClientConnection> clientConArr = new CopyOnWriteArrayList<ClientConnection>();
+	//private static CopyOnWriteArrayList<AsyncContext> asyncArr = new CopyOnWriteArrayList<AsyncContext>();
 
 	/**
 	 * @see HttpServlet#HttpServlet()
@@ -57,8 +58,25 @@ public class SSEServlet extends HttpServlet {
 		System.out.println("Start Broadcast: "+messageId);
 		//final Asyn
 		final ScheduledExecutorService executorService = Executors.newScheduledThreadPool(10);
+
+		
 		//executorService.scheduleWithFixedDelay(new ServerSendEvent(asyncContext.getResponse()), 0, 2,TimeUnit.SECONDS)
-		for (final AsyncContext ctx : asyncArr) {
+		for (final ClientConnection clientCon : clientConArr) {
+			final AsyncContext ctx;
+				
+			if(clientCon.getAsyncCo()==null){
+				HttpServletRequest request = clientCon.getRequest();
+				HttpServletResponse response = clientCon.getResponse();
+				
+				ctx = request.startAsync(request,response);
+				ctx.setTimeout(0); 
+				clientCon.setAsyncCo(ctx);
+				System.out.println("AsnycCo created");
+			}else {
+				ctx = clientCon.getAsyncCo();
+				System.out.println("AsnycCo already there");
+			}
+			
 			executorService.execute(new Runnable() {
 				public void run() {
 					try {
@@ -119,12 +137,18 @@ public class SSEServlet extends HttpServlet {
 		
 		executorService.shutdown();
 	}
-	public static AsyncContext addAsyncCo(AsyncContext sse) {
-		//AsyncContext sse= request.startAsync(request,response);	
-		sse.setTimeout(0);     // kein Timeout!!
-		asyncArr.add(sse);
-		System.out.println("Client added: "+sse);
-		return sse;
+	public static void addClientConnection(int clientId, HttpServletRequest request, HttpServletResponse response) {
+		boolean clientSaved = false;
+		for (ClientConnection clientCon : clientConArr) {
+			if(clientCon.getRequest()==request){
+				clientSaved = true;
+			}
+		}
+		if (clientSaved == false){
+			ClientConnection clientCon = new ClientConnection(clientId,request,response);
+			clientConArr.add(clientCon);
+		}
+		return;
 	}
 
 }
