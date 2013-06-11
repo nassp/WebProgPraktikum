@@ -137,18 +137,32 @@ public class SSEServlet extends HttpServlet {
 		
 		executorService.shutdown();
 	}
-	public static void addClientConnection(int clientId, HttpServletRequest request, HttpServletResponse response) {
-		boolean clientSaved = false;
+	public static boolean addClientConnection(int clientId, HttpServletRequest request, HttpServletResponse response) {
 		for (ClientConnection clientCon : clientConArr) {
 			if(clientCon.getRequest()==request){
-				clientSaved = true;
+				return false;
 			}
 		}
-		if (clientSaved == false){
-			ClientConnection clientCon = new ClientConnection(clientId,request,response);
-			clientConArr.add(clientCon);
-		}
-		return;
+		ClientConnection clientCon = new ClientConnection(clientId,request,response);
+		clientConArr.add(clientCon);
+		return true;
 	}
-
+	public static boolean removeClientConnectionById(int clientId) {
+		for (ClientConnection clientCon : clientConArr) {
+			if(clientCon.getClientId()==clientId){
+				clientConArr.remove(clientCon);
+				return true;
+			}
+		}
+		return false;
+	}
+	public static boolean removeClientConnectionByRequest(HttpServletRequest request) {
+		for (ClientConnection clientCon : clientConArr) {
+			if(clientCon.getRequest()==request){
+				clientConArr.remove(clientCon);
+				return true;
+			}
+		}
+		return false;
+	}
 }

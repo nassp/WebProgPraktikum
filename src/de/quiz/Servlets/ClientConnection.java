@@ -54,5 +54,8 @@ public class ClientConnection {
 	public HttpServletResponse getResponse() {
 		return response;
 	}
+	public int getClientId() {
+		return clientId;
+	}
 
 }
