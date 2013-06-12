@@ -9,6 +9,7 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 import javax.servlet.AsyncContext;
+import javax.servlet.AsyncEvent;
 import javax.servlet.ServletException;
 import javax.servlet.ServletResponse;
 import javax.servlet.annotation.WebServlet;
@@ -62,80 +63,85 @@ public class SSEServlet extends HttpServlet {
 		
 		//executorService.scheduleWithFixedDelay(new ServerSendEvent(asyncContext.getResponse()), 0, 2,TimeUnit.SECONDS)
 		for (final ClientConnection clientCon : clientConArr) {
-			final AsyncContext ctx;
-				
-			if(clientCon.getAsyncCo()==null){
+			if (clientCon.getRequest()!= null && clientCon.getResponse()!=null){
 				HttpServletRequest request = clientCon.getRequest();
 				HttpServletResponse response = clientCon.getResponse();
-				
-				ctx = request.startAsync(request,response);
-				ctx.setTimeout(0); 
-				clientCon.setAsyncCo(ctx);
-				System.out.println("AsnycCo created");
-			}else {
-				ctx = clientCon.getAsyncCo();
-				System.out.println("AsnycCo already there");
-			}
-			
-			executorService.execute(new Runnable() {
-				public void run() {
-					try {
-						if(ctx!= null){
-							System.out.println("Send Broadcast to "+ctx);
-							ctx.getResponse().setContentType("text/event-stream");
-							ctx.getResponse().setCharacterEncoding("UTF-8");
-							PrintWriter out = ctx.getResponse().getWriter();
-							if(messageId==6){
-								 JSONObject json = ServiceManager.getInstance().getService(IUserManager.class).getPlayerList();
-								 int i = 0;
-								 out.write("event: playerListEvent\n");
-								 out.write("data: {\n");
-								 out.write("data: \"id\": 6");
-								 for(i=0;i<6;i++){
-									 if(json.has("name"+i)){
-										 out.write(",\n");
-										 out.write("data: \"name"+i+"\": \""+json.get("name"+i)+"\"");
-									 }
-								 }
-								 out.write("\n");
-								 out.write("data: }\n\n");
-								 out.flush();
-							}else if(messageId ==7){
-								//System.out.println(ServiceManager.getInstance().getService(Quiz.class).getPlayerList());
-								//String catChanged = Quiz.getInstance().getCurrentCatalog().getName();
-								out.write("event: gameStartEvent\n");
-								out.write("data: {\n");
-								out.write("data: \"id\": 7 \n");
-								out.write("data: }\n\n");
-								out.flush(); 
-							}else if(messageId ==5){
-								//System.out.println(ServiceManager.getInstance().getService(Quiz.class).getPlayerList());
-								String catChanged = Quiz.getInstance().getCurrentCatalog().getName();
-								out.write("event: catalogChangeEvent\n");
-								out.write("data: {\n");
-								out.write("data: \"id\": 5 ,\n");
-								out.write("data: \"filename\": \""+catChanged+"\" \n");
-								out.write("data: }\n\n");
-								out.flush();
-							}else if(messageId == 255){
-								out.write("event: errorEvent\n");
-								out.write("data: {\n");
-								out.write("data: \"id\": 255 ,\n");
-								out.write("data: \"msg\":\"Angefragtes SSE existiert nicht\"\n");
-								out.write("data: }\n\n");
-								out.flush();
-							}
-						}
-					}catch (Exception e){
+				AsyncContext asyncTmp = clientCon.getAsyncCo();
+				if(asyncTmp ==null){
+					try{
+						asyncTmp =  request.startAsync(request, response);
+						asyncTmp.setTimeout(0); 
+						//clientCon.setAsyncCo(asyncTmp);
+					} catch (NullPointerException e) {
 						e.printStackTrace();
-						System.out.println("Broadcast fehlgeschlagen");
+						asyncTmp = clientCon.getAsyncCo();
 					}
 				}
-
-			});
+				final AsyncContext ctx = asyncTmp;
+				
+				executorService.execute(new Runnable() {
+					
+					public void run() {
+						try {
+							if(ctx!= null){
+								System.out.println("Send Broadcast to "+ctx);
+								ctx.getResponse().setContentType("text/event-stream");
+								ctx.getResponse().setCharacterEncoding("UTF-8");
+								PrintWriter out = ctx.getResponse().getWriter();
+								if(messageId==6){
+									 JSONObject json = ServiceManager.getInstance().getService(IUserManager.class).getPlayerList();
+									 int i = 0;
+									 out.write("event: playerListEvent\n");
+									 out.write("data: {\n");
+									 out.write("data: \"id\": 6");
+									 for(i=0;i<6;i++){
+										 if(json.has("name"+i)){
+											 out.write(",\n");
+											 out.write("data: \"name"+i+"\": \""+json.get("name"+i)+"\"");
+										 }
+									 }
+									 out.write("\n");
+									 out.write("data: }\n\n");
+									 out.flush();
+								}else if(messageId ==7){
+									//System.out.println(ServiceManager.getInstance().getService(Quiz.class).getPlayerList());
+									//String catChanged = Quiz.getInstance().getCurrentCatalog().getName();
+									out.write("event: gameStartEvent\n");
+									out.write("data: {\n");
+									out.write("data: \"id\": 7 \n");
+									out.write("data: }\n\n");
+									out.flush(); 
+								}else if(messageId ==5){
+									//System.out.println(ServiceManager.getInstance().getService(Quiz.class).getPlayerList());
+									String catChanged = Quiz.getInstance().getCurrentCatalog().getName();
+									out.write("event: catalogChangeEvent\n");
+									out.write("data: {\n");
+									out.write("data: \"id\": 5 ,\n");
+									out.write("data: \"filename\": \""+catChanged+"\" \n");
+									out.write("data: }\n\n");
+									out.flush();
+								}else if(messageId == 255){
+									out.write("event: errorEvent\n");
+									out.write("data: {\n");
+									out.write("data: \"id\": 255 ,\n");
+									out.write("data: \"msg\":\"Angefragtes SSE existiert nicht\"\n");
+									out.write("data: }\n\n");
+									out.flush();
+								}
+							}
+						}catch (Exception e){
+							e.printStackTrace();
+							System.out.println("Broadcast fehlgeschlagen");
+						}
+						//ctx.complete();
+						return;
+					}
+					
+				});
+				//asyncTmp.complete();
+				executorService.shutdown();
+			}
 		}
-		
-		executorService.shutdown();
 	}
 	public static boolean addClientConnection(int clientId, HttpServletRequest request, HttpServletResponse response) {
 		for (ClientConnection clientCon : clientConArr) {

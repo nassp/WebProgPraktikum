@@ -40,6 +40,7 @@ public class ClientConnection {
 		request = requestP;
 		response = responseP;
 		asyncCo = null;
+		
 	}
 	public void setAsyncCo(AsyncContext asyncCoP){
 		asyncCo = asyncCoP;
@@ -57,5 +58,13 @@ public class ClientConnection {
 	public int getClientId() {
 		return clientId;
 	}
-
+	public AsyncContext startAsyncCo(){
+		if(asyncCo== null){
+			asyncCo = request.startAsync(request, response);
+			asyncCo.setTimeout(0);
+			return asyncCo;
+		}else {
+			return asyncCo;
+		}
+	}
 }
