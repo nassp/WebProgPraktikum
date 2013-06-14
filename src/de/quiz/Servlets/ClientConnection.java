@@ -39,7 +39,6 @@ public class ClientConnection {
 		clientId = clientIdP;
 		request = requestP;
 		response = responseP;
-		asyncCo = null;
 		
 	}
 	public void setAsyncCo(AsyncContext asyncCoP){
@@ -59,12 +58,55 @@ public class ClientConnection {
 		return clientId;
 	}
 	public AsyncContext startAsyncCo(){
-		if(asyncCo== null){
-			asyncCo = request.startAsync(request, response);
-			asyncCo.setTimeout(0);
-			return asyncCo;
-		}else {
-			return asyncCo;
-		}
+		System.out.println("start asyncco");
+		asyncCo= request.startAsync(request, response);
+		asyncCo.start(new Runnable() {
+			public void run() {
+				while(true){
+					synchronized (this) {
+						System.out.println("gallo");
+						/*try {
+							System.out.println("warte auf notify");
+							this.wait();
+						} catch (InterruptedException e1) {
+							// TODO Auto-generated catch block
+							e1.printStackTrace();
+						}*/
+						try {
+							System.out.println("Send Broadcast to "+request);
+							response.setContentType("text/event-stream");
+							response.setCharacterEncoding("UTF-8");
+							PrintWriter out = response.getWriter();
+							System.out.println("bla: "+out);
+							 JSONObject json = ServiceManager.getInstance().getService(IUserManager.class).getPlayerList();
+							 int i = 0;
+							 out.write("event: playerListEvent\n");
+							 out.write("data: {\n");
+							 out.write("data: \"id\": 6");
+							 for(i=0;i<6;i++){
+								 if(json.has("name"+i)){
+									 out.write(",\n");
+									 out.write("data: \"name"+i+"\": \""+json.get("name"+i)+"\"");
+								 }
+							 }
+							 out.write("\n");
+							 out.write("data: }\n\n");
+							 out.flush();
+						}catch (Exception e){
+							e.printStackTrace();
+							System.out.println("Broadcast fehlgeschlagen");
+						}
+						try {
+							this.wait();
+						} catch (InterruptedException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+					}
+				}
+			}
+		});
+		
+		return asyncCo;
 	}
 }

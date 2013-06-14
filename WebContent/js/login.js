@@ -36,7 +36,7 @@ var loggedIn = function(userId) {
 var sseFunc = function () {
 	var eventSource = new EventSource('http://localhost:8080/WebQuiz/SSEServlet');
 	eventSource.addEventListener('playerListEvent', function(playerListEvent) {
-	    var data = JSON.parse(playerListEvent.data);
+	    var data = JSON.parse(playerListEvent.data); 
 	    readMessages(data);
 	},false);
 	eventSource.addEventListener('catalogChangeEvent', function(catalogChangeEvent) {

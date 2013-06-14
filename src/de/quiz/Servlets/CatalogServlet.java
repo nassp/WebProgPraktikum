@@ -83,7 +83,8 @@ public class CatalogServlet extends HttpServlet {
 				JSONObject error = new JSONObject();
 				try {
 					error.put("id", 255);
-					error.put("message", "Fehler beim Versenden des catalogue request");
+					error.put("message",
+							"Fehler beim Versenden des catalogue request");
 					ServiceManager.getInstance()
 							.getService(ILoggingManager.class)
 							.log("Failed sending catalog request!");
@@ -92,7 +93,8 @@ public class CatalogServlet extends HttpServlet {
 
 					try {
 						error.put("id", 255);
-						error.put("message", "Fehler beim Versenden der catalogue request Fehler-Nachricht.");
+						error.put("message",
+								"Fehler beim Versenden der catalogue request Fehler-Nachricht.");
 					} catch (JSONException e2) {
 						ServiceManager.getInstance()
 								.getService(ILoggingManager.class)
@@ -105,7 +107,8 @@ public class CatalogServlet extends HttpServlet {
 				JSONObject error = new JSONObject();
 				try {
 					error.put("id", 255);
-					error.put("message", "Fehler beim Versenden des catalogue request");
+					error.put("message",
+							"Fehler beim Versenden des catalogue request");
 					ServiceManager.getInstance()
 							.getService(ILoggingManager.class)
 							.log("Failed sending catalog request!");
@@ -114,7 +117,8 @@ public class CatalogServlet extends HttpServlet {
 
 					try {
 						error.put("id", 255);
-						error.put("message", "Fehler beim Versenden der catalogue request Fehler-Nachricht.");
+						error.put("message",
+								"Fehler beim Versenden der catalogue request Fehler-Nachricht.");
 					} catch (JSONException e2) {
 						ServiceManager.getInstance()
 								.getService(ILoggingManager.class)
@@ -129,42 +133,45 @@ public class CatalogServlet extends HttpServlet {
 		// TODO: muss über server sent events laufen und muss gefüllt werden
 		// catalog change
 		else if (sc.equals("5")) {
-			HttpSession session = request.getSession(true); 
-			try{
-				Player player = ServiceManager.getInstance().getService(IUserManager.class).getUserBySession(session).getPlayerObject();
-				if(player != null){
+			HttpSession session = request.getSession(true);
+			try {
+				Player player = ServiceManager.getInstance()
+						.getService(IUserManager.class)
+						.getUserBySession(session).getPlayerObject();
+				if (player != null) {
 					System.out.println(player.isSuperuser());
-				}else {
+				} else {
 					System.out.println("Player ist null");
 				}
 				QuizError error = new QuizError();
-				//error.set(QuizErrorType.NOT_SUPERUSER);
-				Catalog cat = Quiz.getInstance().changeCatalog(player,request.getParameter("filename"),error);
-				if(cat != null){
+				// error.set(QuizErrorType.NOT_SUPERUSER);
+				Catalog cat = Quiz.getInstance().changeCatalog(player,
+						request.getParameter("filename"), error);
+				if (cat != null) {
 					SSEServlet.broadcast(5);
-				}else{
+				} else {
 					System.out.println("catalog not changed");
 				}
-			} catch (Exception e) { 
+			} catch (Exception e) {
 				e.printStackTrace();
 			}
-//			response.setContentType("application/json");
-//			PrintWriter out = response.getWriter();
-//			JSONObject json = new JSONObject();
-//			String s = "";
-//			try {
-//				s = request.getParameter("filename");
-//				json.put("id", 5);
-//				json.put("filename", s);
-//			} catch (JSONException e) {
-//				// TODO Auto-generated catch block
-//				e.printStackTrace();
-//			}
-//			out.print(json);
+
+			// response.setContentType("application/json");
+			// PrintWriter out = response.getWriter();
+			// JSONObject json = new JSONObject();
+			// String s = "";
+			// try {
+			// s = request.getParameter("filename");
+			// json.put("id", 5);
+			// json.put("filename", s);
+			// } catch (JSONException e) {
+			// // TODO Auto-generated catch block
+			// e.printStackTrace();
+			// }
+			// out.print(json);
 		}
-		
-		else if(sc.equals("7"))
-		{
+
+		else if (sc.equals("7")) {
 			response.setContentType("application/json");
 			PrintWriter out = response.getWriter();
 			JSONObject json = new JSONObject();
@@ -176,9 +183,8 @@ public class CatalogServlet extends HttpServlet {
 			}
 			out.print(json);
 		}
-		
-		else if(sc.equals("8"))
-		{
+
+		else if (sc.equals("8")) {
 			response.setContentType("application/json");
 			PrintWriter out = response.getWriter();
 			JSONObject json = new JSONObject();
@@ -202,7 +208,6 @@ public class CatalogServlet extends HttpServlet {
 			}
 			out.print(json);
 		}
-
 
 	}
 
