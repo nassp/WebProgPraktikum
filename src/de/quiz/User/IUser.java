@@ -1,6 +1,9 @@
 package de.quiz.User;
 
 
+import javax.servlet.AsyncContext;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import de.fhwgt.quiz.application.Player;
@@ -48,11 +51,29 @@ public interface IUser {
     public void setPlayerObject(Player _player);
     
     /**
+     * set the player request
+     * 
+     * @param HttpServletRequest
+     */
+    public void setRequest(HttpServletRequest request);
+    
+    /**
+     * set the player response
+     * 
+     * @param HttpServletResponse
+     */
+    public void setResponse(HttpServletResponse response);
+    
+    /**
      * set the websocket id
      * 
      * @param id
      */
     public void setWSID (int id);
+    /**
+     * set the AsnycContext
+     */
+	public void setAsyncCo(AsyncContext startAsync);
     
     
     /*##################################
@@ -72,6 +93,25 @@ public interface IUser {
      */
     public String getUserID ();
     
+	/**
+	 * getter for the user's request
+	 * 
+	 * @return HttpServletRequest
+	 */
+	public HttpServletRequest getRequest();
+	
+	/**
+	 * getter for the user's response
+	 * 
+	 * @return HttpServletResponse
+	 */
+	public HttpServletResponse getResponse();
+	
+    /**
+     * getter for the AsnycContext
+     */
+	public AsyncContext getAsyncCo();
+	
     /**
      * getter for the user's name
      * 

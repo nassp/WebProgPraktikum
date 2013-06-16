@@ -7,8 +7,10 @@ import java.util.ArrayList;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.apache.catalina.websocket.MessageInbound;
@@ -33,12 +35,19 @@ public class LogicServlet extends WebSocketServlet {
 	private static final long serialVersionUID = 1L;
 	private static CopyOnWriteArrayList<LogicMessageInbound> myInList = new CopyOnWriteArrayList<LogicMessageInbound>();
 	private final AtomicInteger connectionIds = new AtomicInteger(0);
-
 	@Override
 	protected StreamInbound createWebSocketInbound(String arg0,
 			HttpServletRequest arg1) {
 		return new LogicMessageInbound(connectionIds.incrementAndGet(),
 				arg1.getSession());
+	}
+	protected void doPost(HttpServletRequest request,
+			HttpServletResponse response) throws ServletException, IOException {
+
+		ServiceManager.getInstance().getService(ILoggingManager.class)
+				.log(this, "GET is not supported on this Servlet");
+		response.getWriter().print("GET is not supported on this Servlet");
+
 	}
 
 	private class LogicMessageInbound extends MessageInbound {

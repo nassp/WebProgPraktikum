@@ -1,9 +1,9 @@
 function readMessages(data) {
 
 	switch (data.id) {
-	case 2:
-		sseFunc();
+	case 2:		
 		userId = data.userID;
+		sseFunc();
 		console.log(userId);
 		loggedIn(data.userID);
 		ws = new WebSocket("ws://" + loginURL);

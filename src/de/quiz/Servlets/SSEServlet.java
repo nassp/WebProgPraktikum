@@ -30,6 +30,7 @@ import de.quiz.LoggingManager.ILoggingManager;
 import de.quiz.ServiceManager.IService;
 import de.quiz.ServiceManager.ServiceManager;
 import de.quiz.User.IUser;
+import de.quiz.User.User;
 import de.quiz.UserManager.IUserManager;
 
 /**
@@ -38,9 +39,7 @@ import de.quiz.UserManager.IUserManager;
 @WebServlet(description = "handles everything which has to do with players", urlPatterns = { "/SSEServlet" })
 public class SSEServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-	private static CopyOnWriteArrayList<ClientConnection> clientConArr = new CopyOnWriteArrayList<ClientConnection>();
-	private static CopyOnWriteArrayList<AsyncContext> asyncArr = new CopyOnWriteArrayList<AsyncContext>();
-
+	private static CopyOnWriteArrayList<IUser> userList = new CopyOnWriteArrayList<IUser>();
 	// private static CopyOnWriteArrayList<AsyncContext> asyncArr = new
 	// CopyOnWriteArrayList<AsyncContext>();
 
@@ -51,38 +50,44 @@ public class SSEServlet extends HttpServlet {
 		super();
 	}
 
-	public void doGet(HttpServletRequest req, HttpServletResponse res)
+	public synchronized void doGet(HttpServletRequest req, HttpServletResponse res)
 			throws ServletException, IOException {
 		//bradcast
-		
-		addClientConnection(req,res);
-		System.out.println("Start broadcast");
-		for (ClientConnection clientCon : clientConArr) {
-			sendMsg(clientCon,6);
+		String userID = req.getParameter("rID");
+		if(userID!= null){
+			addUser(userID,req,res);
+			res.setContentType("application/json");
+			res.getWriter().print("Event Stream wurde gestartet.");
+			System.out.println("playerID ="+req.getParameter("rID"));
+		}else {
+			for (IUser user : userList) {
+				AsyncContext ctx;
+				if(user.getAsyncCo()==null){
+					ctx = user.getRequest().startAsync();
+					ctx.setTimeout(200000000);
+					user.setAsyncCo(ctx);
+				}else{
+					ctx = user.getAsyncCo();
+				}
+				System.out.println("!Send Broadcast to "+user.getRequest()+"!");
+				sendMsg(user,6);
+			}
 		}
+
+		
+	}
+	public synchronized void doPost(HttpServletRequest req, HttpServletResponse res)
+			throws ServletException, IOException {
 	}
 
-	public static void sendMsg(final ClientConnection clientCon , int msg)
+	public synchronized static void sendMsg(final IUser user , int msg)
 			throws ServletException, IOException {
-		// create the async context, otherwise getAsyncContext() will be
-		// null
-		HttpServletRequest req = clientCon.getRequest();
-		HttpServletResponse res = clientCon.getResponse();
-		PrintWriter out = res.getWriter();
-		System.out.println("bla: "+out);
-		System.out.println("response status: "+res.getStatus());
-		final AsyncContext ctx;
-		if(req.getAsyncContext()==null){
-			ctx = req.startAsync();
-			ctx.setTimeout(10000);
-		}else{
-			ctx = req.getAsyncContext();
-		}
-		
-			
+		System.out.println("bla:"+user.getRequest());
+		final AsyncContext ctx = user.getAsyncCo();
 
-		// attach listener to respond to lifecycle events of this
-		// AsyncContext
+		
+
+		// attach listener to respond to lifecycle events
 		ctx.addListener(new AsyncListener() {
 			public void onComplete(AsyncEvent event) throws IOException {
 				System.out.println("onComplete called");
@@ -90,76 +95,47 @@ public class SSEServlet extends HttpServlet {
 
 			public void onTimeout(AsyncEvent event) throws IOException {
 				System.out.println("onTimeout called");
-				//ctx.complete();
-				clientConArr.remove(clientCon);
+				//userList.remove(user);
 				
 			}
 
 			public void onError(AsyncEvent event) throws IOException {
 				System.out.println("onError called");
+				//userList.remove(user);
 			}
 
 			public void onStartAsync(AsyncEvent event) throws IOException {
 				System.out.println("onStartAsync called");
 			}
 		});
-		// ExecutorService exec1 = Executors.newCachedThreadPool();
 
-		// exec1.shutdown();
-		// spawn some task in a background thread
+		// spawn task in a background thread
 		ClientThread clientThread = new ClientThread(ctx,msg);
 		ctx.start(clientThread);
 
 	}
-	public static boolean addClientConnection(HttpServletRequest request, HttpServletResponse response) {
-		for (ClientConnection clientCon : clientConArr) {
-			if (clientCon.getRequest() == request) {
-				System.out.println("fehler");
-				return false;
+	public synchronized static boolean addUser(String userID, HttpServletRequest request, HttpServletResponse response) {
+		for (IUser user : userList) {
+			/*if(user.getUserID().equals(userID)&& user.getRequest() != request){
+				System.out.println("User "+user.getRequest()+" removed");
+			}*/
+			if (user.getRequest().equals(request)) {
+				return false; 
 			}
 		}
-		ClientConnection clientCon = new ClientConnection(0, request,
-				response);
-		clientConArr.add(clientCon);
+		IUser tmpUser = new User(userID);
+		tmpUser.setRequest(request);
+		tmpUser.setResponse(response);
+		System.out.println("Client wird hinzugefügt");
+		userList.add(tmpUser);
 		return true;
 	}
-	public static boolean broadcast(int msg) throws ServletException, IOException {
+	public synchronized static boolean broadcast(int msg) throws ServletException, IOException {
 		System.out.println("Start broadcast");
-		for (ClientConnection clientCon : clientConArr) {
-			sendMsg(clientCon,msg);
+		for (IUser user : userList) {
+			sendMsg(user,msg);
 		}
 		return true;
 	}
 
 }
-
-/**
- * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse
- *      response)
- */
-/*
- * protected void doGet(HttpServletRequest request, HttpServletResponse
- * response) throws ServletException, IOException { broadcast(6); } protected
- * void doPost(HttpServletRequest request, HttpServletResponse response) throws
- * ServletException, IOException {
- * 
- * }
- * 
- * public static void broadcast(final int messageId){
- * System.out.println("Start Broadcast: "+messageId); for (final
- * ClientConnection clientCon : clientConArr) { if (clientCon.getRequest()!=
- * null && clientCon.getResponse()!=null){ clientCon.getAsyncCo().notify(); } }
- * } public static boolean addClientConnection(int clientId, HttpServletRequest
- * request, HttpServletResponse response) { for (ClientConnection clientCon :
- * clientConArr) { if(clientCon.getRequest()==request){
- * System.out.println("fehler"); return false; } } ClientConnection clientCon =
- * new ClientConnection(clientId,request,response); clientConArr.add(clientCon);
- * return true; } public static boolean removeClientConnectionById(int clientId)
- * { for (ClientConnection clientCon : clientConArr) {
- * if(clientCon.getClientId()==clientId){ clientConArr.remove(clientCon); return
- * true; } } return false; } public static boolean
- * removeClientConnectionByRequest(HttpServletRequest request) { for
- * (ClientConnection clientCon : clientConArr) {
- * if(clientCon.getRequest()==request){ clientConArr.remove(clientCon); return
- * true; } } return false; } }
- */

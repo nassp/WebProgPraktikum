@@ -34,24 +34,37 @@ var loggedIn = function(userId) {
 	}
 };
 var sseFunc = function () {
-	var eventSource = new EventSource('http://localhost:8080/WebQuiz/SSEServlet');
-	eventSource.addEventListener('playerListEvent', function(playerListEvent) {
-	    var data = JSON.parse(playerListEvent.data); 
-	    readMessages(data);
-	},false);
-	eventSource.addEventListener('catalogChangeEvent', function(catalogChangeEvent) {
-	    var data = JSON.parse(catalogChangeEvent.data);
-	    readMessages(data);
-	},false);
-	eventSource.addEventListener('gameStartEvent', function(gameStartEvent) {
-		console.log(gameStartEvent);
-	    var data = JSON.parse(gameStartEvent.data);
-	    readMessages(data);
-	},false);
-	eventSource.addEventListener('errorEvent', function(errorEvent) {
-	    var data = JSON.parse(errorEvent.data);
-	    readMessages(data);
-	},false);
+	console.log("success?");
+	$.ajax({
+		type : 'GET',
+		url : 'SSEServlet',
+		data : {
+			rID : userId,
+		},
+		dataType : 'text',
+		success : function(data) { 
+			console.log("success!");
+			var eventSource = new EventSource('http://localhost:8080/WebQuiz/SSEServlet');
+			eventSource.addEventListener('playerListEvent', function(playerListEvent) {
+			    var data = JSON.parse(playerListEvent.data); 
+			    readMessages(data);
+			},false);
+			eventSource.addEventListener('catalogChangeEvent', function(catalogChangeEvent) {
+			    var data = JSON.parse(catalogChangeEvent.data);
+			    readMessages(data);
+			},false);
+			eventSource.addEventListener('gameStartEvent', function(gameStartEvent) {
+				console.log(gameStartEvent);
+			    var data = JSON.parse(gameStartEvent.data);
+			    readMessages(data);
+			},false);
+			eventSource.addEventListener('errorEvent', function(errorEvent) {
+			    var data = JSON.parse(errorEvent.data);
+			    readMessages(data);
+			},false);
+		}
+	});
+
 	
 };
 

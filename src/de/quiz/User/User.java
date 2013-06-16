@@ -2,6 +2,9 @@ package de.quiz.User;
 
 
 
+import javax.servlet.AsyncContext;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import de.fhwgt.quiz.application.Player;
@@ -19,6 +22,9 @@ public class User implements IUser {
 	private String name;
 	private Player playerObject;
 	private int wsID;
+	private HttpServletRequest request;
+	private HttpServletResponse response;
+	private AsyncContext asyncCo;
 
 
 	/**
@@ -93,7 +99,30 @@ public class User implements IUser {
     public void setPlayerObject(Player _player) {
     	playerObject = _player;
     }
-    
+    /**
+     * set the player request
+     * 
+     * @param HttpServletRequest
+     */
+    public void setRequest(HttpServletRequest request) {
+    	this.request = request;
+    }
+    /**
+     * set the player response
+     * 
+     * @param HttpServletResponse
+     */
+    public void setResponse(HttpServletResponse response) {
+    	this.response = response;
+    }
+    /**
+     * set the AsnycContext
+     * 
+     * @param asyncCo
+     */
+	public void setAsyncCo(AsyncContext asyncCo){
+		this.asyncCo = asyncCo;
+	}
     /**
      * set the websocket id
      * 
@@ -125,7 +154,32 @@ public class User implements IUser {
 	public String getUserID() {
 		return userID;
 	}
-
+	/**
+	 * getter for the user's request
+	 * 
+	 * @return HttpServletRequest
+	 */
+	public HttpServletRequest getRequest() {
+		return request;
+	}
+	/**
+	 * getter for the user's response
+	 * 
+	 * @return HttpServletResponse
+	 */
+	public HttpServletResponse getResponse() {
+		return response;
+	}
+    /**
+     * getter for the AsyncContext
+     * 
+	 * @return AsyncContext
+	 */
+	public AsyncContext getAsyncCo(){
+		return asyncCo;
+	}
+	
+	
 	/**
 	 * getter for the user's name
 	 * 
