@@ -138,20 +138,46 @@ function sendMessages(id) {
 		});
 		break;
 	case 8:
-		$.ajax({
-			type : 'POST',
-			url : 'CatalogServlet',
-			data : {
-				rID : '8',
-			},
-			dataType : 'json',
-			success : function(data) {
-				readMessages(data);
-				$.each(data, function(index, element) {
+		/*
+		 * $.ajax({ type : 'POST', url : 'CatalogServlet', data : { rID : '8', },
+		 * dataType : 'json', success : function(data) { readMessages(data);
+		 * $.each(data, function(index, element) {
+		 * 
+		 * }); } });
+		 */
 
-				});
+		ws = new WebSocket("ws://" + loginURL);
+		ws.onopen = function() {
+			ws.send(8);
+		};
+		ws.onmessage = function(message) {
+			var string = message.data;
+			if (string == 9) {
+				ws.onmessage = function(message) {
+					var timeout = message.data;
+					ws.onmessage = function(message) {
+						var question = message.data;
+						ws.onmessage = function(message) {
+							var answer1 = message.data;
+							ws.onmessage = function(message) {
+								var answer2 = message.data;
+								ws.onmessage = function(message) {
+									var answer3 = message.data;
+									ws.onmessage = function(message) {
+										var answer4 = message.data;
+										showQuestion(question, answer1,
+												answer2, answer3, answer4,
+												timeout);
+									};
+								};
+							};
+						};
+					};
+				};
+
 			}
-		});
+		};
+
 		break;
 	case 10:
 		alert("Es wurde die Frage mit index: " + answered + " gewaehlt!");
@@ -164,13 +190,32 @@ function sendMessages(id) {
 		 */
 
 		ws = new WebSocket("ws://" + loginURL);
-//		ws.onopen = function() {
-//			ws.send(answered);
-//		};
-		ws.send(answered);
-		ws.onmessage = function(message) {
-			alert(message);
+		ws.onopen = function() {
+			ws.send("11" + answered);
 		};
+		ws.onmessage = function(message) {
+			var string = message.data;
+			if (string == 11) {
+				ws.onmessage = function(message) {
+					var rightAnswer = message.data;
+					if (rightAnswer == answered) {
+						alert("Richtige Antwort");
+						rightAnswer += 2;
+						$("#quizTable tr:nth-child("+rightAnswer+") td input").addClass("green");
+					} else {
+						alert("Falsche Antwort" + rightAnswer);
+						rightAnswer += 2;
+						$("#quizTable tr:nth-child("+rightAnswer+") td input").addClass("green");
+						answered += 2;
+						$("#quizTable tr:nth-child("+rightAnswer+") td input").addClass("red");
+					}
+				};
+			} else if (caseNumber == 11 && string == answered) {
+				alert("Richtige Antwort");
+			}
+		};
+		// ws.send(answered);
+
 		break;
 	default:
 		break;

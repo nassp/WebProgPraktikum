@@ -195,6 +195,8 @@ public class CatalogServlet extends HttpServlet {
 							.getUserBySession(request.getSession())
 							.getPlayerObject(), new TimeOut(), error);
 			
+			System.out.println("Case 8");
+			
 
 			if (currentQuestion != null) {
 				long timeout = currentQuestion.getTimeout();
@@ -203,6 +205,13 @@ public class CatalogServlet extends HttpServlet {
 				String answer2 = currentQuestion.getAnswerList().get(1);
 				String answer3 = currentQuestion.getAnswerList().get(2);
 				String answer4 = currentQuestion.getAnswerList().get(3);
+				
+				currentQuestion.validateAnswer(0);
+				
+				Quiz.getInstance().answerQuestion(ServiceManager.getInstance().getService(IUserManager.class)
+							.getUserBySession(request.getSession())
+							.getPlayerObject(), 0, error);
+				
 				try {
 					json.put("id", 9);
 					json.put("question", question);
