@@ -16,11 +16,13 @@ import org.json.JSONObject;
 
 import de.fhwgt.quiz.application.Catalog;
 import de.fhwgt.quiz.application.Player;
+import de.fhwgt.quiz.application.Question;
 import de.fhwgt.quiz.application.Quiz;
 import de.fhwgt.quiz.error.ErrorType;
 import de.fhwgt.quiz.error.QuizError;
 import de.fhwgt.quiz.error.QuizErrorType;
 import de.fhwgt.quiz.loader.LoaderException;
+import de.quiz.HelpClasses.TimeOut;
 import de.quiz.LoggingManager.ILoggingManager;
 import de.quiz.ServiceManager.ServiceManager;
 import de.quiz.UserManager.IUserManager;
@@ -188,25 +190,35 @@ public class CatalogServlet extends HttpServlet {
 			response.setContentType("application/json");
 			PrintWriter out = response.getWriter();
 			JSONObject json = new JSONObject();
-			int timeout = 30;
-			String question = "Ein Thread soll auf ein durch einen anderen Thread ausgelöstes Ereignis warten. Welcher Mechanismus ist geeignet?";
-			String answer1 = "Nur Semaphore";
-			String answer2 = "Nur Mutexe";
-			String answer3 = "Weder Semaphore noch Mutexe";
-			String answer4 = "Sowohl Semaphore als auch Mutexe";
-			try {
-				json.put("id", 9);
-				json.put("question", question);
-				json.put("answer1", answer1);
-				json.put("answer2", answer2);
-				json.put("answer3", answer3);
-				json.put("answer4", answer4);
-				json.put("timeout", timeout);
-			} catch (JSONException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+
+			QuizError error = new QuizError();
+			Question currentQuestion = Quiz.getInstance().requestQuestion(
+					ServiceManager.getInstance().getService(IUserManager.class)
+							.getUserBySession(request.getSession())
+							.getPlayerObject(), new TimeOut(), error);
+			
+
+			if (currentQuestion != null) {
+				long timeout = currentQuestion.getTimeout();
+				String question = currentQuestion.getQuestion();
+				String answer1 = currentQuestion.getAnswerList().get(0);
+				String answer2 = currentQuestion.getAnswerList().get(1);
+				String answer3 = currentQuestion.getAnswerList().get(2);
+				String answer4 = currentQuestion.getAnswerList().get(3);
+				try {
+					json.put("id", 9);
+					json.put("question", question);
+					json.put("answer1", answer1);
+					json.put("answer2", answer2);
+					json.put("answer3", answer3);
+					json.put("answer4", answer4);
+					json.put("timeout", timeout);
+				} catch (JSONException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				out.print(json);
 			}
-			out.print(json);
 		}
 
 	}

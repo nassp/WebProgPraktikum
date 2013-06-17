@@ -15,6 +15,8 @@ import org.apache.catalina.websocket.MessageInbound;
 import org.apache.catalina.websocket.StreamInbound;
 import org.apache.catalina.websocket.WebSocketServlet;
 import org.apache.catalina.websocket.WsOutbound;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import de.quiz.LoggingManager.ILoggingManager;
 import de.quiz.ServiceManager.ServiceManager;
@@ -96,7 +98,16 @@ public class LogicServlet extends WebSocketServlet {
 					HTMLFilter.filter(arg0.toString()));
 			ServiceManager.getInstance().getService(ILoggingManager.class)
 					.log("Accept Message : " + filteredMessage);
-			CharBuffer buffer = CharBuffer.wrap(filteredMessage);
+			System.out.println("LogicServlet:");
+			System.out.println(filteredMessage);
+			String test = new String();
+			test = "event: catalogChangeEvent\n";
+			test += "data: {\n";
+			test += "data: \"id\": 5 ,\n";
+			test += "data: \"test\": 10 \n";
+			test += "data: }\n\n";
+
+			CharBuffer buffer = CharBuffer.wrap(test);
 			this.myOutbound.writeTextMessage(buffer);
 			this.myOutbound.flush();
 

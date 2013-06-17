@@ -18,20 +18,19 @@ function readMessages(data) {
 		break;
 	case 4:
 		$.each(data, function(index, element) {
-			if(element.name != undefined)
-				{
-					$(".catList").append("<li>" + element.name + "</li>");
-				}
+			if (element.name != undefined) {
+				$(".catList").append("<li>" + element.name + "</li>");
+			}
 		});
 		initCatalogList();
 		break;
 	case 5:
 		var catElements = $(".catList");
 		$(".catList .selected").removeClass("selected");
-		catElements.children().each(function() {   			
-	    	if($(this).text()==data.filename){
-	    		$(this).addClass("selected");
-	    	}
+		catElements.children().each(function() {
+			if ($(this).text() == data.filename) {
+				$(this).addClass("selected");
+			}
 		});
 		break;
 	case 6:
@@ -51,14 +50,15 @@ function readMessages(data) {
 		sendMessages(8);
 		break;
 	case 9:
-		showQuestion(data.question, data.answer1, data.answer2, data.answer3, data.answer4, data.timeout);
+		showQuestion(data.question, data.answer1, data.answer2, data.answer3,
+				data.answer4, data.timeout);
 		break;
 	case 11:
-		//alert(data.selection);
-		//alert(data.correct);
+		// alert(data.selection);
+		// alert(data.correct);
 		break;
 	case 12:
-		//alert("Herzlichen Glückwunsch, Sie sind: " + data.rank + ".");
+		// alert("Herzlichen Glückwunsch, Sie sind: " + data.rank + ".");
 		break;
 	case 255:
 		alert(data.message);
@@ -115,7 +115,6 @@ function sendMessages(id) {
 				success : function(data) {
 					readMessages(data);
 					$.each(data, function(index, element) {
-
 					});
 				}
 			});
@@ -156,21 +155,21 @@ function sendMessages(id) {
 		break;
 	case 10:
 		alert("Es wurde die Frage mit index: " + answered + " gewaehlt!");
-		$.ajax({
-			type : 'POST',
-			url : 'LogicServlet',
-			data : {
-				rID : '10',
-				value : answered
-			},
-			dataType : 'json',
-			success : function(data) {
-				readMessages(data);
-				$.each(data, function(index, element) {
+		/*
+		 * $.ajax({ type : 'POST', url : 'LogicServlet', data : { rID : '10',
+		 * value : answered }, dataType : 'json', success : function(data) {
+		 * readMessages(data); $.each(data, function(index, element) {
+		 * 
+		 * }); } });
+		 */
 
-				});
-			}
-		});
+		ws = new WebSocket("ws://" + loginURL);
+		ws.onopen = function() {
+			ws.send(answered);
+		};
+		ws.onmessage = function(message) {
+			alert(message);
+		};
 		break;
 	default:
 		break;
