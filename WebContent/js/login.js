@@ -34,7 +34,7 @@ var loggedIn = function(userId) {
 	}
 };
 var sseFunc = function () {
-	var eventSource = new EventSource('http://localhost:8080/WebQuiz/SSEServlet');
+	var eventSource = new EventSource('http://localhost:8080/WebQuiz/SSEServlet?uID='+userId);
 	eventSource.addEventListener('playerListEvent', function(playerListEvent) {
 	    var data = JSON.parse(playerListEvent.data); 
 	    readMessages(data);

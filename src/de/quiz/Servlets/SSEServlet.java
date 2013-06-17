@@ -55,11 +55,16 @@ public class SSEServlet extends HttpServlet {
 	public void doGet(HttpServletRequest req, HttpServletResponse res)
 			throws ServletException, IOException {
 		//bradcast
-		
-		addIUser(req,res);
+		System.out.println(req.getParameter("uID"));
+		addIUser(req.getParameter("uID"),req,res);
 		System.out.println("Start broadcast");
 		for (IUser user : userArr) {
 			sendMsg(user,6);
+		}
+		for (IUser user : userArr) {
+			if(Quiz.getInstance().getCurrentCatalog()!=null){
+				sendMsg(user,5);
+			}
 		}
 	}
 
@@ -112,14 +117,14 @@ public class SSEServlet extends HttpServlet {
 		ctx.start(clientThread);
 
 	}
-	public static boolean addIUser(HttpServletRequest request, HttpServletResponse response) {
+	public static boolean addIUser(String userID, HttpServletRequest request, HttpServletResponse response) {
 		for (IUser user : userArr) {
 			if (user.getRequest() == request) {
 				System.out.println("fehler");
 				return false;
 			}
 		}
-		IUser user = new User();
+		IUser user = new User(userID);
 		user.setRequest(request);
 		user.setResponse(response);
 		userArr.add(user);
