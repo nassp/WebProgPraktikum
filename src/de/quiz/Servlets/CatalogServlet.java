@@ -18,14 +18,12 @@ import de.fhwgt.quiz.application.Catalog;
 import de.fhwgt.quiz.application.Player;
 import de.fhwgt.quiz.application.Question;
 import de.fhwgt.quiz.application.Quiz;
-import de.fhwgt.quiz.error.ErrorType;
 import de.fhwgt.quiz.error.QuizError;
-import de.fhwgt.quiz.error.QuizErrorType;
 import de.fhwgt.quiz.loader.LoaderException;
-import de.quiz.HelpClasses.TimeOut;
 import de.quiz.LoggingManager.ILoggingManager;
 import de.quiz.ServiceManager.ServiceManager;
 import de.quiz.UserManager.IUserManager;
+import de.quiz.Utility.TimeOut;
 
 /**
  * Servlet implementation class CatalogServlet. This servlet handles catalogs.
