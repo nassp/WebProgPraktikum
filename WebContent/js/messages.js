@@ -2,8 +2,8 @@ function readMessages(data) {
 
 	switch (data.id) {
 	case 2:
-		userId = data.userID;
 		sseFunc();
+		userId = data.userID;
 		console.log(userId);
 		loggedIn(data.userID);
 		ws = new WebSocket("ws://" + loginURL);
@@ -18,20 +18,19 @@ function readMessages(data) {
 		break;
 	case 4:
 		$.each(data, function(index, element) {
-			if(element.name != undefined)
-				{
-					$(".catList").append("<li>" + element.name + "</li>");
-				}
+			if (element.name != undefined) {
+				$(".catList").append("<li>" + element.name + "</li>");
+			}
 		});
 		initCatalogList();
 		break;
 	case 5:
 		var catElements = $(".catList");
 		$(".catList .selected").removeClass("selected");
-		catElements.children().each(function() {   			
-	    	if($(this).text()==data.filename){
-	    		$(this).addClass("selected");
-	    	}
+		catElements.children().each(function() {
+			if ($(this).text() == data.filename) {
+				$(this).addClass("selected");
+			}
 		});
 		break;
 	case 6:
@@ -51,14 +50,15 @@ function readMessages(data) {
 		sendMessages(8);
 		break;
 	case 9:
-		showQuestion(data.question, data.answer1, data.answer2, data.answer3, data.answer4, data.timeout);
+		showQuestion(data.question, data.answer1, data.answer2, data.answer3,
+				data.answer4, data.timeout);
 		break;
 	case 11:
-		//alert(data.selection);
-		//alert(data.correct);
+		// alert(data.selection);
+		// alert(data.correct);
 		break;
 	case 12:
-		//alert("Herzlichen Glückwunsch, Sie sind: " + data.rank + ".");
+		// alert("Herzlichen Glückwunsch, Sie sind: " + data.rank + ".");
 		break;
 	case 255:
 		alert(data.message);
@@ -115,7 +115,6 @@ function sendMessages(id) {
 				success : function(data) {
 					readMessages(data);
 					$.each(data, function(index, element) {
-
 					});
 				}
 			});
@@ -139,38 +138,95 @@ function sendMessages(id) {
 		});
 		break;
 	case 8:
-		$.ajax({
-			type : 'POST',
-			url : 'CatalogServlet',
-			data : {
-				rID : '8',
-			},
-			dataType : 'json',
-			success : function(data) {
-				readMessages(data);
-				$.each(data, function(index, element) {
+		/*
+		 * $.ajax({ type : 'POST', url : 'CatalogServlet', data : { rID : '8', },
+		 * dataType : 'json', success : function(data) { readMessages(data);
+		 * $.each(data, function(index, element) {
+		 * 
+		 * }); } });
+		 */
 
-				});
+		ws = new WebSocket("ws://" + loginURL);
+		ws.onopen = function() {
+			ws.send(8);
+		};
+
+		var timeout = 0;
+		var question = "";
+		var answer1 = "";
+		var answer2 = "";
+		var answer3 = "";
+		var answer4 = "";
+		var count = 0;
+
+		ws.onmessage = function(message) {
+			var string = message.data;
+			if (string == 9) {
+				count = 1;
+			} else if (count == 1) {
+				count = 2;
+				timeout = message.data;
+			} else if (count == 2) {
+				count = 3;
+				question = message.data;
+			} else if (count == 3) {
+				count = 4;
+				answer1 = message.data;
+			} else if (count == 4) {
+				count = 5;
+				answer2 = message.data;
+			} else if (count == 5) {
+				count = 6;
+				answer3 = message.data;
+			} else if (count == 6) {
+				count = 0;
+				answer4 = message.data;
+				showQuestion(question, answer1, answer2, answer3, answer4,
+						timeout);
 			}
-		});
+
+		};
+
 		break;
 	case 10:
 		alert("Es wurde die Frage mit index: " + answered + " gewaehlt!");
-		$.ajax({
-			type : 'POST',
-			url : 'LogicServlet',
-			data : {
-				rID : '10',
-				value : answered
-			},
-			dataType : 'json',
-			success : function(data) {
-				readMessages(data);
-				$.each(data, function(index, element) {
+		/*
+		 * $.ajax({ type : 'POST', url : 'LogicServlet', data : { rID : '10',
+		 * value : answered }, dataType : 'json', success : function(data) {
+		 * readMessages(data); $.each(data, function(index, element) {
+		 * 
+		 * }); } });
+		 */
 
-				});
+		ws = new WebSocket("ws://" + loginURL);
+		ws.onopen = function() {
+			ws.send("11" + answered);
+		};
+		var case11 = false;
+		ws.onmessage = function(message) {
+			var string = message.data;
+			if (string == 11) {
+				case11 = true;
+			} else if (case11) {
+				var rightAnswer = message.data;
+				if (rightAnswer == answered) {
+					alert("Richtige Antwort");
+					rightAnswer += 2;
+					$("#quizTable tr:nth-child(" + rightAnswer + ") td input")
+							.addClass("green");
+				} else {
+					alert("Falsche Antwort" + rightAnswer);
+					rightAnswer += 2;
+					$("#quizTable tr:nth-child(" + rightAnswer + ") td input")
+							.addClass("green");
+					answered += 2;
+					$("#quizTable tr:nth-child(" + rightAnswer + ") td input")
+							.addClass("red");
+				}
 			}
-		});
+		};
+		// ws.send(answered);
+
 		break;
 	default:
 		break;
