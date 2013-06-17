@@ -12,6 +12,7 @@ import de.fhwgt.quiz.application.Quiz;
 import de.fhwgt.quiz.error.QuizError;
 import de.quiz.LoggingManager.ILoggingManager;
 import de.quiz.ServiceManager.ServiceManager;
+import de.quiz.Servlets.SSEServlet;
 import de.quiz.User.IUser;
 import de.quiz.User.User;
 
@@ -44,6 +45,7 @@ public class UserManager implements IUserManager {
 					.getService(ILoggingManager.class)
 					.log(user.getName()
 							+ " removed because of session timeout!");
+			SSEServlet.removeIUser(user.getUserID());
 			activeUser.remove(user);
 
 		} else {
@@ -51,6 +53,7 @@ public class UserManager implements IUserManager {
 					.log(this, error);
 			// if superuser left error is also set
 			if (error.getStatus() == 7) {
+				SSEServlet.removeIUser(user.getUserID());
 				activeUser.remove(user);
 			}
 		}

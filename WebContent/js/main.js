@@ -17,7 +17,7 @@ $(document).ready(function() {
 		if(document.getElementById("nameInput").value.length > 0){
 			// Spielername senden
 			$("#highscore table tbody").empty();
-			sendMessages(1);
+			sendMessages(1); 
 			// Katalogliste anfragen
 			$(".catList").empty();
 			sendMessages(3);

@@ -70,8 +70,6 @@ public class SSEServlet extends HttpServlet {
 
 	public static void sendMsg(final IUser user , int msg)
 			throws ServletException, IOException {
-		// create the async context, otherwise getAsyncContext() will be
-		// null
 		HttpServletRequest req = user.getRequest();
 		HttpServletResponse res = user.getResponse();
 		PrintWriter out = res.getWriter();
@@ -96,9 +94,6 @@ public class SSEServlet extends HttpServlet {
 
 			public void onTimeout(AsyncEvent event) throws IOException {
 				System.out.println("onTimeout called");
-				//ctx.complete();
-				userArr.remove(user);
-				
 			}
 
 			public void onError(AsyncEvent event) throws IOException {
@@ -109,9 +104,6 @@ public class SSEServlet extends HttpServlet {
 				System.out.println("onStartAsync called");
 			}
 		});
-		// ExecutorService exec1 = Executors.newCachedThreadPool();
-
-		// exec1.shutdown();
 		// spawn some task in a background thread
 		ClientThread clientThread = new ClientThread(ctx,msg);
 		ctx.start(clientThread);
@@ -119,17 +111,30 @@ public class SSEServlet extends HttpServlet {
 	}
 	public static boolean addIUser(String userID, HttpServletRequest request, HttpServletResponse response) {
 		for (IUser user : userArr) {
-			if (user.getRequest() == request) {
-				System.out.println("fehler");
+			if (user.getRequest() == request || user.getUserID()==userID) {
 				return false;
 			}
 		}
-		IUser user = new User(userID);
+		IUser user = new User();
+		user.setID(userID);
 		user.setRequest(request);
 		user.setResponse(response);
 		userArr.add(user);
 		return true;
 	}
+	
+	public static boolean removeIUser(String userID) {
+		for (int i = 0; i<userArr.size(); i++){
+			if (userArr.get(i)!= null) {
+				if(userArr.get(i).getUserID()==userID){
+					userArr.remove(i);
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+	
 	public static boolean broadcast(int msg) throws ServletException, IOException {
 		System.out.println("Start broadcast");
 		for (IUser user : userArr) {
