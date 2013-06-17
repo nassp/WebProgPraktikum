@@ -1,35 +1,13 @@
 package de.quiz.Servlets;
 
-import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
 
 import javax.servlet.AsyncContext;
-import javax.servlet.AsyncEvent;
-import javax.servlet.AsyncListener;
-import javax.servlet.ServletException;
-import javax.servlet.ServletResponse;
-import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 
 import org.json.JSONObject;
 
 import de.fhwgt.quiz.application.Quiz;
-import de.fhwgt.quiz.error.QuizError;
-import de.quiz.LoggingManager.ILoggingManager;
-import de.quiz.ServiceManager.IService;
 import de.quiz.ServiceManager.ServiceManager;
-import de.quiz.User.IUser;
 import de.quiz.UserManager.IUserManager;
 
 class ClientThread implements Runnable {
