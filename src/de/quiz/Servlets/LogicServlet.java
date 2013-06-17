@@ -19,7 +19,6 @@ import de.quiz.LoggingManager.ILoggingManager;
 import de.quiz.ServiceManager.ServiceManager;
 import de.quiz.User.IUser;
 import de.quiz.UserManager.IUserManager;
-import de.quiz.Utility.HTMLFilter;
 
 /**
  * WebSocketServlet implementation class LogicServlet. This servlet handles the
@@ -63,22 +62,16 @@ public class LogicServlet extends WebSocketServlet {
 
 		@Override
 		protected void onOpen(WsOutbound outbound) {
-			try {
-				this.myOutbound = outbound;
 
-				ServiceManager.getInstance().getService(IUserManager.class)
-						.getUserBySession(playerSession).setWSID(playerID);
-				myInList.add(this);
-				outbound.writeTextMessage(CharBuffer
-						.wrap("Connection successfully opened!"));
-				ServiceManager.getInstance().getService(ILoggingManager.class)
-						.log("Login client open.");
-				this.broadcast(this.getUserObject().getName()
-						+ " has joined the game!");
-			} catch (IOException e) {
-				ServiceManager.getInstance().getService(ILoggingManager.class)
-						.log("Socket opening failed.");
-			}
+			this.myOutbound = outbound;
+
+			ServiceManager.getInstance().getService(IUserManager.class)
+					.getUserBySession(playerSession).setWSID(playerID);
+			myInList.add(this);
+			ServiceManager.getInstance().getService(ILoggingManager.class)
+					.log("Login client open.");
+			this.broadcast(this.getUserObject().getName()
+					+ " has joined the game!");
 		}
 
 		@Override
@@ -91,22 +84,19 @@ public class LogicServlet extends WebSocketServlet {
 		@Override
 		protected void onTextMessage(CharBuffer arg0) throws IOException {
 
-			String filteredMessage = String.format("%s",
-					HTMLFilter.filter(arg0.toString()));
-			ServiceManager.getInstance().getService(ILoggingManager.class)
-					.log("Accept Message : " + filteredMessage);
 			System.out.println("LogicServlet:");
-			System.out.println(filteredMessage);
-			String test = new String();
-			test = "event: catalogChangeEvent\n";
-			test += "data: {\n";
-			test += "data: \"id\": 5 ,\n";
-			test += "data: \"test\": 10 \n";
-			test += "data: }\n\n";
-
-			CharBuffer buffer = CharBuffer.wrap(test);
-			this.myOutbound.writeTextMessage(buffer);
-			this.myOutbound.flush();
+			System.out.println(arg0.toString());
+			if (arg0.toString() == "10") {
+				String test = new String();
+				test = "event: catalogChangeEvent\n";
+				test += "data: {\n";
+				test += "data: \"id\": 5 ,\n";
+				test += "data: \"test\": 10 \n";
+				test += "data: }\n\n";
+				CharBuffer buffer = CharBuffer.wrap(test);
+				this.myOutbound.writeTextMessage(buffer);
+				this.myOutbound.flush();
+			}
 
 		}
 

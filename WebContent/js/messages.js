@@ -164,9 +164,10 @@ function sendMessages(id) {
 		 */
 
 		ws = new WebSocket("ws://" + loginURL);
-		ws.onopen = function() {
-			ws.send(answered);
-		};
+//		ws.onopen = function() {
+//			ws.send(answered);
+//		};
+		ws.send(answered);
 		ws.onmessage = function(message) {
 			alert(message);
 		};
