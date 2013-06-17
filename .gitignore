@@ -13,3 +13,4 @@ Thumbs.db
 ######################
 .jsdtscope
 .settings/.jsdtscope
+*.class
