@@ -147,7 +147,6 @@ public class PlayerServlet extends HttpServlet {
 
 		// start game
 		if (sc.equals("7")) {
-			SSEServlet.broadcast(7);
 			response.setContentType("application/json");
 
 			PrintWriter out = response.getWriter();
@@ -177,7 +176,7 @@ public class PlayerServlet extends HttpServlet {
 				ServiceManager.getInstance().getService(ILoggingManager.class)
 						.log("Failed starting game!");
 			} else {
-
+				SSEServlet.broadcast(7);
 				// create answer
 				JSONObject answer = new JSONObject();
 
