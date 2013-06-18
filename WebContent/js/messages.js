@@ -9,12 +9,7 @@ function readMessages(data) {
 		ws = new WebSocket("ws://" + loginURL);
 		ws.onopen = function() {
 		};
-		ws.onmessage = function(message) {
-			// MUSS AUSGEBAUT WERDEN !!!!
-			// $(".catList").append("<li>"+message.data+"</li>");
-		};
-		// $("#highscore table
-		// tbody").append("<tr><td>"+element+"</td><td>0</td></tr>");
+
 		break;
 	case 4:
 		$.each(data, function(index, element) {
@@ -146,11 +141,9 @@ function sendMessages(id) {
 		 * }); } });
 		 */
 
-		ws = new WebSocket("ws://" + loginURL);
-		ws.onopen = function() {
-			ws.send(8);
-		};
+		ws.send(8);
 
+		var case11 = false;
 		var timeout = 0;
 		var question = "";
 		var answer1 = "";
@@ -183,32 +176,10 @@ function sendMessages(id) {
 				answer4 = message.data;
 				showQuestion(question, answer1, answer2, answer3, answer4,
 						timeout);
-			}
-
-		};
-
-		break;
-	case 10:
-		alert("Es wurde die Frage mit index: " + answered + " gewaehlt!");
-		/*
-		 * $.ajax({ type : 'POST', url : 'LogicServlet', data : { rID : '10',
-		 * value : answered }, dataType : 'json', success : function(data) {
-		 * readMessages(data); $.each(data, function(index, element) {
-		 * 
-		 * }); } });
-		 */
-
-		ws = new WebSocket("ws://" + loginURL);
-		ws.onopen = function() {
-			ws.send("11" + answered);
-		};
-		var case11 = false;
-		ws.onmessage = function(message) {
-			var string = message.data;
-			if (string == 11) {
+			} else if (string == 11) {
 				case11 = true;
 			} else if (case11) {
-				var rightAnswer = message.data;
+				var rightAnswer = string;
 				if (rightAnswer == answered) {
 					alert("Richtige Antwort");
 					rightAnswer += 2;
@@ -224,7 +195,24 @@ function sendMessages(id) {
 							.addClass("red");
 				}
 			}
+
 		};
+
+		break;
+	case 10:
+		alert("Es wurde die Frage mit index: " + answered + " gewaehlt!");
+		/*
+		 * $.ajax({ type : 'POST', url : 'LogicServlet', data : { rID : '10',
+		 * value : answered }, dataType : 'json', success : function(data) {
+		 * readMessages(data); $.each(data, function(index, element) {
+		 * 
+		 * }); } });
+		 */
+
+
+		ws.send("11" + answered);
+
+
 		// ws.send(answered);
 
 		break;
