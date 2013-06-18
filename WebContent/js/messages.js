@@ -49,17 +49,20 @@ function readMessages(data) {
 				var rightAnswer = string;
 				if (rightAnswer == answered) {
 					alert("Richtige Antwort");
-					rightAnswer += 2;
-					$("#quizTable tr:nth-child(" + rightAnswer + ") td input")
-							.addClass("green");
+					$("#answer"+rightAnswer).addClass("green");
+//					rightAnswer += 2;
+//					$("#quizTable tr:nth-child(" + rightAnswer + ") td input")
+//							.addClass("green");
 				} else {
 					alert("Falsche Antwort" + rightAnswer);
-					rightAnswer += 2;
-					$("#quizTable tr:nth-child(" + rightAnswer + ") td input")
-							.addClass("green");
-					answered += 2;
-					$("#quizTable tr:nth-child(" + rightAnswer + ") td input")
-							.addClass("red");
+					$("#answer"+answered).addClass("red");
+					$("#answer"+rightAnswer).addClass("green");
+//					rightAnswer += 2;
+//					$("#quizTable tr:nth-child(" + rightAnswer + ") td input")
+//							.addClass("green");
+//					answered += 2;
+//					$("#quizTable tr:nth-child(" + rightAnswer + ") td input")
+//							.addClass("red");
 				}
 			}
 

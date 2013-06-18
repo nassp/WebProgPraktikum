@@ -3,10 +3,10 @@ var answered = 0;
 var showQuestion = function(question, answer1, answer2, answer3, answer4,
 		timeout) {
 	
-	var a1 = '<input class="answer" type="button" name="Antwort 1" value=';
-	var a2 = '<input class="answer" type="button" name="Antwort 2" value=';
-	var a3 = '<input class="answer" type="button" name="Antwort 3" value=';
-	var a4 = '<input class="answer" type="button" name="Antwort 4" value=';
+	var a1 = '<input class="answer" id="answer0" type="button" name="Antwort 1" value=';
+	var a2 = '<input class="answer" id="answer1" type="button" name="Antwort 2" value=';
+	var a3 = '<input class="answer" id="answer2" type="button" name="Antwort 3" value=';
+	var a4 = '<input class="answer" id="answer3" type="button" name="Antwort 4" value=';
 	var input = '></input>';
 
 	content.empty();

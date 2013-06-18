@@ -266,11 +266,11 @@ p, ul, ol, dl {
 }
 
 .red {
-	color: red;
+	background-color: red;
 }
 
 .green {
-	color: green;
+	background-color: green;
 }
 
 
