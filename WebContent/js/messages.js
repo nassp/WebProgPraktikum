@@ -10,65 +10,34 @@ function readMessages(data) {
 		ws.onopen = function() {
 			console.log("WEBSOCKET WURDE GEÖFFNET");
 		};
-		var case11 = false;
-		var timeout = 0;
-		var question = "";
-		var answer1 = "";
-		var answer2 = "";
-		var answer3 = "";
-		var answer4 = "";
-		var count = 0;
 
 		ws.onmessage = function(message) {
-			var string = message.data;
-			if (string == 9) {
-				count = 1;
-			} else if (count == 1) {
-				count = 2;
-				timeout = message.data;
-			} else if (count == 2) {
-				count = 3;
-				question = message.data;
-			} else if (count == 3) {
-				count = 4;
-				answer1 = message.data;
-			} else if (count == 4) {
-				count = 5;
-				answer2 = message.data;
-			} else if (count == 5) {
-				count = 6;
-				answer3 = message.data;
-			} else if (count == 6) {
-				count = 0;
-				answer4 = message.data;
-				showQuestion(question, answer1, answer2, answer3, answer4,
-						timeout);
-			} else if (string == 11) {
-				case11 = true;
-			} else if (case11) {
-				var rightAnswer = string;
-				if (rightAnswer == answered) {
-					alert("Richtige Antwort");
-					$("#answer"+rightAnswer).addClass("green");
-//					rightAnswer += 2;
-//					$("#quizTable tr:nth-child(" + rightAnswer + ") td input")
-//							.addClass("green");
-				} else {
-					alert("Falsche Antwort" + rightAnswer);
-					$("#answer"+answered).addClass("red");
-					$("#answer"+rightAnswer).addClass("green");
-//					rightAnswer += 2;
-//					$("#quizTable tr:nth-child(" + rightAnswer + ") td input")
-//							.addClass("green");
-//					answered += 2;
-//					$("#quizTable tr:nth-child(" + rightAnswer + ") td input")
-//							.addClass("red");
-				}
-				case11 = false;
-			    setTimeout(function(){
-			        ws.send(8);
-			       },5000);
 
+			console.log(message.data);
+			var obj = jQuery.parseJSON(message.data);
+
+			if (obj.id == "9") {
+				showQuestion(obj.question, obj.answer1, obj.answer2,
+						obj.answer3, obj.answer4, obj.timeout);
+			} else if (obj.id == "11") {
+
+				var rightAnswer = obj.answer;
+				if (rightAnswer == answered) {
+					$("#answer" + rightAnswer).addClass("green");
+				} else {
+					$("#answer" + answered).addClass("red");
+					$("#answer" + rightAnswer).addClass("green");
+
+				}
+				// setTimeout(function() {
+				console.log("Vor ws.send");
+				ws.send("8");
+				console.log("Nach ws.send");
+				// }, 5000);
+			} else if (obj.id == "12") {
+				alert("Herzlichen Glückwunsch!\nSie sind Rang " + obj.ranking);
+			} else {
+				alert("Es ist etwas schief gegangen!");
 			}
 
 		};
@@ -93,12 +62,18 @@ function readMessages(data) {
 		break;
 	case 6:
 		$("#highscore table tbody").empty();
+		var playerCounter = 0;
 		$.each(data, function(index, element) {
-			if (index != "id") {
-				console.log("SSE: " + index + " " + element);
-				$("#highscore table tbody").append(
-						"<tr><td>" + element + "</td><td>0</td></tr>");
+			console.log("SSE: " + index + " " + element+ "   playerCounter:" + playerCounter);
+			if (index == ("name"+playerCounter)) {
+				$("#highscore table tbody").append('<tr id="player'+playerCounter+'"></tr>');
+				$('#highscore table tbody #player'+playerCounter).append("<td>" + element + "</td>");
 			}
+			if (index == ("score"+playerCounter)) {
+				$('#highscore table tbody #player'+playerCounter).append("<td>"+element+"</td>");
+				playerCounter = playerCounter+1;
+			}
+			
 		});
 		break;
 	case 7:
@@ -206,23 +181,10 @@ function sendMessages(id) {
 
 		ws.send(8);
 
-
 		break;
 	case 10:
-		alert("Es wurde die Frage mit index: " + answered + " gewaehlt!");
-		/*
-		 * $.ajax({ type : 'POST', url : 'LogicServlet', data : { rID : '10',
-		 * value : answered }, dataType : 'json', success : function(data) {
-		 * readMessages(data); $.each(data, function(index, element) {
-		 * 
-		 * }); } });
-		 */
 
-
-		ws.send("11" + answered);
-
-
-		// ws.send(answered);
+		ws.send("10" + answered);
 
 		break;
 	default:

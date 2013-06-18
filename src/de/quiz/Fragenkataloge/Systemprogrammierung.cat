@@ -1,3 +1,4 @@
+
 Ein Thread soll auf ein durch einen anderen Thread ausgelöstes Ereignis warten. Welcher Mechanismus ist geeignet?
 TIMEOUT: 30
 + nur Semaphore

@@ -8,6 +8,8 @@ var showQuestion = function(question, answer1, answer2, answer3, answer4,
 	var a3 = '<input class="answer" id="answer2" type="button" name="Antwort 3" value=';
 	var a4 = '<input class="answer" id="answer3" type="button" name="Antwort 4" value=';
 	var input = '></input>';
+	
+	timeout = timeout/1000;
 
 	content.empty();
 	content.append('<table id="quizTable"></table>');
@@ -18,22 +20,20 @@ var showQuestion = function(question, answer1, answer2, answer3, answer4,
 	contentTable.append("<tr><td>" + a3 + "\"" + answer3 + "\"" + input + "</td></tr>");
 	contentTable.append("<tr><td>" + a4 + "\"" + answer4 + "\"" + input + "</td></tr>");
 	content.append('<div id="countdownWrap"><div id="countdown"></div></div>');
-	/*jQuery("#content #countdown").countDown({
+	jQuery("#content #countdown").countDown({
 		startNumber : timeout,
 		callBack : function(me) {
 			jQuery(me).text("");
 		}
-	});*/
+	});
 
 	$(".answer").click(function(event) {
 
 		stopCountdown = true;
 
+		answered = $(".answer").index(this);
 		$(".answer").prop("disabled", true);
 
-		//alert($(".answer").index(this));
-		answered = $(".answer").index(this);
-		
 		sendMessages(10);
 
 	});

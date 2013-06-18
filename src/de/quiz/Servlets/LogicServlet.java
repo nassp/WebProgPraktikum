@@ -3,6 +3,7 @@ package de.quiz.Servlets;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.CharBuffer;
+import java.util.Iterator;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -15,6 +16,7 @@ import org.apache.catalina.websocket.StreamInbound;
 import org.apache.catalina.websocket.WebSocketServlet;
 import org.apache.catalina.websocket.WsOutbound;
 
+import de.fhwgt.quiz.application.Player;
 import de.fhwgt.quiz.application.Question;
 import de.fhwgt.quiz.application.Quiz;
 import de.fhwgt.quiz.error.QuizError;
@@ -35,8 +37,9 @@ public class LogicServlet extends WebSocketServlet {
 	private static final long serialVersionUID = 1L;
 	private static CopyOnWriteArrayList<LogicMessageInbound> myInList = new CopyOnWriteArrayList<LogicMessageInbound>();
 	private final AtomicInteger connectionIds = new AtomicInteger(0);
-	
+
 	private Question currentQuestion;
+	private int count = 0;
 
 	@Override
 	protected StreamInbound createWebSocketInbound(String arg0,
@@ -76,6 +79,9 @@ public class LogicServlet extends WebSocketServlet {
 			myInList.add(this);
 			ServiceManager.getInstance().getService(ILoggingManager.class)
 					.log("Login client open.");
+
+			ServiceManager.getInstance().getService(ILoggingManager.class)
+					.log("Login client open. " + playerID);
 		}
 
 		@Override
@@ -88,27 +94,27 @@ public class LogicServlet extends WebSocketServlet {
 		@Override
 		protected void onTextMessage(CharBuffer arg0) throws IOException {
 
-			System.out.println("LogicServlet:");
-			System.out.println("Case: "+arg0.toString());
+			System.out.println(this.getUserObject().getPlayerObject().getName()
+					+ "LogicServlet: Case: " + arg0.toString());
 
 			if (arg0.toString().equals("8")) {
 				this.onCase8();
 			}
 
-			else if (arg0.toString().equals("110")) {
-				this.onCase11("0");
+			else if (arg0.toString().equals("100")) {
+				this.onCase10("0");
 			}
 
-			else if (arg0.toString().equals("111")) {
-				this.onCase11("1");
+			else if (arg0.toString().equals("101")) {
+				this.onCase10("1");
 			}
 
-			else if (arg0.toString().equals("112")) {
-				this.onCase11("2");
+			else if (arg0.toString().equals("102")) {
+				this.onCase10("2");
 			}
 
-			else if (arg0.toString().equals("113")) {
-				this.onCase11("3");
+			else if (arg0.toString().equals("103")) {
+				this.onCase10("3");
 			}
 
 		}
@@ -118,10 +124,15 @@ public class LogicServlet extends WebSocketServlet {
 		 * 
 		 * @param message
 		 */
-		private void broadcast(String message) {
+		private void broadcastGameEnd() {
 			for (LogicMessageInbound connection : myInList) {
 				try {
-					CharBuffer buffer = CharBuffer.wrap(message);
+					int ranking = getRankingForPlayer(connection
+							.getUserObject().getPlayerObject());
+					String meins = "{\"id\": \"12\", \"ranking\": \"" + ranking
+							+ "\"}";
+
+					CharBuffer buffer = CharBuffer.wrap(meins);
 					connection.getWsOutbound().writeTextMessage(buffer);
 				} catch (IOException ignore) {
 					// Ignore
@@ -140,12 +151,14 @@ public class LogicServlet extends WebSocketServlet {
 		}
 
 		private void onCase8() {
+			System.out.println("Anzahl Fragen: " + count);
 			QuizError error = new QuizError();
 			currentQuestion = Quiz.getInstance().requestQuestion(
 					this.getUserObject().getPlayerObject(), new TimeOut(),
 					error);
 
 			if (currentQuestion != null) {
+				count++;
 				System.out.println("Der Index der korrekten Antwort ist"
 						+ String.valueOf(currentQuestion.getCorrectIndex()));
 
@@ -156,7 +169,15 @@ public class LogicServlet extends WebSocketServlet {
 				String answer3 = currentQuestion.getAnswerList().get(2);
 				String answer4 = currentQuestion.getAnswerList().get(3);
 
-				CharBuffer buffer = CharBuffer.wrap("9");
+				String meins = "{\"id\": \"9\", \"timeout\": \"" + timeout
+						+ "\", \"question\": \"" + question
+						+ "\", \"answer1\": \"" + answer1
+						+ "\", \"answer2\": \"" + answer2
+						+ "\", \"answer3\": \"" + answer3
+						+ "\", \"answer4\": \"" + answer4 + "\"}";
+				CharBuffer buffer = CharBuffer.wrap(meins);
+
+				// CharBuffer buffer = CharBuffer.wrap("9");
 				try {
 					this.myOutbound.writeTextMessage(buffer);
 					this.myOutbound.flush();
@@ -165,105 +186,63 @@ public class LogicServlet extends WebSocketServlet {
 					e.printStackTrace();
 				}
 
-				buffer = null;
-				buffer = CharBuffer.wrap(new Long(timeout).toString());
-				try {
-					this.myOutbound.writeTextMessage(buffer);
-					this.myOutbound.flush();
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
+				System.out.println(this.getUserObject().getPlayerObject()
+						.getName()
+						+ ": Frage wurde versendet!");
 
-				buffer = null;
-				buffer = CharBuffer.wrap(question);
-				try {
-					this.myOutbound.writeTextMessage(buffer);
-					this.myOutbound.flush();
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
+			} else {
+				System.out.println("Unerwarteter Fehler!");
+				Quiz.getInstance().setDone(
+						this.getUserObject().getPlayerObject());
 
-				buffer = null;
-				buffer = CharBuffer.wrap(answer1);
-				try {
-					this.myOutbound.writeTextMessage(buffer);
-					this.myOutbound.flush();
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+				for (Player p : Quiz.getInstance().getPlayerList()) {
+					if (!p.isDone()) {
+						return;
+					} else {
+						broadcastGameEnd();
+					}
 				}
-
-				buffer = null;
-				buffer = CharBuffer.wrap(answer2);
-				try {
-					this.myOutbound.writeTextMessage(buffer);
-					this.myOutbound.flush();
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-
-				buffer = null;
-				buffer = CharBuffer.wrap(answer3);
-				try {
-					this.myOutbound.writeTextMessage(buffer);
-					this.myOutbound.flush();
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-
-				buffer = null;
-				buffer = CharBuffer.wrap(answer4);
-				try {
-					this.myOutbound.writeTextMessage(buffer);
-					this.myOutbound.flush();
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-
-			}
-			else
-			{
-//				System.out.println("Unerwarteter Fehler!");
-				Quiz.getInstance().setDone(this.getUserObject().getPlayerObject());
 			}
 		}
 
-		private void onCase11(String answer) {
+		private void onCase10(String answer) {
+
+			System.out.println("Case: 10");
 			QuizError error = new QuizError();
 			Quiz.getInstance().answerQuestion(
 					this.getUserObject().getPlayerObject(), new Long(answer),
 					error);
 
-			// if(currentQuestion.validateAnswer(new Long(answer)))
-			// {
-			// }
-
-			String test = new String();
-			test = "11";
-			CharBuffer buffer = CharBuffer.wrap(test);
-			try {
-				this.myOutbound.writeTextMessage(buffer);
-				this.myOutbound.flush();
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+			if (currentQuestion != null) {
+				String meins = "{\"id\": \"11\", \"answer\": \""
+						+ String.valueOf(currentQuestion.getCorrectIndex())
+						+ "\"}";
+				CharBuffer buffer = CharBuffer.wrap(meins);
+				try {
+					this.myOutbound.writeTextMessage(buffer);
+					this.myOutbound.flush();
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+			else
+			{
+				System.out.println("Wie kommt das?");
 			}
 
-			buffer = null;
-			buffer = CharBuffer.wrap(String.valueOf(currentQuestion.getCorrectIndex()));
-			try {
-				this.myOutbound.writeTextMessage(buffer);
-				this.myOutbound.flush();
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+		}
 
+		private int getRankingForPlayer(Player curPlayer) {
+			int i = 1;
+			for (Player player : Quiz.getInstance().getPlayerList()) {
+				if (player != curPlayer) {
+					if (player.getScore() > curPlayer.getScore()) {
+						i++;
+					}
+				}
+			}
+			return i;
 		}
 
 	}
