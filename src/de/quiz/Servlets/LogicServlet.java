@@ -89,7 +89,7 @@ public class LogicServlet extends WebSocketServlet {
 		protected void onTextMessage(CharBuffer arg0) throws IOException {
 
 			System.out.println("LogicServlet:");
-			System.out.println(arg0.toString());
+			System.out.println("Case: "+arg0.toString());
 
 			if (arg0.toString().equals("8")) {
 				this.onCase8();
@@ -144,8 +144,6 @@ public class LogicServlet extends WebSocketServlet {
 			currentQuestion = Quiz.getInstance().requestQuestion(
 					this.getUserObject().getPlayerObject(), new TimeOut(),
 					error);
-
-			System.out.println("Case 8");
 
 			if (currentQuestion != null) {
 				System.out.println("Der Index der korrekten Antwort ist"

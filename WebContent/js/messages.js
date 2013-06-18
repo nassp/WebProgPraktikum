@@ -2,12 +2,67 @@ function readMessages(data) {
 
 	switch (data.id) {
 	case 2:
-		sseFunc();
 		userId = data.userID;
+		sseFunc();
 		console.log(userId);
 		loggedIn(data.userID);
 		ws = new WebSocket("ws://" + loginURL);
 		ws.onopen = function() {
+			console.log("WEBSOCKET WURDE GEÖFFNET");
+		};
+		var case11 = false;
+		var timeout = 0;
+		var question = "";
+		var answer1 = "";
+		var answer2 = "";
+		var answer3 = "";
+		var answer4 = "";
+		var count = 0;
+
+		ws.onmessage = function(message) {
+			var string = message.data;
+			if (string == 9) {
+				count = 1;
+			} else if (count == 1) {
+				count = 2;
+				timeout = message.data;
+			} else if (count == 2) {
+				count = 3;
+				question = message.data;
+			} else if (count == 3) {
+				count = 4;
+				answer1 = message.data;
+			} else if (count == 4) {
+				count = 5;
+				answer2 = message.data;
+			} else if (count == 5) {
+				count = 6;
+				answer3 = message.data;
+			} else if (count == 6) {
+				count = 0;
+				answer4 = message.data;
+				showQuestion(question, answer1, answer2, answer3, answer4,
+						timeout);
+			} else if (string == 11) {
+				case11 = true;
+			} else if (case11) {
+				var rightAnswer = string;
+				if (rightAnswer == answered) {
+					alert("Richtige Antwort");
+					rightAnswer += 2;
+					$("#quizTable tr:nth-child(" + rightAnswer + ") td input")
+							.addClass("green");
+				} else {
+					alert("Falsche Antwort" + rightAnswer);
+					rightAnswer += 2;
+					$("#quizTable tr:nth-child(" + rightAnswer + ") td input")
+							.addClass("green");
+					answered += 2;
+					$("#quizTable tr:nth-child(" + rightAnswer + ") td input")
+							.addClass("red");
+				}
+			}
+
 		};
 
 		break;
@@ -143,60 +198,6 @@ function sendMessages(id) {
 
 		ws.send(8);
 
-		var case11 = false;
-		var timeout = 0;
-		var question = "";
-		var answer1 = "";
-		var answer2 = "";
-		var answer3 = "";
-		var answer4 = "";
-		var count = 0;
-
-		ws.onmessage = function(message) {
-			var string = message.data;
-			if (string == 9) {
-				count = 1;
-			} else if (count == 1) {
-				count = 2;
-				timeout = message.data;
-			} else if (count == 2) {
-				count = 3;
-				question = message.data;
-			} else if (count == 3) {
-				count = 4;
-				answer1 = message.data;
-			} else if (count == 4) {
-				count = 5;
-				answer2 = message.data;
-			} else if (count == 5) {
-				count = 6;
-				answer3 = message.data;
-			} else if (count == 6) {
-				count = 0;
-				answer4 = message.data;
-				showQuestion(question, answer1, answer2, answer3, answer4,
-						timeout);
-			} else if (string == 11) {
-				case11 = true;
-			} else if (case11) {
-				var rightAnswer = string;
-				if (rightAnswer == answered) {
-					alert("Richtige Antwort");
-					rightAnswer += 2;
-					$("#quizTable tr:nth-child(" + rightAnswer + ") td input")
-							.addClass("green");
-				} else {
-					alert("Falsche Antwort" + rightAnswer);
-					rightAnswer += 2;
-					$("#quizTable tr:nth-child(" + rightAnswer + ") td input")
-							.addClass("green");
-					answered += 2;
-					$("#quizTable tr:nth-child(" + rightAnswer + ") td input")
-							.addClass("red");
-				}
-			}
-
-		};
 
 		break;
 	case 10:
