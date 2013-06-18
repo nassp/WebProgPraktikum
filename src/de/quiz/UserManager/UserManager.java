@@ -47,6 +47,7 @@ public class UserManager implements IUserManager {
 							+ " removed because of session timeout!");
 			SSEServlet.removeIUser(user.getUserID());
 			activeUser.remove(user);
+			Quiz.getInstance().signalPlayerChange();
 
 		} else {
 			ServiceManager.getInstance().getService(ILoggingManager.class)
@@ -55,6 +56,7 @@ public class UserManager implements IUserManager {
 			if (error.getStatus() == 7) {
 				SSEServlet.removeIUser(user.getUserID());
 				activeUser.remove(user);
+				Quiz.getInstance().signalPlayerChange();
 			}
 		}
 
@@ -197,6 +199,8 @@ public class UserManager implements IUserManager {
 		for (IUser user : this.activeUser) {
 			try {
 				tmpJSON.put("name" + i, user.getName());
+				System.out.println("score"+i+": "+user.getPlayerObject().getScore());
+				tmpJSON.put("score" + i, user.getPlayerObject().getScore());
 			} catch (JSONException e) {
 				ServiceManager.getInstance().getService(ILoggingManager.class)
 						.log("Failed to send Playerlist");

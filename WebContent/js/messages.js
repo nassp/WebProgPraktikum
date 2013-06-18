@@ -49,18 +49,26 @@ function readMessages(data) {
 				var rightAnswer = string;
 				if (rightAnswer == answered) {
 					alert("Richtige Antwort");
-					rightAnswer += 2;
-					$("#quizTable tr:nth-child(" + rightAnswer + ") td input")
-							.addClass("green");
+					$("#answer"+rightAnswer).addClass("green");
+//					rightAnswer += 2;
+//					$("#quizTable tr:nth-child(" + rightAnswer + ") td input")
+//							.addClass("green");
 				} else {
 					alert("Falsche Antwort" + rightAnswer);
-					rightAnswer += 2;
-					$("#quizTable tr:nth-child(" + rightAnswer + ") td input")
-							.addClass("green");
-					answered += 2;
-					$("#quizTable tr:nth-child(" + rightAnswer + ") td input")
-							.addClass("red");
+					$("#answer"+answered).addClass("red");
+					$("#answer"+rightAnswer).addClass("green");
+//					rightAnswer += 2;
+//					$("#quizTable tr:nth-child(" + rightAnswer + ") td input")
+//							.addClass("green");
+//					answered += 2;
+//					$("#quizTable tr:nth-child(" + rightAnswer + ") td input")
+//							.addClass("red");
 				}
+				case11 = false;
+			    setTimeout(function(){
+			        ws.send(8);
+			       },5000);
+
 			}
 
 		};
@@ -85,12 +93,18 @@ function readMessages(data) {
 		break;
 	case 6:
 		$("#highscore table tbody").empty();
+		var playerCounter = 0;
 		$.each(data, function(index, element) {
-			if (index != "id") {
-				console.log("SSE: " + index + " " + element);
-				$("#highscore table tbody").append(
-						"<tr><td>" + element + "</td><td>0</td></tr>");
+			console.log("SSE: " + index + " " + element+ "   playerCounter:" + playerCounter);
+			if (index == ("name"+playerCounter)) {
+				$("#highscore table tbody").append('<tr id="player'+playerCounter+'"></tr>');
+				$('#highscore table tbody #player'+playerCounter).append("<td>" + element + "</td>");
 			}
+			if (index == ("score"+playerCounter)) {
+				$('#highscore table tbody #player'+playerCounter).append("<td>"+element+"</td>");
+				playerCounter = playerCounter+1;
+			}
+			
 		});
 		break;
 	case 7:
