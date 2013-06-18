@@ -106,6 +106,7 @@ public class User implements IUser {
      */
     public void setRequest(HttpServletRequest request) {
     	this.request = request;
+    	this.response.setCharacterEncoding("UTF-8");
     }
     /**
      * set the player response
