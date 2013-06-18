@@ -228,7 +228,8 @@ public class LogicServlet extends WebSocketServlet {
 			}
 			else
 			{
-				System.out.println("Unerwarteter Fehler!");
+//				System.out.println("Unerwarteter Fehler!");
+				Quiz.getInstance().setDone(this.getUserObject().getPlayerObject());
 			}
 		}
 

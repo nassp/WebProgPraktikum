@@ -64,6 +64,11 @@ function readMessages(data) {
 //					$("#quizTable tr:nth-child(" + rightAnswer + ") td input")
 //							.addClass("red");
 				}
+				case11 = false;
+			    setTimeout(function(){
+			        ws.send(8);
+			       },5000);
+
 			}
 
 		};
