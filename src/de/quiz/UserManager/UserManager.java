@@ -199,6 +199,8 @@ public class UserManager implements IUserManager {
 		for (IUser user : this.activeUser) {
 			try {
 				tmpJSON.put("name" + i, user.getName());
+				System.out.println("score"+i+": "+user.getPlayerObject().getScore());
+				tmpJSON.put("score" + i, user.getPlayerObject().getScore());
 			} catch (JSONException e) {
 				ServiceManager.getInstance().getService(ILoggingManager.class)
 						.log("Failed to send Playerlist");
