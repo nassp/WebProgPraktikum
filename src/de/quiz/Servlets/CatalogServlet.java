@@ -143,6 +143,7 @@ public class CatalogServlet extends HttpServlet {
 				} else {
 					System.out.println("Player ist null");
 				}
+				if(player.isSuperuser()){
 				QuizError error = new QuizError();
 				// error.set(QuizErrorType.NOT_SUPERUSER);
 				Catalog cat = Quiz.getInstance().changeCatalog(player,
@@ -152,6 +153,8 @@ public class CatalogServlet extends HttpServlet {
 				} else {
 					System.out.println("catalog not changed");
 				}
+				}
+				
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
