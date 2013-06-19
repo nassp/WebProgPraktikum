@@ -29,11 +29,11 @@ function readMessages(data) {
 					$("#answer" + rightAnswer).addClass("green");
 
 				}
-				// setTimeout(function() {
+				 setTimeout(function() {
 				console.log("Vor ws.send");
 				ws.send("8");
 				console.log("Nach ws.send");
-				// }, 5000);
+				 }, 5000);
 			} else if (obj.id == "12") {
 				alert("Herzlichen Glückwunsch!\nSie sind Rang " + obj.ranking);
 			} else {
