@@ -3,10 +3,10 @@ package de.quiz.Servlets;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.CharBuffer;
-import java.util.Iterator;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -212,7 +212,15 @@ public class LogicServlet extends WebSocketServlet {
 			Quiz.getInstance().answerQuestion(
 					this.getUserObject().getPlayerObject(), new Long(answer),
 					error);
-
+			try {
+				SSEServlet.broadcast(6);
+			} catch (ServletException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			} catch (IOException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
 			if (currentQuestion != null) {
 				String meins = "{\"id\": \"11\", \"answer\": \""
 						+ String.valueOf(currentQuestion.getCorrectIndex())
