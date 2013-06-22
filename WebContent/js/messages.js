@@ -13,6 +13,7 @@ function readMessages(data) {
 
 		ws.onmessage = function(message) {
 
+			var bool = false;
 			console.log(message.data);
 			var obj = jQuery.parseJSON(message.data);
 
@@ -24,16 +25,26 @@ function readMessages(data) {
 				var rightAnswer = obj.answer;
 				if (rightAnswer == answered) {
 					$("#answer" + rightAnswer).addClass("green");
+				} else if (rightAnswer == 10) {
+					bool = true;
 				} else {
 					$("#answer" + answered).addClass("red");
 					$("#answer" + rightAnswer).addClass("green");
 
 				}
-				 setTimeout(function() {
-				console.log("Vor ws.send");
-				ws.send("8");
-				console.log("Nach ws.send");
-				 }, 5000);
+				if (bool) {
+					setTimeout(function() {
+						console.log("Timeout: Vor ws.send");
+						ws.send("8");
+						console.log("Timeout: Nach ws.send");
+					}, 2000);
+				} else {
+					setTimeout(function() {
+						console.log("Vor ws.send");
+						ws.send("8");
+						console.log("Nach ws.send");
+					}, 5000);
+				}
 			} else if (obj.id == "12") {
 				alert("Herzlichen Glückwunsch!\nSie sind Rang " + obj.ranking);
 			} else {
@@ -62,21 +73,29 @@ function readMessages(data) {
 		break;
 	case 6:
 		$("#highscore table tbody").empty();
-		var playerCounter = 1; 
+		var playerCounter = 1;
 		$.each(data, function(index, element) {
-			console.log("SSE: " + index + " " + element+ "   playerCounter:" + playerCounter);
-			if (index == ("name"+playerCounter)) {
-				$("#highscore table tbody").append('<tr id="player'+playerCounter+'"></tr>');
-				$('#highscore table tbody #player'+playerCounter).append("<td>" + element + "</td>");
+			console.log("SSE: " + index + " " + element + "   playerCounter:"
+					+ playerCounter);
+			if (index == ("name" + playerCounter)) {
+				$("#highscore table tbody").append(
+						'<tr id="player' + playerCounter + '"></tr>');
+				$('#highscore table tbody #player' + playerCounter).append(
+						"<td>" + element + "</td>");
 			}
-			if (index == ("score"+playerCounter)) {
-				$('#highscore table tbody #player'+playerCounter).append("<td>"+element+"</td>");
+			if (index == ("score" + playerCounter)) {
+				$('#highscore table tbody #player' + playerCounter).append(
+						"<td>" + element + "</td>");
 			}
-			if (index == ("id"+playerCounter)) {
-				if(userId==element)$('#highscore table tbody #player'+playerCounter+' td:first').css("text-decoration","underline");
-				playerCounter = playerCounter+1; 
+			if (index == ("id" + playerCounter)) {
+				if (userId == element)
+					$(
+							'#highscore table tbody #player' + playerCounter
+									+ ' td:first').css("text-decoration",
+							"underline");
+				playerCounter = playerCounter + 1;
 			}
-			
+
 		});
 		break;
 	case 7:

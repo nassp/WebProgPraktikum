@@ -187,50 +187,6 @@ public class CatalogServlet extends HttpServlet {
 			out.print(json);
 		}
 
-		else if (sc.equals("8")) {
-			response.setContentType("application/json");
-			PrintWriter out = response.getWriter();
-			JSONObject json = new JSONObject();
-
-			QuizError error = new QuizError();
-			Question currentQuestion = Quiz.getInstance().requestQuestion(
-					ServiceManager.getInstance().getService(IUserManager.class)
-							.getUserBySession(request.getSession())
-							.getPlayerObject(), new TimeOut(), error);
-			
-			System.out.println("Case 8");
-			
-
-			if (currentQuestion != null) {
-				long timeout = currentQuestion.getTimeout();
-				String question = currentQuestion.getQuestion();
-				String answer1 = currentQuestion.getAnswerList().get(0);
-				String answer2 = currentQuestion.getAnswerList().get(1);
-				String answer3 = currentQuestion.getAnswerList().get(2);
-				String answer4 = currentQuestion.getAnswerList().get(3);
-				
-				currentQuestion.validateAnswer(0);
-				
-				Quiz.getInstance().answerQuestion(ServiceManager.getInstance().getService(IUserManager.class)
-							.getUserBySession(request.getSession())
-							.getPlayerObject(), 0, error);
-				
-				try {
-					json.put("id", 9);
-					json.put("question", question);
-					json.put("answer1", answer1);
-					json.put("answer2", answer2);
-					json.put("answer3", answer3);
-					json.put("answer4", answer4);
-					json.put("timeout", timeout);
-				} catch (JSONException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-				out.print(json);
-			}
-		}
-
 	}
 
 }

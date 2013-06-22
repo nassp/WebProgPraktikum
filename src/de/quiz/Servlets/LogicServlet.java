@@ -127,8 +127,12 @@ public class LogicServlet extends WebSocketServlet {
 		private void broadcastGameEnd() {
 			for (LogicMessageInbound connection : myInList) {
 				try {
-					int ranking = ServiceManager.getInstance().getService(IUserManager.class).getRankingForPlayer(connection
-							.getUserObject().getPlayerObject());
+					int ranking = ServiceManager
+							.getInstance()
+							.getService(IUserManager.class)
+							.getRankingForPlayer(
+									connection.getUserObject()
+											.getPlayerObject());
 					String meins = "{\"id\": \"12\", \"ranking\": \"" + ranking
 							+ "\"}";
 
@@ -154,8 +158,8 @@ public class LogicServlet extends WebSocketServlet {
 			System.out.println("Anzahl Fragen: " + count);
 			QuizError error = new QuizError();
 			currentQuestion = Quiz.getInstance().requestQuestion(
-					this.getUserObject().getPlayerObject(), new TimeOut(),
-					error);
+					this.getUserObject().getPlayerObject(),
+					new TimeOut(this.myOutbound), error);
 
 			if (currentQuestion != null) {
 				count++;
@@ -163,6 +167,7 @@ public class LogicServlet extends WebSocketServlet {
 						+ String.valueOf(currentQuestion.getCorrectIndex()));
 
 				long timeout = currentQuestion.getTimeout();
+				System.out.println("TimeOut vom Server: " + timeout);
 				String question = currentQuestion.getQuestion();
 				String answer1 = currentQuestion.getAnswerList().get(0);
 				String answer2 = currentQuestion.getAnswerList().get(1);
@@ -233,15 +238,11 @@ public class LogicServlet extends WebSocketServlet {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
-			}
-			else
-			{
+			} else {
 				System.out.println("Wie kommt das?");
 			}
 
 		}
-
-
 
 	}
 

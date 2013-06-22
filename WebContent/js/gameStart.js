@@ -3,6 +3,8 @@ var answered = 0;
 var showQuestion = function(question, answer1, answer2, answer3, answer4,
 		timeout) {
 	
+	stopCountdown = false;
+	
 	var a1 = '<input class="answer" id="answer0" type="button" name="Antwort 1" value=';
 	var a2 = '<input class="answer" id="answer1" type="button" name="Antwort 2" value=';
 	var a3 = '<input class="answer" id="answer2" type="button" name="Antwort 3" value=';
@@ -10,6 +12,8 @@ var showQuestion = function(question, answer1, answer2, answer3, answer4,
 	var input = '></input>';
 	
 	timeout = timeout/1000;
+	
+	console.log("Timeout: " + timeout);
 
 	content.empty();
 	content.append('<table id="quizTable"></table>');
