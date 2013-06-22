@@ -198,9 +198,11 @@ public class UserManager implements IUserManager {
 		int i = 0;
 		for (IUser user : this.activeUser) {
 			try {
-				tmpJSON.put("name" + i, user.getName());
-				System.out.println("score"+i+": "+user.getPlayerObject().getScore());
-				tmpJSON.put("score" + i, user.getPlayerObject().getScore());
+				int rank = getRankingForPlayer(user.getPlayerObject());
+				System.out.println("rank:"+rank+"  user:"+user.getName());
+				tmpJSON.put("name" + rank, user.getName());
+				tmpJSON.put("score" + rank, user.getPlayerObject().getScore());
+				tmpJSON.put("id" + rank, user.getPlayerObject().getId());
 			} catch (JSONException e) {
 				ServiceManager.getInstance().getService(ILoggingManager.class)
 						.log("Failed to send Playerlist");
@@ -209,7 +211,26 @@ public class UserManager implements IUserManager {
 		}
 		return tmpJSON;
 	}
-
+	
+	/**
+	 * Returns the rankId for the requested Player
+	 * 
+	 * @param curPlayer
+	 * @return rankId
+	 */
+	public int getRankingForPlayer(Player curPlayer) {
+		int i = 1;
+		for (Player player : Quiz.getInstance().getPlayerList()) {
+			if (player != curPlayer) {
+				if (player.getScore() > curPlayer.getScore()) {
+					i++;
+				}else if(player.getScore() == curPlayer.getScore()&&player.getId()<curPlayer.getId()){
+					i++;
+				}
+			}
+		}
+		return i;
+	}
 	// /**
 	// * checks if the given user has a valid session if not valid the user will
 	// * be removed

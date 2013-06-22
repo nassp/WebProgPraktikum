@@ -4,6 +4,7 @@ import javax.servlet.http.HttpSession;
 
 import org.json.JSONObject;
 
+import de.fhwgt.quiz.application.Player;
 import de.quiz.ServiceManager.IService;
 import de.quiz.User.IUser;
 
@@ -76,6 +77,14 @@ public interface IUserManager extends IService {
 	 * @param user
 	 */
 	public void removeActiveUser(IUser user);
+	
+	/**
+	 * Returns the rankId for the requested Player
+	 * 
+	 * @param curPlayer
+	 * @return rankId
+	 */
+	public int getRankingForPlayer(Player curPlayer);
 	
 	/**
 	 * Returns the user with given websocket id

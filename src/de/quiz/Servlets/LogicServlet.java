@@ -127,7 +127,7 @@ public class LogicServlet extends WebSocketServlet {
 		private void broadcastGameEnd() {
 			for (LogicMessageInbound connection : myInList) {
 				try {
-					int ranking = getRankingForPlayer(connection
+					int ranking = ServiceManager.getInstance().getService(IUserManager.class).getRankingForPlayer(connection
 							.getUserObject().getPlayerObject());
 					String meins = "{\"id\": \"12\", \"ranking\": \"" + ranking
 							+ "\"}";
@@ -241,17 +241,7 @@ public class LogicServlet extends WebSocketServlet {
 
 		}
 
-		private int getRankingForPlayer(Player curPlayer) {
-			int i = 1;
-			for (Player player : Quiz.getInstance().getPlayerList()) {
-				if (player != curPlayer) {
-					if (player.getScore() > curPlayer.getScore()) {
-						i++;
-					}
-				}
-			}
-			return i;
-		}
+
 
 	}
 

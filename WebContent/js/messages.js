@@ -62,7 +62,7 @@ function readMessages(data) {
 		break;
 	case 6:
 		$("#highscore table tbody").empty();
-		var playerCounter = 0;
+		var playerCounter = 1; 
 		$.each(data, function(index, element) {
 			console.log("SSE: " + index + " " + element+ "   playerCounter:" + playerCounter);
 			if (index == ("name"+playerCounter)) {
@@ -71,7 +71,10 @@ function readMessages(data) {
 			}
 			if (index == ("score"+playerCounter)) {
 				$('#highscore table tbody #player'+playerCounter).append("<td>"+element+"</td>");
-				playerCounter = playerCounter+1;
+			}
+			if (index == ("id"+playerCounter)) {
+				if(userId==element)$('#highscore table tbody #player'+playerCounter+' td:first').css("text-decoration","underline");
+				playerCounter = playerCounter+1; 
 			}
 			
 		});

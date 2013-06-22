@@ -64,6 +64,11 @@ class ClientThread implements Runnable {
 							out.write("data: \"score" + i  + "\": \""
 									+ json.get("score" + i) + "\"");
 						}
+						if (json.has("id" + i)) {
+							out.write(",\n");
+							out.write("data: \"id" + i  + "\": \""
+									+ json.get("id" + i) + "\"");
+						}
 					}
 					out.write("\n");
 					out.write("data: }\n\n");
