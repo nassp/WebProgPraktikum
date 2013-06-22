@@ -153,12 +153,14 @@ public class Player {
         // Make sure there are questions assigned
         if (!this.hasQuestions()) {
             error.set(QuizErrorType.GAME_NOT_ACTIVE);
+            System.out.println("Keine Fragen mehr vorhanden!");
             return null;
         }
 
         // Unanswered question
         if (questionActive) {
             error.set(QuizErrorType.OPEN_QUESTION);
+            System.out.println("Unbeantwortete Fragen!");
             return null;
         }
 

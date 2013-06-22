@@ -42,7 +42,6 @@ class ClientThread implements Runnable {
 	public void run() {
 			try {
 
-				System.out.println("Send Broadcast to " + ctx.getRequest());
 				ctx.getResponse().setContentType("text/event-stream");
 				ctx.getResponse().setCharacterEncoding("UTF-8");
 				PrintWriter out = ctx.getResponse().getWriter();

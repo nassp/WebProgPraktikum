@@ -38,9 +38,6 @@ public class LogicServlet extends WebSocketServlet {
 	private static CopyOnWriteArrayList<LogicMessageInbound> myInList = new CopyOnWriteArrayList<LogicMessageInbound>();
 	private final AtomicInteger connectionIds = new AtomicInteger(0);
 
-	private Question currentQuestion;
-	private int count = 0;
-
 	@Override
 	protected StreamInbound createWebSocketInbound(String arg0,
 			HttpServletRequest arg1) {
@@ -50,6 +47,8 @@ public class LogicServlet extends WebSocketServlet {
 
 	private class LogicMessageInbound extends MessageInbound {
 		private WsOutbound myOutbound;
+
+		private Question currentQuestion;
 
 		private final int playerID;
 		private final HttpSession playerSession;
@@ -155,19 +154,18 @@ public class LogicServlet extends WebSocketServlet {
 		}
 
 		private void onCase8() {
-			System.out.println("Anzahl Fragen: " + count);
 			QuizError error = new QuizError();
+			TimeOut t = new TimeOut(this.myOutbound, this.getUserObject()
+					.getPlayerObject());
 			currentQuestion = Quiz.getInstance().requestQuestion(
-					this.getUserObject().getPlayerObject(),
-					new TimeOut(this.myOutbound), error);
+					this.getUserObject().getPlayerObject(), t, error);
 
 			if (currentQuestion != null) {
-				count++;
-				System.out.println("Der Index der korrekten Antwort ist"
-						+ String.valueOf(currentQuestion.getCorrectIndex()));
+				
+				t.setThisQuestion(currentQuestion);
+				t.setIndex(currentQuestion.getCorrectIndex());
 
 				long timeout = currentQuestion.getTimeout();
-				System.out.println("TimeOut vom Server: " + timeout);
 				String question = currentQuestion.getQuestion();
 				String answer1 = currentQuestion.getAnswerList().get(0);
 				String answer2 = currentQuestion.getAnswerList().get(1);

@@ -25,8 +25,10 @@ function readMessages(data) {
 				var rightAnswer = obj.answer;
 				if (rightAnswer == answered) {
 					$("#answer" + rightAnswer).addClass("green");
-				} else if (rightAnswer == 10) {
+				} else if (rightAnswer >= 10) {
 					bool = true;
+					$("#answer" + (rightAnswer-10)).addClass("red");
+					
 				} else {
 					$("#answer" + answered).addClass("red");
 					$("#answer" + rightAnswer).addClass("green");
@@ -37,13 +39,13 @@ function readMessages(data) {
 						console.log("Timeout: Vor ws.send");
 						ws.send("8");
 						console.log("Timeout: Nach ws.send");
-					}, 2000);
+					}, 3500);
 				} else {
 					setTimeout(function() {
 						console.log("Vor ws.send");
 						ws.send("8");
 						console.log("Nach ws.send");
-					}, 5000);
+					}, 3500);
 				}
 			} else if (obj.id == "12") {
 				alert("Herzlichen Glückwunsch!\nSie sind Rang " + obj.ranking);

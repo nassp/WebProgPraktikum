@@ -55,9 +55,7 @@ public class SSEServlet extends HttpServlet {
 	public void doGet(HttpServletRequest req, HttpServletResponse res)
 			throws ServletException, IOException {
 		//bradcast
-		System.out.println(req.getParameter("uID"));
 		addIUser(req.getParameter("uID"),req,res);
-		System.out.println("Start broadcast");
 		for (IUser user : userArr) {
 			sendMsg(user,6);
 		}
@@ -73,8 +71,6 @@ public class SSEServlet extends HttpServlet {
 		HttpServletRequest req = user.getRequest();
 		HttpServletResponse res = user.getResponse();
 		PrintWriter out = res.getWriter();
-		System.out.println("bla: "+out);
-		System.out.println("response status: "+res.getStatus());
 		final AsyncContext ctx;
 		if(req.getAsyncContext()==null){
 			ctx = req.startAsync();
@@ -136,7 +132,6 @@ public class SSEServlet extends HttpServlet {
 	}
 	
 	public static boolean broadcast(int msg) throws ServletException, IOException {
-		System.out.println("Start broadcast");
 		for (IUser user : userArr) {
 			sendMsg(user,msg);
 		}

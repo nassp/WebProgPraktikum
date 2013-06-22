@@ -199,7 +199,6 @@ public class UserManager implements IUserManager {
 		for (IUser user : this.activeUser) {
 			try {
 				int rank = getRankingForPlayer(user.getPlayerObject());
-				System.out.println("rank:"+rank+"  user:"+user.getName());
 				tmpJSON.put("name" + rank, user.getName());
 				tmpJSON.put("score" + rank, user.getPlayerObject().getScore());
 				tmpJSON.put("id" + rank, user.getPlayerObject().getId());

@@ -58,13 +58,11 @@ public class ClientConnection {
 		return clientId;
 	}
 	public AsyncContext startAsyncCo(){
-		System.out.println("start asyncco");
 		asyncCo= request.startAsync(request, response);
 		asyncCo.start(new Runnable() {
 			public void run() {
 				while(true){
 					synchronized (this) {
-						System.out.println("gallo");
 						/*try {
 							System.out.println("warte auf notify");
 							this.wait();
@@ -73,11 +71,9 @@ public class ClientConnection {
 							e1.printStackTrace();
 						}*/
 						try {
-							System.out.println("Send Broadcast to "+request);
 							response.setContentType("text/event-stream");
 							response.setCharacterEncoding("UTF-8");
 							PrintWriter out = response.getWriter();
-							System.out.println("bla: "+out);
 							 JSONObject json = ServiceManager.getInstance().getService(IUserManager.class).getPlayerList();
 							 int i = 0;
 							 out.write("event: playerListEvent\n");
