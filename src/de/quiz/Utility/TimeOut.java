@@ -51,53 +51,6 @@ public class TimeOut extends TimerTask {
 			e.printStackTrace();
 		}
 
-//		Question currentQuestion = Quiz.getInstance().requestQuestion(p,
-//				new TimeOut(this.myOutbound, p), error);
-//
-//		if (currentQuestion != null) {
-//			// count++;
-//			System.out.println("Der Index der korrekten Antwort ist"
-//					+ String.valueOf(currentQuestion.getCorrectIndex()));
-//
-//			long timeout = currentQuestion.getTimeout();
-//			System.out.println("TimeOut vom Server: " + timeout);
-//			String question = currentQuestion.getQuestion();
-//			String answer1 = currentQuestion.getAnswerList().get(0);
-//			String answer2 = currentQuestion.getAnswerList().get(1);
-//			String answer3 = currentQuestion.getAnswerList().get(2);
-//			String answer4 = currentQuestion.getAnswerList().get(3);
-//
-//			String meins2 = "{\"id\": \"9\", \"timeout\": \"" + timeout
-//					+ "\", \"question\": \"" + question + "\", \"answer1\": \""
-//					+ answer1 + "\", \"answer2\": \"" + answer2
-//					+ "\", \"answer3\": \"" + answer3 + "\", \"answer4\": \""
-//					+ answer4 + "\"}";
-//			CharBuffer buffer2 = CharBuffer.wrap(meins2);
-//
-//			// CharBuffer buffer = CharBuffer.wrap("9");
-//			try {
-//				this.myOutbound.writeTextMessage(buffer2);
-//				this.myOutbound.flush();
-//			} catch (IOException e) {
-//				// TODO Auto-generated catch block
-//				e.printStackTrace();
-//			}
-//
-//			System.out.println(p.getName() + ": Frage wurde versendet!");
-//
-//		} else {
-//			System.out.println("Unerwarteter Fehler!");
-//			Quiz.getInstance().setDone(p);
-//
-//			// for (Player p : Quiz.getInstance().getPlayerList()) {
-//			// if (!p.isDone()) {
-//			// return;
-//			// } else {
-//			// broadcastGameEnd();
-//			// }
-//			// }
-//		}
-
 	}
 
 }

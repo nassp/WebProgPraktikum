@@ -12,16 +12,16 @@ function readMessages(data) {
 		};
 
 		ws.onmessage = function(message) {
-
+			console.log(message);
 			var bool = false;
-			console.log(message.data);
+			//console.log(message.data);
 			var obj = jQuery.parseJSON(message.data);
 
 			if (obj.id == "9") {
 				showQuestion(obj.question, obj.answer1, obj.answer2,
 						obj.answer3, obj.answer4, obj.timeout);
-			} else if (obj.id == "11") {
-
+			} else if (obj.id == "11" && acceptAnswer) {
+				acceptAnswer=false;
 				var rightAnswer = obj.answer;
 				if (rightAnswer == answered) {
 					$("#answer" + rightAnswer).addClass("green");
@@ -38,18 +38,22 @@ function readMessages(data) {
 				if (bool) {
 					setTimeout(function() {
 						console.log("Timeout: Vor ws.send");
-						ws.send("8");
+						ws.send(8);
+						acceptAnswer=true;
 						console.log("Timeout: Nach ws.send");
 					}, 3500);
 				} else {
 					setTimeout(function() {
 						console.log("Vor ws.send");
-						ws.send("8");
+						ws.send(8);
+						acceptAnswer=true;
 						console.log("Nach ws.send");
 					}, 3500);
 				}
 			} else if (obj.id == "12") {
 				alert("Herzlichen Glückwunsch!\nSie sind Rang " + obj.ranking);
+			} else if (obj.id == "11") {
+				
 			} else {
 				alert("Es ist etwas schief gegangen!");
 			}
@@ -205,6 +209,7 @@ function sendMessages(id) {
 		 */
 
 		ws.send(8);
+		acceptAnswer=true;
 
 		break;
 	case 10:

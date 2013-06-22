@@ -6,6 +6,7 @@ var userId = -1;
 //Websocket 
 var loginURL = "localhost:8080/WebQuiz/LogicServlet";
 var ws;
+var acceptAnswer = true;
 
 /* Wird ausgeführt wenn HTML-Content geladen ist */
 $(document).ready(function() {
