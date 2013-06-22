@@ -27,6 +27,7 @@ function readMessages(data) {
 					$("#answer" + rightAnswer).addClass("green");
 				} else if (rightAnswer >= 10) {
 					bool = true;
+					$(".answer").prop("disabled", true);
 					$("#answer" + (rightAnswer-10)).addClass("red");
 					
 				} else {

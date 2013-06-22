@@ -201,10 +201,10 @@ public class LogicServlet extends WebSocketServlet {
 				for (Player p : Quiz.getInstance().getPlayerList()) {
 					if (!p.isDone()) {
 						return;
-					} else {
-						broadcastGameEnd();
 					}
 				}
+				
+				broadcastGameEnd();
 			}
 		}
 
@@ -215,6 +215,7 @@ public class LogicServlet extends WebSocketServlet {
 			Quiz.getInstance().answerQuestion(
 					this.getUserObject().getPlayerObject(), new Long(answer),
 					error);
+			System.out.println("Frage beantworten klappt!");
 			try {
 				SSEServlet.broadcast(6);
 			} catch (ServletException e1) {
@@ -224,7 +225,9 @@ public class LogicServlet extends WebSocketServlet {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
 			}
+			System.out.println("SSE Broadcast klappt!");
 			if (currentQuestion != null) {
+				System.out.println("CurrentQuestion ist nicht null!");
 				String meins = "{\"id\": \"11\", \"answer\": \""
 						+ String.valueOf(currentQuestion.getCorrectIndex())
 						+ "\"}";
