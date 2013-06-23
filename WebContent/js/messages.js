@@ -1,5 +1,5 @@
 function readMessages(data) {
-	//console.log(data);
+	// console.log(data);
 	switch (data.id) {
 	case 2:
 		userId = data.userID;
@@ -14,22 +14,28 @@ function readMessages(data) {
 		ws.onmessage = function(message) {
 			console.log(message);
 			var bool = false;
-			//console.log(message.data);
+			// console.log(message.data);
 			var obj = jQuery.parseJSON(message.data);
 
 			if (obj.id == "9") {
-				showQuestion(obj.question, obj.answer1, obj.answer2,
-						obj.answer3, obj.answer4, obj.timeout);
+				if (obj.question == "0" && obj.timeout == "0") {
+					content.empty();
+					content
+							.wrapInner("<table class=\"center\" id=\"loginEingabe\"><td>Bitte warte bis alle Spieler fertig sind.</td></table>");
+				} else {
+					showQuestion(obj.question, obj.answer1, obj.answer2,
+							obj.answer3, obj.answer4, obj.timeout);
+				}
 			} else if (obj.id == "11" && acceptAnswer) {
-				acceptAnswer=false;
+				acceptAnswer = false;
 				var rightAnswer = obj.answer;
 				if (rightAnswer == answered) {
 					$("#answer" + rightAnswer).addClass("green");
 				} else if (rightAnswer >= 10) {
 					bool = true;
 					$(".answer").prop("disabled", true);
-					$("#answer" + (rightAnswer-10)).addClass("red");
-					
+					$("#answer" + (rightAnswer - 10)).addClass("red");
+
 				} else {
 					$("#answer" + answered).addClass("red");
 					$("#answer" + rightAnswer).addClass("green");
@@ -39,14 +45,14 @@ function readMessages(data) {
 					setTimeout(function() {
 						console.log("Timeout: Vor ws.send");
 						ws.send(8);
-						acceptAnswer=true;
+						acceptAnswer = true;
 						console.log("Timeout: Nach ws.send");
 					}, 3500);
 				} else {
 					setTimeout(function() {
 						console.log("Vor ws.send");
 						ws.send(8);
-						acceptAnswer=true;
+						acceptAnswer = true;
 						console.log("Nach ws.send");
 					}, 3500);
 				}
@@ -54,8 +60,11 @@ function readMessages(data) {
 				alert("Herzlichen Glückwunsch!\nSie sind Rang " + obj.ranking);
 				location.reload();
 			} else if (obj.id == "11") {
-				
-			} else {
+
+			} else if(obj.id == "255"){
+				alert(obj.message);
+				location.reload();
+			}else {
 				alert("Es ist etwas schief gegangen!");
 				location.reload();
 			}
@@ -106,9 +115,11 @@ function readMessages(data) {
 			}
 
 		});
-		// Start Game Button für SuperUser anzeigen falls jetzt genug Player da sind und ein Katalog ausgewählt ist
+		// Start Game Button für SuperUser anzeigen falls jetzt genug Player da
+		// sind und ein Katalog ausgewählt ist
 		var playerCount = $('#highscore table tbody tr').length;
-		if (startButtonVisible == false && playerCount>1 && userId==0 && catalogSelected){
+		if (startButtonVisible == false && playerCount > 1 && userId == 0
+				&& catalogSelected) {
 			initGameStartButton();
 		}
 		break;
@@ -118,17 +129,7 @@ function readMessages(data) {
 		loginPhase = false;
 		sendMessages(8);
 		break;
-	case 9:
-		showQuestion(data.question, data.answer1, data.answer2, data.answer3,
-				data.answer4, data.timeout);
-		break;
-	case 11:
-		// alert(data.selection);
-		// alert(data.correct);
-		break;
-	case 12:
-		// alert("Herzlichen Glückwunsch, Sie sind: " + data.rank + ".");
-		break;
+
 	case 255:
 		alert(data.message);
 		location.reload();
@@ -217,7 +218,7 @@ function sendMessages(id) {
 		 */
 
 		ws.send(8);
-		acceptAnswer=true;
+		acceptAnswer = true;
 
 		break;
 	case 10:
