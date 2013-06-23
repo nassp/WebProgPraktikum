@@ -275,24 +275,6 @@ public class UserManager implements IUserManager {
 		}
 		return i;
 	}
-	// /**
-	// * checks if the given user has a valid session if not valid the user will
-	// * be removed
-	// *
-	// * @param user
-	// * @return true if valid, false if not valid
-	// */
-	// private boolean checkUserForValidSession(IUser user) {
-	// try {
-	// user.getSession().getLastAccessedTime();
-	// return true;
-	// } catch (IllegalStateException e) {
-	// ServiceManager.getInstance().getService(ILoggingManager.class)
-	// .log(this, e);
-	// removeActiveUser(user);
-	// return false;
-	// }
-	// }
 
 	/**
 	 * Returns the user with given websocket id

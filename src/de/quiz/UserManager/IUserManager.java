@@ -19,15 +19,15 @@ import de.quiz.User.IUser;
  */
 public interface IUserManager extends IService {
 
-    /**
-     * login user
-     * 
-     * @param id
-     *            the user's ID
-     * @param session
-     *            the user's session
-     * @return IUser The user with the requested session
-     */
+	/**
+	 * check user data and set session ID
+	 * 
+	 * @param id
+	 *            the user's ID
+	 * @param session
+	 *            the user's session
+	 * @throws Exception
+	 */
     public IUser loginUser(String name, HttpSession session, QuizError error) throws Exception;
     
     /**
