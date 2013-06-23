@@ -40,6 +40,7 @@ public class SessionListener implements HttpSessionListener {
 		if (tmpUser != null)
 		ServiceManager.getInstance().getService(IUserManager.class)
 				.removeActiveUser(tmpUser);
+		System.out.println("Session Destoryed");
 
 	}
 

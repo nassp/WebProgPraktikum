@@ -128,17 +128,19 @@ public class LogicServlet extends WebSocketServlet {
 		private void broadcastGameEnd() {
 			for (LogicMessageInbound connection : myInList) {
 				try {
-					int ranking = ServiceManager
-							.getInstance()
-							.getService(IUserManager.class)
-							.getRankingForPlayer(
-									connection.getUserObject()
-											.getPlayerObject());
-					String meins = "{\"id\": \"12\", \"ranking\": \"" + ranking
-							+ "\"}";
-
-					CharBuffer buffer = CharBuffer.wrap(meins);
-					connection.getWsOutbound().writeTextMessage(buffer);
+					if(connection.getUserObject()!=null){
+						int ranking = ServiceManager
+								.getInstance()
+								.getService(IUserManager.class)
+								.getRankingForPlayer(
+										connection.getUserObject()
+												.getPlayerObject());
+						String meins = "{\"id\": \"12\", \"ranking\": \"" + ranking
+								+ "\"}";
+	
+						CharBuffer buffer = CharBuffer.wrap(meins);
+						connection.getWsOutbound().writeTextMessage(buffer);
+					}
 				} catch (IOException ignore) {
 					// Ignore
 				}

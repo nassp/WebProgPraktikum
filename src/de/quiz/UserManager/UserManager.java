@@ -35,28 +35,29 @@ public class UserManager implements IUserManager {
 	 * @param user
 	 */
 	public void removeActiveUser(IUser user) {
-
 		QuizError error = new QuizError();
-		Quiz.getInstance().removePlayer(user.getPlayerObject(), error);
-		if (!error.isSet()) {
-
-			ServiceManager
-					.getInstance()
-					.getService(ILoggingManager.class)
-					.log(user.getName()
-							+ " removed because of session timeout!");
-			SSEServlet.removeIUser(user.getUserID());
-			activeUser.remove(user);
-			Quiz.getInstance().signalPlayerChange();
-
-		} else {
-			ServiceManager.getInstance().getService(ILoggingManager.class)
-					.log(this, error);
-			// if superuser left error is also set
-			if (error.getStatus() == 7) {
+		if(user != null){
+			Quiz.getInstance().removePlayer(user.getPlayerObject(), error);
+			if (!error.isSet()) {
+	
+				ServiceManager
+						.getInstance()
+						.getService(ILoggingManager.class)
+						.log(user.getName()
+								+ " removed because of session timeout!");
 				SSEServlet.removeIUser(user.getUserID());
 				activeUser.remove(user);
 				Quiz.getInstance().signalPlayerChange();
+	
+			} else {
+				ServiceManager.getInstance().getService(ILoggingManager.class)
+						.log(this, error);
+				// if superuser left error is also set
+				if (error.getStatus() == 7) {
+					SSEServlet.removeIUser(user.getUserID());
+					activeUser.remove(user);
+					Quiz.getInstance().signalPlayerChange();
+				}
 			}
 		}
 
@@ -70,52 +71,33 @@ public class UserManager implements IUserManager {
 	public void removeAllActiveUser() {
 		for (int i=0;i<activeUser.size();i++) {
 			QuizError error = new QuizError();
-			Quiz.getInstance().removePlayer(activeUser.get(i).getPlayerObject(), error);
-			if (!error.isSet()) {
-
-				ServiceManager
-						.getInstance()
-						.getService(ILoggingManager.class)
-						.log(activeUser.get(i).getName()
-								+ " removed because of session timeout!");
-				SSEServlet.removeIUser(activeUser.get(i).getUserID());
-				//activeUser.remove(user);
-				Quiz.getInstance().signalPlayerChange();
-
-			} else {
-				ServiceManager.getInstance().getService(ILoggingManager.class)
-						.log(this, error);
-				// if superuser left error is also set
-				if (error.getStatus() == 7) {
+			if(activeUser.get(i)!= null){
+				Quiz.getInstance().removePlayer(activeUser.get(i).getPlayerObject(), error);
+				if (!error.isSet()) {
+	
+					ServiceManager
+							.getInstance()
+							.getService(ILoggingManager.class)
+							.log(activeUser.get(i).getName()
+									+ " removed because of session timeout!");
 					SSEServlet.removeIUser(activeUser.get(i).getUserID());
-					activeUser.remove(activeUser.get(i));
+					//activeUser.remove(user);
 					Quiz.getInstance().signalPlayerChange();
+	
+				} else {
+					ServiceManager.getInstance().getService(ILoggingManager.class)
+							.log(this, error);
+					// if superuser left error is also set
+					if (error.getStatus() == 7) {
+						SSEServlet.removeIUser(activeUser.get(i).getUserID());
+						activeUser.remove(activeUser.get(i));
+						Quiz.getInstance().signalPlayerChange();
+					}
 				}
 			}
 		}
 		activeUser.clear();
 		SSEServlet.clearUserArr();
-		/*if (!error.isSet()) {
-
-			ServiceManager
-					.getInstance()
-					.getService(ILoggingManager.class)
-					.log(user.getName()
-							+ " removed because of session timeout!");
-			SSEServlet.removeIUser(user.getUserID());
-			activeUser.remove(user);
-			Quiz.getInstance().signalPlayerChange();
-
-		} else {
-			ServiceManager.getInstance().getService(ILoggingManager.class)
-					.log(this, error);
-			// if superuser left error is also set
-			if (error.getStatus() == 7) {
-				SSEServlet.removeIUser(user.getUserID());
-				activeUser.remove(user);
-				Quiz.getInstance().signalPlayerChange();
-			}
-		}*/
 
 	}
 
