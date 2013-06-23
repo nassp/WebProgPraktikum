@@ -61,11 +61,13 @@ public class LogicServlet extends WebSocketServlet {
 		@Override
 		protected void onClose(int status) {
 			IUser tmp = this.getUserObject();
+			ServiceManager.getInstance().getService(IUserManager.class).removeActiveUser(tmp);
+
 			if (tmp != null)
 				this.getUserObject().setWSID(-1);
 			myInList.remove(this);
 			ServiceManager.getInstance().getService(ILoggingManager.class)
-					.log("Login client closed.");
+					.log("Login client closed. PlayerID: "+ (playerID-1));
 		}
 
 		@Override
