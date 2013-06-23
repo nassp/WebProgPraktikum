@@ -25,8 +25,9 @@ public interface IUserManager extends IService {
      *            the user's ID
      * @param session
      *            the user's session
+     * @return IUser The user with the requested session
      */
-    public IUser loginUser(String name, HttpSession session) throws Exception;
+    public IUser loginUser(String name, HttpSession session, QuizError error) throws Exception;
     
     /**
      * logout user
@@ -41,6 +42,7 @@ public interface IUserManager extends IService {
      * 
      * @param id
      *            the requested user's ID return the user object or null
+     * @return IUser The user with the requested id
      */
     public IUser getUserById(String id) throws Exception;
 
@@ -49,6 +51,7 @@ public interface IUserManager extends IService {
      * 
      * @param session
      *            the requested user's session return the user object or null
+     * @return IUser The user with the requested session
      */
     public IUser getUserBySession(HttpSession session);
 		
@@ -73,14 +76,14 @@ public interface IUserManager extends IService {
 	/**
 	 * delete single user from activeUser list and invalidates its session
 	 * 
-	 * @param user
+     * @param user
+     *            the user we want to add the session
 	 */
 	public void removeActiveUser(IUser user);
 	
 	/**
-	 * deletes all user from activeUser list and invalidates their session
+	 * deletes all user from activeUser list and invalidates their sessions (function for game reset)
 	 * 
-	 * @param user
 	 */
 	public void removeAllActiveUser();
 	
@@ -88,7 +91,8 @@ public interface IUserManager extends IService {
 	 * Returns the rankId for the requested Player
 	 * 
 	 * @param curPlayer
-	 * @return rankId
+     *            the player whose ranking we want
+	 * @return rankId 
 	 */
 	public int getRankingForPlayer(Player curPlayer);
 	
