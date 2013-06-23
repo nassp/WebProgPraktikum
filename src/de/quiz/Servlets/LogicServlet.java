@@ -205,6 +205,7 @@ public class LogicServlet extends WebSocketServlet {
 				}
 				
 				broadcastGameEnd();
+				ServiceManager.getInstance().getService(IUserManager.class).removeAllActiveUser();
 			}
 		}
 

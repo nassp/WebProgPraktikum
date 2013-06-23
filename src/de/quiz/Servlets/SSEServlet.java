@@ -130,6 +130,10 @@ public class SSEServlet extends HttpServlet {
 		}
 		return false;
 	}
+	public static boolean clearUserArr() {
+		userArr.clear();
+		return true;
+	}
 	
 	public static boolean broadcast(int msg) throws ServletException, IOException {
 		for (IUser user : userArr) {

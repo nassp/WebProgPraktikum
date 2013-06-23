@@ -51,8 +51,7 @@ public interface IUserManager extends IService {
      *            the requested user's session return the user object or null
      */
     public IUser getUserBySession(HttpSession session);
-
-
+		
     /**
      * set's the session for a user
      * 
@@ -77,6 +76,13 @@ public interface IUserManager extends IService {
 	 * @param user
 	 */
 	public void removeActiveUser(IUser user);
+	
+	/**
+	 * deletes all user from activeUser list and invalidates their session
+	 * 
+	 * @param user
+	 */
+	public void removeAllActiveUser();
 	
 	/**
 	 * Returns the rankId for the requested Player

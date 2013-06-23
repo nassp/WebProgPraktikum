@@ -61,6 +61,63 @@ public class UserManager implements IUserManager {
 		}
 
 	}
+	
+	/**
+	 * deletes all user from activeUser list and invalidates their session
+	 * 
+	 * @param user
+	 */
+	public void removeAllActiveUser() {
+		for (int i=0;i<activeUser.size();i++) {
+			QuizError error = new QuizError();
+			Quiz.getInstance().removePlayer(activeUser.get(i).getPlayerObject(), error);
+			if (!error.isSet()) {
+
+				ServiceManager
+						.getInstance()
+						.getService(ILoggingManager.class)
+						.log(activeUser.get(i).getName()
+								+ " removed because of session timeout!");
+				SSEServlet.removeIUser(activeUser.get(i).getUserID());
+				//activeUser.remove(user);
+				Quiz.getInstance().signalPlayerChange();
+
+			} else {
+				ServiceManager.getInstance().getService(ILoggingManager.class)
+						.log(this, error);
+				// if superuser left error is also set
+				if (error.getStatus() == 7) {
+					SSEServlet.removeIUser(activeUser.get(i).getUserID());
+					activeUser.remove(activeUser.get(i));
+					Quiz.getInstance().signalPlayerChange();
+				}
+			}
+		}
+		activeUser.clear();
+		SSEServlet.clearUserArr();
+		/*if (!error.isSet()) {
+
+			ServiceManager
+					.getInstance()
+					.getService(ILoggingManager.class)
+					.log(user.getName()
+							+ " removed because of session timeout!");
+			SSEServlet.removeIUser(user.getUserID());
+			activeUser.remove(user);
+			Quiz.getInstance().signalPlayerChange();
+
+		} else {
+			ServiceManager.getInstance().getService(ILoggingManager.class)
+					.log(this, error);
+			// if superuser left error is also set
+			if (error.getStatus() == 7) {
+				SSEServlet.removeIUser(user.getUserID());
+				activeUser.remove(user);
+				Quiz.getInstance().signalPlayerChange();
+			}
+		}*/
+
+	}
 
 	/**
 	 * check user data and set session ID
@@ -180,7 +237,7 @@ public class UserManager implements IUserManager {
 			session.invalidate();
 
 			ServiceManager.getInstance().getService(ILoggingManager.class)
-					.log(this, "successfully logged out user");
+					.log(this, "successfully logged out user"+getUserBySession(session).getPlayerObject().getName());
 			return;
 		}
 		throw new Exception("Unable to logout user!");
