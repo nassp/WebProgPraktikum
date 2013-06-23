@@ -52,10 +52,12 @@ function readMessages(data) {
 				}
 			} else if (obj.id == "12") {
 				alert("Herzlichen Glückwunsch!\nSie sind Rang " + obj.ranking);
+				location.reload();
 			} else if (obj.id == "11") {
 				
 			} else {
 				alert("Es ist etwas schief gegangen!");
+				location.reload();
 			}
 
 		};
@@ -129,6 +131,7 @@ function readMessages(data) {
 		break;
 	case 255:
 		alert(data.message);
+		location.reload();
 		break;
 
 	default:
