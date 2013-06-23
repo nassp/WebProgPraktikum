@@ -104,8 +104,9 @@ function readMessages(data) {
 			}
 
 		});
+		// Start Game Button für SuperUser anzeigen falls jetzt genug Player da sind und ein Katalog ausgewählt ist
 		var playerCount = $('#highscore table tbody tr').length;
-		if (startButtonVisible == false && playerCount>1 && userId==0){
+		if (startButtonVisible == false && playerCount>1 && userId==0 && catalogSelected){
 			initGameStartButton();
 		}
 		break;

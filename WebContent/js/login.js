@@ -9,6 +9,7 @@ var initCatalogList = function() {
 		$(this).click(function(event){
 			console.log(userId);
 			if(gamePhase==false && userId==0) {
+				catalogSelected=true;
 		    	$(".catList .selected").removeClass("selected");
 		    	$(this).addClass("selected");
 				sendMessages(5);

@@ -1,6 +1,7 @@
 var loginPhase = true;
 var gamePhase = false;
 var startButtonVisible = false;
+var catalogSelected = false;
 var content;
 var userId = -1;
 //Websocket 
