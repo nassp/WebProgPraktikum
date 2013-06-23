@@ -60,14 +60,20 @@ public class LogicServlet extends WebSocketServlet {
 
 		@Override
 		protected void onClose(int status) {
-			//IUser tmp = this.getUserObject();
-			ServiceManager.getInstance().getService(IUserManager.class).removeActiveUser(this.getUserObject());
+
+			if (this.getUserObject() != null
+					&& this.getUserObject().getPlayerObject().isSuperuser()) {
+				superUserLeft();
+			}
+
+			ServiceManager.getInstance().getService(IUserManager.class)
+					.removeActiveUser(this.getUserObject());
 
 			if (this.getUserObject() != null)
 				this.getUserObject().setWSID(-1);
 			myInList.remove(this);
 			ServiceManager.getInstance().getService(ILoggingManager.class)
-					.log("Login client closed. PlayerID: "+ (playerID-1));
+					.log("Login client closed. PlayerID: " + (playerID - 1));
 		}
 
 		@Override
@@ -128,16 +134,16 @@ public class LogicServlet extends WebSocketServlet {
 		private void broadcastGameEnd() {
 			for (LogicMessageInbound connection : myInList) {
 				try {
-					if(connection.getUserObject()!=null){
+					if (connection.getUserObject() != null) {
 						int ranking = ServiceManager
 								.getInstance()
 								.getService(IUserManager.class)
 								.getRankingForPlayer(
 										connection.getUserObject()
 												.getPlayerObject());
-						String meins = "{\"id\": \"12\", \"ranking\": \"" + ranking
-								+ "\"}";
-	
+						String meins = "{\"id\": \"12\", \"ranking\": \""
+								+ ranking + "\"}";
+
 						CharBuffer buffer = CharBuffer.wrap(meins);
 						connection.getWsOutbound().writeTextMessage(buffer);
 					}
@@ -157,6 +163,21 @@ public class LogicServlet extends WebSocketServlet {
 					.getUserByWSID(playerID);
 		}
 
+		private void superUserLeft() {
+
+			for (LogicMessageInbound connection : myInList) {
+				try {
+					if (connection.getUserObject() != null) {
+						String meins = "{\"id\": \"255\", \"message\": \"der Spielleiter hat das Spiel verlassen. Bitte melden sie sich erneut an.\"}";
+						CharBuffer buffer = CharBuffer.wrap(meins);
+						connection.getWsOutbound().writeTextMessage(buffer);
+					}
+				} catch (IOException ignore) {
+					// Ignore
+				}
+			}
+		}
+
 		private void onCase8() {
 			QuizError error = new QuizError();
 			TimeOut t = new TimeOut(this.myOutbound, this.getUserObject()
@@ -165,7 +186,7 @@ public class LogicServlet extends WebSocketServlet {
 					this.getUserObject().getPlayerObject(), t, error);
 
 			if (currentQuestion != null) {
-				
+
 				t.setThisQuestion(currentQuestion);
 				t.setIndex(currentQuestion.getCorrectIndex());
 
@@ -184,7 +205,6 @@ public class LogicServlet extends WebSocketServlet {
 						+ "\", \"answer4\": \"" + answer4 + "\"}";
 				CharBuffer buffer = CharBuffer.wrap(meins);
 
-				// CharBuffer buffer = CharBuffer.wrap("9");
 				try {
 					this.myOutbound.writeTextMessage(buffer);
 					this.myOutbound.flush();
@@ -198,7 +218,21 @@ public class LogicServlet extends WebSocketServlet {
 						+ ": Frage wurde versendet!");
 
 			} else {
-				System.out.println("Unerwarteter Fehler!");
+
+				String meins = "{\"id\": \"9\", \"timeout\": \"" + 0
+						+ "\", \"question\": \"" + 0 + "\", \"answer1\": \""
+						+ 0 + "\", \"answer2\": \"" + 0 + "\", \"answer3\": \""
+						+ 0 + "\", \"answer4\": \"" + 0 + "\"}";
+				CharBuffer buffer = CharBuffer.wrap(meins);
+
+				try {
+					this.myOutbound.writeTextMessage(buffer);
+					this.myOutbound.flush();
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+
 				Quiz.getInstance().setDone(
 						this.getUserObject().getPlayerObject());
 
@@ -207,9 +241,10 @@ public class LogicServlet extends WebSocketServlet {
 						return;
 					}
 				}
-				
+
 				broadcastGameEnd();
-				ServiceManager.getInstance().getService(IUserManager.class).removeAllActiveUser();
+				ServiceManager.getInstance().getService(IUserManager.class)
+						.removeAllActiveUser();
 			}
 		}
 
@@ -221,9 +256,9 @@ public class LogicServlet extends WebSocketServlet {
 					this.getUserObject().getPlayerObject(), new Long(answer),
 					error);
 			System.out.println("Frage beantworten klappt!");
-			
+
 			SSEServlet.broadcast(6);
-			
+
 			System.out.println("SSE Broadcast klappt!");
 			if (currentQuestion != null) {
 				System.out.println("CurrentQuestion ist nicht null!");

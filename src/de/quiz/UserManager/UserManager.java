@@ -9,7 +9,9 @@ import org.json.JSONObject;
 
 import de.fhwgt.quiz.application.Player;
 import de.fhwgt.quiz.application.Quiz;
+import de.fhwgt.quiz.error.ErrorType;
 import de.fhwgt.quiz.error.QuizError;
+import de.fhwgt.quiz.error.QuizErrorType;
 import de.quiz.LoggingManager.ILoggingManager;
 import de.quiz.ServiceManager.ServiceManager;
 import de.quiz.Servlets.SSEServlet;
@@ -110,7 +112,7 @@ public class UserManager implements IUserManager {
 	 *            the user's session
 	 * @throws Exception
 	 */
-	public IUser loginUser(String name, HttpSession session) throws Exception {
+	public IUser loginUser(String name, HttpSession session, QuizError e) throws Exception {
 
 		// check if session in use
 		if (getUserBySession(session) != null) {
@@ -126,6 +128,10 @@ public class UserManager implements IUserManager {
 			if (error.isSet()) {
 				ServiceManager.getInstance().getService(ILoggingManager.class)
 						.log(this, error);
+				if(error.getDescription().equals("Username taken"))
+				{
+					e.set(QuizErrorType.USERNAME_TAKEN);
+				}
 				return null;
 
 			} else {

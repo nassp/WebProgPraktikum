@@ -5,6 +5,7 @@ import javax.servlet.http.HttpSession;
 import org.json.JSONObject;
 
 import de.fhwgt.quiz.application.Player;
+import de.fhwgt.quiz.error.QuizError;
 import de.quiz.ServiceManager.IService;
 import de.quiz.User.IUser;
 

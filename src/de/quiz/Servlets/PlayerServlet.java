@@ -73,10 +73,38 @@ public class PlayerServlet extends HttpServlet {
 
 			try {
 
+				QuizError error = new QuizError();
+				
 				// create user
 				tmpUser = ServiceManager.getInstance()
 						.getService(IUserManager.class)
-						.loginUser(request.getParameter("name"), session);
+						.loginUser(request.getParameter("name"), session, error);
+				
+				if(error.isSet())
+				{
+					//QuizErrorType: Username taken
+					if(error.getStatus() == 1)
+					{
+						JSONObject errors = new JSONObject();
+
+						try {
+							errors.put("id", 255);
+							errors.put("message",
+									"Der Name ist bereits vergeben. Bitte versuche einen Anderen");
+						} catch (JSONException e1) {
+							ServiceManager.getInstance()
+									.getService(ILoggingManager.class)
+									.log("Failed sending login error!");
+						}
+
+						// send answer
+						out.print(errors);
+
+						ServiceManager.getInstance().getService(ILoggingManager.class)
+								.log("User login failed!");
+						return;
+					}
+				}
 
 				// create answer
 				JSONObject obj = new JSONObject();
