@@ -1,5 +1,5 @@
 function readMessages(data) {
-
+	//console.log(data);
 	switch (data.id) {
 	case 2:
 		userId = data.userID;
@@ -104,6 +104,10 @@ function readMessages(data) {
 			}
 
 		});
+		var playerCount = $('#highscore table tbody tr').length;
+		if (startButtonVisible == false && playerCount>1 && userId==0){
+			initGameStartButton();
+		}
 		break;
 	case 7:
 		startGame();

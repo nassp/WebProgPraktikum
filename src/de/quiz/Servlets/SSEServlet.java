@@ -56,14 +56,15 @@ public class SSEServlet extends HttpServlet {
 			throws ServletException, IOException {
 		//bradcast
 		addIUser(req.getParameter("uID"),req,res);
-		for (IUser user : userArr) {
-			sendMsg(user,6);
-		}
-		for (IUser user : userArr) {
-			if(Quiz.getInstance().getCurrentCatalog()!=null){
-				sendMsg(user,5);
-			}
-		}
+		SSEServlet.broadcast(65);
+//		for (IUser user : userArr) {
+//			sendMsg(user,6);
+//		}
+//		for (IUser user : userArr) {
+//			if(Quiz.getInstance().getCurrentCatalog()!=null){
+//				sendMsg(user,5);
+//			}
+//		}
 	}
 
 	public static void sendMsg(final IUser user , int msg)
@@ -124,6 +125,7 @@ public class SSEServlet extends HttpServlet {
 			if (userArr.get(i)!= null) {
 				if(userArr.get(i).getUserID()==userID){
 					userArr.remove(i);
+					broadcast(6);
 					return true;
 				}
 			}
@@ -135,9 +137,17 @@ public class SSEServlet extends HttpServlet {
 		return true;
 	}
 	
-	public static boolean broadcast(int msg) throws ServletException, IOException {
+	public static boolean broadcast(int msg) {
 		for (IUser user : userArr) {
-			sendMsg(user,msg);
+			try {
+				sendMsg(user,msg);
+			} catch (ServletException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 		return true;
 	}

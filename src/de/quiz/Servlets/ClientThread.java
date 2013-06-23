@@ -45,7 +45,7 @@ class ClientThread implements Runnable {
 				ctx.getResponse().setContentType("text/event-stream");
 				ctx.getResponse().setCharacterEncoding("UTF-8");
 				PrintWriter out = ctx.getResponse().getWriter();
-				if (messageId == 6) {
+				if (messageId == 6 || messageId == 65) {
 					JSONObject json = ServiceManager.getInstance()
 							.getService(IUserManager.class).getPlayerList();
 					int i = 0;
@@ -71,7 +71,6 @@ class ClientThread implements Runnable {
 					}
 					out.write("\n");
 					out.write("data: }\n\n");
-					out.flush();
 				} else if (messageId == 7) {
 					// System.out.println(ServiceManager.getInstance().getService(Quiz.class).getPlayerList());
 					// String catChanged =
@@ -80,25 +79,27 @@ class ClientThread implements Runnable {
 					out.write("data: {\n");
 					out.write("data: \"id\": 7 \n");
 					out.write("data: }\n\n");
-					out.flush();
-				} else if (messageId == 5) {
-					// System.out.println(ServiceManager.getInstance().getService(Quiz.class).getPlayerList());
-					String catChanged = Quiz.getInstance().getCurrentCatalog()
-							.getName();
-					out.write("event: catalogChangeEvent\n");
-					out.write("data: {\n");
-					out.write("data: \"id\": 5 ,\n");
-					out.write("data: \"filename\": \"" + catChanged + "\" \n");
-					out.write("data: }\n\n");
-					out.flush();
 				} else if (messageId == 255) {
 					out.write("event: errorEvent\n");
 					out.write("data: {\n");
 					out.write("data: \"id\": 255 ,\n");
 					out.write("data: \"msg\":\"Angefragtes SSE existiert nicht\"\n");
 					out.write("data: }\n\n");
-					out.flush();
 				}
+				if (messageId == 5 || messageId == 65) {
+					// System.out.println(ServiceManager.getInstance().getService(Quiz.class).getPlayerList());
+					if(Quiz.getInstance().getCurrentCatalog()!= null){
+						String catChanged = Quiz.getInstance().getCurrentCatalog()
+								.getName();
+						out.write("event: catalogChangeEvent\n");
+						out.write("data: {\n");
+						out.write("data: \"id\": 5 ,\n");
+						out.write("data: \"filename\": \"" + catChanged + "\" \n");
+						out.write("data: }\n\n");
+						System.out.println("catChanged: "+catChanged);
+					}
+				}
+				out.flush();
 				// ctx.getResponse().getWriter().write(
 				// MessageFormat.format("<h1>Processing task in bgt_id:[{0}]</h1>",
 				// Thread.currentThread().getId()));

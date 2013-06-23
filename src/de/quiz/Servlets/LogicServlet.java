@@ -60,10 +60,10 @@ public class LogicServlet extends WebSocketServlet {
 
 		@Override
 		protected void onClose(int status) {
-			IUser tmp = this.getUserObject();
-			ServiceManager.getInstance().getService(IUserManager.class).removeActiveUser(tmp);
+			//IUser tmp = this.getUserObject();
+			ServiceManager.getInstance().getService(IUserManager.class).removeActiveUser(this.getUserObject());
 
-			if (tmp != null)
+			if (this.getUserObject() != null)
 				this.getUserObject().setWSID(-1);
 			myInList.remove(this);
 			ServiceManager.getInstance().getService(ILoggingManager.class)
@@ -221,15 +221,9 @@ public class LogicServlet extends WebSocketServlet {
 					this.getUserObject().getPlayerObject(), new Long(answer),
 					error);
 			System.out.println("Frage beantworten klappt!");
-			try {
-				SSEServlet.broadcast(6);
-			} catch (ServletException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-			} catch (IOException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-			}
+			
+			SSEServlet.broadcast(6);
+			
 			System.out.println("SSE Broadcast klappt!");
 			if (currentQuestion != null) {
 				System.out.println("CurrentQuestion ist nicht null!");

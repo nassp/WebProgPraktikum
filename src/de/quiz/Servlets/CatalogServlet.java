@@ -144,15 +144,15 @@ public class CatalogServlet extends HttpServlet {
 					System.out.println("Player ist null");
 				}
 				if(player.isSuperuser()){
-				QuizError error = new QuizError();
-				// error.set(QuizErrorType.NOT_SUPERUSER);
-				Catalog cat = Quiz.getInstance().changeCatalog(player,
-						request.getParameter("filename"), error);
-				if (cat != null) {
-					SSEServlet.broadcast(5);
-				} else {
-					System.out.println("catalog not changed");
-				}
+					QuizError error = new QuizError();
+					// error.set(QuizErrorType.NOT_SUPERUSER);
+					Catalog cat = Quiz.getInstance().changeCatalog(player,
+							request.getParameter("filename"), error);
+					if (cat != null) {
+						SSEServlet.broadcast(5);
+					} else {
+						System.out.println("catalog not changed");
+					}
 				}
 				
 			} catch (Exception e) {

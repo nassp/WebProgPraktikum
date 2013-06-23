@@ -12,7 +12,8 @@ var initCatalogList = function() {
 		    	$(".catList .selected").removeClass("selected");
 		    	$(this).addClass("selected");
 				sendMessages(5);
-				if (startButtonVisible == false) {
+				var playerCount = $('#highscore table tbody tr').length;
+				if (startButtonVisible == false && playerCount>1 && userId==0){
 					initGameStartButton();
 				}
 			}
@@ -40,7 +41,8 @@ var sseFunc = function () {
 	    readMessages(data);
 	},false);
 	eventSource.addEventListener('catalogChangeEvent', function(catalogChangeEvent) {
-	    var data = JSON.parse(catalogChangeEvent.data);
+	    console.log(data);
+		var data = JSON.parse(catalogChangeEvent.data);
 	    readMessages(data);
 	},false);
 	eventSource.addEventListener('gameStartEvent', function(gameStartEvent) {
