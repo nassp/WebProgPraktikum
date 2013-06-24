@@ -83,27 +83,26 @@ public class PlayerServlet extends HttpServlet {
 				if(error.isSet())
 				{
 					//QuizErrorType: Username taken
-					if(error.getStatus() == 1)
-					{
-						JSONObject errors = new JSONObject();
+					
+					JSONObject errors = new JSONObject();
 
-						try {
-							errors.put("id", 255);
-							errors.put("message",
-									"Der Name ist bereits vergeben. Bitte versuche einen Anderen");
-						} catch (JSONException e1) {
-							ServiceManager.getInstance()
-									.getService(ILoggingManager.class)
-									.log("Failed sending login error!");
-						}
-
-						// send answer
-						out.print(errors);
-
-						ServiceManager.getInstance().getService(ILoggingManager.class)
-								.log("User login failed!");
-						return;
+					try {
+						errors.put("id", 255);
+						errors.put("message",
+								error.getDescription());
+					} catch (JSONException e1) {
+						ServiceManager.getInstance()
+								.getService(ILoggingManager.class)
+								.log("Failed sending login error!");
 					}
+
+					// send answer
+					out.print(errors);
+
+					ServiceManager.getInstance().getService(ILoggingManager.class)
+							.log("User login failed!");
+					return;
+					
 				}
 
 				// create answer

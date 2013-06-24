@@ -32,7 +32,7 @@ class ClientThread implements Runnable {
 				out.write("event: playerListEvent\n");
 				out.write("data: {\n");
 				out.write("data: \"id\": 6");
-				for (i = 0; i < 6; i++) {
+				for (i = 1; i <= 6; i++) {
 					if (json.has("name" + i)) {
 						out.write(",\n");
 						out.write("data: \"name" + i + "\": \""
