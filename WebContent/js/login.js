@@ -24,7 +24,7 @@ var initCatalogList = function() {
 };
 
 /* Fragekatalog Auswahl zuslassen wenn Loginname eingegeben ist */
-var loggedIn = function(userId) {
+var loggedIn = function() {
 	if (loginPhase == true) {
 		if (userId == 0) {
 			content.empty();

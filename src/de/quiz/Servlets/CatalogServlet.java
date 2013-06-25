@@ -74,8 +74,16 @@ public class CatalogServlet extends HttpServlet {
 			try {
 				Map<String, Catalog> catalogList = Quiz.getInstance()
 						.getCatalogList();
-				JSONObject answer = new JSONObject(catalogList);
+				JSONObject answer = new JSONObject();
 				answer.put("id", 4);
+				int catCounter = 1;
+				for(Map.Entry<String,Catalog> e : catalogList.entrySet()){
+					JSONObject catalog = new JSONObject();
+					catalog.put("name", e.getKey());
+					catalog.put("questions", e.getValue().getQuestions().size());
+					answer.put("cat"+catCounter,catalog);
+					catCounter++;
+				}
 				out.print(answer);
 
 			} catch (LoaderException e3) {

@@ -5,7 +5,7 @@ function readMessages(data) {
 		userId = data.userID;
 		sseFunc();
 		console.log(userId);
-		loggedIn(data.userID);
+		loggedIn();
 		ws = new WebSocket("ws://" + loginURL);
 		ws.onopen = function() {
 			console.log("WEBSOCKET WURDE GEÖFFNET");
@@ -76,7 +76,7 @@ function readMessages(data) {
 	case 4:
 		$.each(data, function(index, element) {
 			if (element.name != undefined) {
-				$(".catList").append("<li>" + element.name + "</li>");
+				$(".catList").append('<li data-qc="'+element.questions+'">' + element.name + '</li>');
 			}
 		});
 		initCatalogList();
@@ -123,10 +123,10 @@ function readMessages(data) {
 		// sind und ein Katalog ausgewählt ist
 		var playerCount = $('#highscore table tbody tr').length;
 
-		if (moreThan2 == true && playerCount > 1 && userId == 0
+		if (gamePhase == false && moreThan2 == true && playerCount > 1 && userId == 0
 				&& catalogSelected == true) {
 			initGameStartButton();
-		} else if (moreThan2) {
+		} else if (gamePhase == false && moreThan2 == true ) {
 			content.empty();
 			content
 					.wrapInner("<table class=\"center\" id=\"loginEingabe\"><td>Bitte warte bis mindestens noch 1 Spieler angemeldet ist.</td></table>");
