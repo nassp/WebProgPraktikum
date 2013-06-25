@@ -1,6 +1,7 @@
 package de.quiz.UserManager;
 
 import java.util.ArrayList;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import javax.servlet.http.HttpSession;
 
@@ -26,7 +27,7 @@ import de.quiz.User.User;
  */
 public class UserManager implements IUserManager {
 
-	private ArrayList<IUser> activeUser = new ArrayList<IUser>();
+	private CopyOnWriteArrayList<IUser> activeUser = new CopyOnWriteArrayList<IUser>();
 
 	public UserManager() {
 	}
@@ -47,7 +48,6 @@ public class UserManager implements IUserManager {
 						.getService(ILoggingManager.class)
 						.log(user.getName()
 								+ " removed because of session timeout!");
-				SSEServlet.removeIUser(user.getUserID());
 				activeUser.remove(user);
 				Quiz.getInstance().signalPlayerChange();
 	
@@ -56,7 +56,6 @@ public class UserManager implements IUserManager {
 						.log(this, error);
 				// if superuser left error is also set
 				if (error.getStatus() == 7) {
-					SSEServlet.removeIUser(user.getUserID());
 					activeUser.remove(user);
 					Quiz.getInstance().signalPlayerChange();
 				}
@@ -82,7 +81,6 @@ public class UserManager implements IUserManager {
 							.getService(ILoggingManager.class)
 							.log(activeUser.get(i).getName()
 									+ " removed because of session timeout!");
-					SSEServlet.removeIUser(activeUser.get(i).getUserID());
 					//activeUser.remove(user);
 					Quiz.getInstance().signalPlayerChange();
 	
@@ -91,7 +89,6 @@ public class UserManager implements IUserManager {
 							.log(this, error);
 					// if superuser left error is also set
 					if (error.getStatus() == 7) {
-						SSEServlet.removeIUser(activeUser.get(i).getUserID());
 						activeUser.remove(activeUser.get(i));
 						Quiz.getInstance().signalPlayerChange();
 					}
@@ -99,7 +96,6 @@ public class UserManager implements IUserManager {
 			}
 		}
 		activeUser.clear();
-		SSEServlet.clearUserArr();
 
 	}
 
@@ -148,7 +144,15 @@ public class UserManager implements IUserManager {
 		}
 
 	}
-
+    /**
+     * get the activeUser List
+     * 
+     * @return CopyOnWriteArrayList with all active Users
+     */
+    public CopyOnWriteArrayList<IUser> getUserList(){
+    	return activeUser;
+    }
+    
 	/**
 	 * returns an active user by it's ID
 	 * 

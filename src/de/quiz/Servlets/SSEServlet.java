@@ -1,7 +1,6 @@
 package de.quiz.Servlets;
 
 import java.io.IOException;
-import java.util.concurrent.CopyOnWriteArrayList;
 
 import javax.servlet.AsyncContext;
 import javax.servlet.ServletException;
@@ -10,8 +9,9 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import de.quiz.ServiceManager.ServiceManager;
 import de.quiz.User.IUser;
-import de.quiz.User.User;
+import de.quiz.UserManager.IUserManager;
 
 /**
  * Servlet implementation class SSEServlet
@@ -19,8 +19,6 @@ import de.quiz.User.User;
 @WebServlet(description = "handles everything which has to do with players", urlPatterns = { "/SSEServlet" })
 public class SSEServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-	// user array to save user connections
-	private static CopyOnWriteArrayList<IUser> userArr = new CopyOnWriteArrayList<IUser>();
 
 	/**
 	 * @see HttpServlet#HttpServlet()
@@ -36,7 +34,12 @@ public class SSEServlet extends HttpServlet {
 	public void doGet(HttpServletRequest req, HttpServletResponse res)
 			throws ServletException, IOException {
 		// add player to broadcast-clients (userArr)
-		addIUser(req.getParameter("uID"), req, res);
+		try {
+			addIUser(req.getParameter("uID"), req, res);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 
 		// broadcast Playerlist and CatalogChange
 		SSEServlet.broadcast(65);
@@ -54,6 +57,7 @@ public class SSEServlet extends HttpServlet {
 	 */
 	private static void sendMsg(final IUser user, int msg)
 			throws ServletException, IOException {
+
 		final AsyncContext ctx;
 
 		// Check if AsyncContext already started
@@ -72,7 +76,7 @@ public class SSEServlet extends HttpServlet {
 	}
 
 	/**
-	 * create and add user to user array
+	 * add request and response to user with given ID in userlist
 	 * 
 	 * @param userID
 	 *            the user ID to create the user with
@@ -82,57 +86,20 @@ public class SSEServlet extends HttpServlet {
 	 *            the user response to create the user with
 	 * @return boolean true if user wasn't already in user array, false
 	 *         otherwise
+	 * @throws Exception
 	 */
 	private static boolean addIUser(String userID, HttpServletRequest request,
-			HttpServletResponse response) {
-		// check if user request or user ID is already in user array
-		for (IUser user : userArr) {
-			if (user.getRequest() == request || user.getUserID() == userID) {
-				return false;
-			}
+			HttpServletResponse response) throws Exception {
+		// get IUser with given ID from IUserManager
+		IUser user = ServiceManager.getInstance()
+				.getService(IUserManager.class).getUserById(userID);
+		// add request and response if not already set
+		if (user.getRequest() == null || user.getResponse() == null) {
+			user.setRequest(request);
+			user.setResponse(response);
+			return true;
 		}
-
-		// create new user
-		IUser user = new User();
-		user.setID(userID);
-		user.setRequest(request);
-		user.setResponse(response);
-
-		// add user to user array
-		userArr.add(user);
-
-		return true;
-	}
-
-	/**
-	 * delete user with given ID from user array
-	 * 
-	 * @param userID
-	 *            the ID of the user who should be deleted
-	 * @return boolean true if user with given ID was in user array, false
-	 *         otherwise
-	 */
-	public static boolean removeIUser(String userID) {
-		for (int i = 0; i < userArr.size(); i++) {
-			if (userArr.get(i) != null) {
-				if (userArr.get(i).getUserID() == userID) {
-					userArr.remove(i);
-
-					// refresh client playerlist
-					broadcast(6);
-					return true;
-				}
-			}
-		}
-		// false if user with given ID not in user array
 		return false;
-	}
-
-	/**
-	 * clear the user array (use for game reset)
-	 */
-	public static void clearUserArr() {
-		userArr.clear();
 	}
 
 	/**
@@ -142,10 +109,13 @@ public class SSEServlet extends HttpServlet {
 	 *            the message which should be broadcasted
 	 */
 	public static void broadcast(int msg) {
-		// send Message to all users in user array
-		for (IUser user : userArr) {
+		// send Message to all users in user list
+		for (IUser user : ServiceManager.getInstance()
+				.getService(IUserManager.class).getUserList()) {
 			try {
-				sendMsg(user, msg);
+				if (user.getRequest() != null) {
+					sendMsg(user, msg);
+				}
 			} catch (ServletException e) {
 				e.printStackTrace();
 			} catch (IOException e) {

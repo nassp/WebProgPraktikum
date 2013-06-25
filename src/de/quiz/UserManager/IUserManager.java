@@ -1,5 +1,7 @@
 package de.quiz.UserManager;
 
+import java.util.concurrent.CopyOnWriteArrayList;
+
 import javax.servlet.http.HttpSession;
 
 import org.json.JSONObject;
@@ -37,7 +39,13 @@ public interface IUserManager extends IService {
      *            the user's session
      */
     public void logoutUser(HttpSession session) throws Exception;
-
+    /**
+     * get the activeUser List
+     * 
+     * @return CopyOnWriteArrayList with all active Users
+     */
+    public CopyOnWriteArrayList<IUser> getUserList();
+    
     /**
      * get a user by his ID
      * 
