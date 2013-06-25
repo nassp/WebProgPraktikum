@@ -15,6 +15,8 @@ import org.apache.catalina.websocket.MessageInbound;
 import org.apache.catalina.websocket.StreamInbound;
 import org.apache.catalina.websocket.WebSocketServlet;
 import org.apache.catalina.websocket.WsOutbound;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import de.fhwgt.quiz.application.Player;
 import de.fhwgt.quiz.application.Question;
@@ -101,27 +103,21 @@ public class LogicServlet extends WebSocketServlet {
 		@Override
 		protected void onTextMessage(CharBuffer arg0) throws IOException {
 
-			System.out.println(this.getUserObject().getPlayerObject().getName()
-					+ "LogicServlet: Case: " + arg0.toString());
+			JSONObject cases = new JSONObject(arg0);
+			
+			System.out.println(cases);
 
-			if (arg0.toString().equals("8")) {
-				this.onCase8();
-			}
+			try {
+				if (cases.getString("id").equals("8")) {
+					this.onCase8();
+				}
 
-			else if (arg0.toString().equals("100")) {
-				this.onCase10("0");
-			}
-
-			else if (arg0.toString().equals("101")) {
-				this.onCase10("1");
-			}
-
-			else if (arg0.toString().equals("102")) {
-				this.onCase10("2");
-			}
-
-			else if (arg0.toString().equals("103")) {
-				this.onCase10("3");
+				else if (cases.getString("id").equals("10")) {
+					this.onCase10("0");
+				}
+			} catch (JSONException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
 			}
 
 		}

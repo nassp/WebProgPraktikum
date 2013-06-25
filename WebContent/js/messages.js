@@ -44,14 +44,16 @@ function readMessages(data) {
 				if (bool) {
 					setTimeout(function() {
 						console.log("Timeout: Vor ws.send");
-						ws.send(8);
+						var case8 = "{\"id\": \"8\"}";
+						ws.send(case8);
 						acceptAnswer = true;
 						console.log("Timeout: Nach ws.send");
 					}, 3500);
 				} else {
 					setTimeout(function() {
 						console.log("Vor ws.send");
-						ws.send(8);
+						var case8 = "{\"id\": \"8\"}";
+						ws.send(case8);
 						acceptAnswer = true;
 						console.log("Nach ws.send");
 					}, 3500);
@@ -209,15 +211,9 @@ function sendMessages(id) {
 		});
 		break;
 	case 8:
-		/*
-		 * $.ajax({ type : 'POST', url : 'CatalogServlet', data : { rID : '8', },
-		 * dataType : 'json', success : function(data) { readMessages(data);
-		 * $.each(data, function(index, element) {
-		 * 
-		 * }); } });
-		 */
 
-		ws.send(8);
+		var case8 = "{\"id\": \"8\"}";
+		ws.send(case8);
 		acceptAnswer = true;
 
 		break;
