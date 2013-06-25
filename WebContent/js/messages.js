@@ -58,7 +58,7 @@ function readMessages(data) {
 					}, 3500);
 				}
 			} else if (obj.id == "12") {
-				alert("Herzlichen Glückwunsch!\nSie sind Rang " + obj.ranking);
+				alert("Herzlichen Gl&uumlckwunsch!\nSie sind Rang " + obj.ranking);
 				location.reload();
 			} else if (obj.id == "11") {
 
@@ -124,9 +124,9 @@ function readMessages(data) {
 		var playerCount = $('#highscore table tbody tr').length;
 
 		if (moreThan2 == true && playerCount > 1 && userId == 0
-				&& catalogSelected == true) {
+				&& catalogSelected == true && gamePhase == false) {
 			initGameStartButton();
-		} else if (moreThan2) {
+		} else if (moreThan2 && gamePhase == false) {
 			content.empty();
 			content
 					.wrapInner("<table class=\"center\" id=\"loginEingabe\"><td>Bitte warte bis mindestens noch 1 Spieler angemeldet ist.</td></table>");
