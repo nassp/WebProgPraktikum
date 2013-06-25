@@ -49,7 +49,7 @@ public class UserManager implements IUserManager {
 						.log(user.getName()
 								+ " removed because of session timeout!");
 				activeUser.remove(user);
-				Quiz.getInstance().signalPlayerChange();
+				SSEServlet.broadcast(6);
 	
 			} else {
 				ServiceManager.getInstance().getService(ILoggingManager.class)
@@ -57,7 +57,7 @@ public class UserManager implements IUserManager {
 				// if superuser left error is also set
 				if (error.getStatus() == 7) {
 					activeUser.remove(user);
-					Quiz.getInstance().signalPlayerChange();
+					SSEServlet.broadcast(6);
 				}
 			}
 		}
