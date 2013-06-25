@@ -113,8 +113,8 @@ function readMessages(data) {
 							'#highscore table tbody #player' + playerCounter
 									+ ' td:first').css("text-decoration",
 							"underline");
-					playerCounter = playerCounter + 1;
 				}
+				playerCounter = playerCounter + 1;
 			}
 
 		});
