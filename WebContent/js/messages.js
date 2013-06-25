@@ -14,7 +14,6 @@ function readMessages(data) {
 		ws.onmessage = function(message) {
 			console.log(message);
 			var bool = false;
-			// console.log(message.data);
 			var obj = jQuery.parseJSON(message.data);
 
 			if (obj.id == "9") {
@@ -63,10 +62,10 @@ function readMessages(data) {
 				location.reload();
 			} else if (obj.id == "11") {
 
-			} else if(obj.id == "255"){
+			} else if (obj.id == "255") {
 				alert(obj.message);
 				location.reload();
-			}else {
+			} else {
 				alert("Es ist etwas schief gegangen!");
 				location.reload();
 			}
@@ -83,6 +82,7 @@ function readMessages(data) {
 		initCatalogList();
 		break;
 	case 5:
+		console.log("MoreThan2: " + moreThan2);
 		var catElements = $(".catList");
 		$(".catList .selected").removeClass("selected");
 		catElements.children().each(function() {
@@ -108,21 +108,28 @@ function readMessages(data) {
 						"<td>" + element + "</td>");
 			}
 			if (index == ("id" + playerCounter)) {
-				if (userId == element)
+				if (userId == element) {
 					$(
 							'#highscore table tbody #player' + playerCounter
 									+ ' td:first').css("text-decoration",
 							"underline");
-				playerCounter = playerCounter + 1;
+					playerCounter = playerCounter + 1;
+				}
 			}
 
 		});
+
 		// Start Game Button für SuperUser anzeigen falls jetzt genug Player da
 		// sind und ein Katalog ausgewählt ist
 		var playerCount = $('#highscore table tbody tr').length;
-		if (startButtonVisible == false && playerCount > 1 && userId == 0
-				&& catalogSelected) {
+
+		if (moreThan2 == true && playerCount > 1 && userId == 0
+				&& catalogSelected == true) {
 			initGameStartButton();
+		} else if (moreThan2) {
+			content.empty();
+			content
+					.wrapInner("<table class=\"center\" id=\"loginEingabe\"><td>Bitte warte bis mindestens noch 1 Spieler angemeldet ist.</td></table>");
 		}
 		break;
 	case 7:
@@ -218,7 +225,7 @@ function sendMessages(id) {
 
 		break;
 	case 10:
-		var case10 = '{"id": "10", "answered": "'+answered+'"}';
+		var case10 = '{"id": "10", "answered": "' + answered + '"}';
 		ws.send(case10);
 		break;
 	default:

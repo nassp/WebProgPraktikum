@@ -8,6 +8,7 @@ var userId = -1;
 var loginURL = "localhost:8080/WebQuiz/LogicServlet";
 var ws;
 var acceptAnswer = true;
+var moreThan2 = false;
 
 /* Wird ausgeführt wenn HTML-Content geladen ist */
 $(document).ready(function() {
