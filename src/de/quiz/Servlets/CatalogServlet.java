@@ -16,17 +16,16 @@ import org.json.JSONObject;
 
 import de.fhwgt.quiz.application.Catalog;
 import de.fhwgt.quiz.application.Player;
-import de.fhwgt.quiz.application.Question;
 import de.fhwgt.quiz.application.Quiz;
 import de.fhwgt.quiz.error.QuizError;
 import de.fhwgt.quiz.loader.LoaderException;
 import de.quiz.LoggingManager.ILoggingManager;
 import de.quiz.ServiceManager.ServiceManager;
 import de.quiz.UserManager.IUserManager;
-import de.quiz.Utility.TimeOut;
 
 /**
- * Servlet implementation class CatalogServlet. This servlet handles catalogs.
+ * Servlet implementation class CatalogServlet. This servlet handles
+ * catalogs.
  * 
  * 
  * @author Patrick Naß
@@ -48,7 +47,7 @@ public class CatalogServlet extends HttpServlet {
 	 */
 	protected void doGet(HttpServletRequest request,
 			HttpServletResponse response) throws ServletException, IOException {
-
+		// get is not supported
 		ServiceManager.getInstance().getService(ILoggingManager.class)
 				.log(this, "GET is not supported on this Servlet");
 		response.getWriter().print("GET is not supported on this Servlet");
@@ -130,7 +129,6 @@ public class CatalogServlet extends HttpServlet {
 
 		}
 
-		// TODO: muss über server sent events laufen und muss gefüllt werden
 		// catalog change
 		else if (sc.equals("5")) {
 			HttpSession session = request.getSession(true);
@@ -143,9 +141,8 @@ public class CatalogServlet extends HttpServlet {
 				} else {
 					System.out.println("Player ist null");
 				}
-				if(player.isSuperuser()){
+				if (player.isSuperuser()) {
 					QuizError error = new QuizError();
-					// error.set(QuizErrorType.NOT_SUPERUSER);
 					Catalog cat = Quiz.getInstance().changeCatalog(player,
 							request.getParameter("filename"), error);
 					if (cat != null) {
@@ -154,24 +151,11 @@ public class CatalogServlet extends HttpServlet {
 						System.out.println("catalog not changed");
 					}
 				}
-				
+
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
 
-			// response.setContentType("application/json");
-			// PrintWriter out = response.getWriter();
-			// JSONObject json = new JSONObject();
-			// String s = "";
-			// try {
-			// s = request.getParameter("filename");
-			// json.put("id", 5);
-			// json.put("filename", s);
-			// } catch (JSONException e) {
-			// // TODO Auto-generated catch block
-			// e.printStackTrace();
-			// }
-			// out.print(json);
 		}
 
 		else if (sc.equals("7")) {
@@ -181,7 +165,7 @@ public class CatalogServlet extends HttpServlet {
 			try {
 				json.put("id", 7);
 			} catch (JSONException e) {
-				// TODO Auto-generated catch block
+				
 				e.printStackTrace();
 			}
 			out.print(json);

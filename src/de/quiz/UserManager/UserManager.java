@@ -9,7 +9,6 @@ import org.json.JSONObject;
 
 import de.fhwgt.quiz.application.Player;
 import de.fhwgt.quiz.application.Quiz;
-import de.fhwgt.quiz.error.ErrorType;
 import de.fhwgt.quiz.error.QuizError;
 import de.fhwgt.quiz.error.QuizErrorType;
 import de.quiz.LoggingManager.ILoggingManager;

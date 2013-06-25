@@ -10,8 +10,7 @@ import javax.servlet.http.HttpSession;
 import de.fhwgt.quiz.application.Player;
 
 /**
- * this class saves the userdata at register as preparation for the DBM to write
- * it into the database.
+ * this class is a container to save the userdata
  * 
  * @author Patrick Na§
  */

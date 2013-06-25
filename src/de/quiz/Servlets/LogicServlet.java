@@ -6,7 +6,6 @@ import java.nio.CharBuffer;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -27,12 +26,12 @@ import de.quiz.UserManager.IUserManager;
 import de.quiz.Utility.TimeOut;
 
 /**
- * WebSocketServlet implementation class LogicServlet. This servlet handles the
- * in game process.
+ * Servlet implementation class LogicServlet. This servlet handles the
+ * in game process via websockets.
  * 
  * @author Patrick Na§
  */
-@WebServlet(description = "connection to game the logic", urlPatterns = { "/LogicServlet" })
+@WebServlet(description = "handles the in game process", urlPatterns = { "/LogicServlet" })
 public class LogicServlet extends WebSocketServlet {
 	private static final long serialVersionUID = 1L;
 	private static CopyOnWriteArrayList<LogicMessageInbound> myInList = new CopyOnWriteArrayList<LogicMessageInbound>();
@@ -45,6 +44,12 @@ public class LogicServlet extends WebSocketServlet {
 				arg1.getSession());
 	}
 
+	/**
+	 * MessageInbound class. This class is used to process WebSocket connections
+	 * based on messages.
+	 * 
+	 * @author D4nt3
+	 */
 	private class LogicMessageInbound extends MessageInbound {
 		private WsOutbound myOutbound;
 
@@ -53,6 +58,7 @@ public class LogicServlet extends WebSocketServlet {
 		private final int playerID;
 		private final HttpSession playerSession;
 
+		// constructor
 		private LogicMessageInbound(int id, HttpSession session) {
 			this.playerID = id;
 			this.playerSession = session;
@@ -84,11 +90,9 @@ public class LogicServlet extends WebSocketServlet {
 			ServiceManager.getInstance().getService(IUserManager.class)
 					.getUserBySession(playerSession).setWSID(playerID);
 			myInList.add(this);
-			ServiceManager.getInstance().getService(ILoggingManager.class)
-					.log("Login client open.");
 
 			ServiceManager.getInstance().getService(ILoggingManager.class)
-					.log("Login client open. " + playerID);
+					.log("Login client opened with ID: " + playerID);
 		}
 
 		@Override
@@ -127,9 +131,8 @@ public class LogicServlet extends WebSocketServlet {
 		}
 
 		/**
-		 * for future use if a broadcast should be necessary
+		 * broadcast method for gameEnd
 		 * 
-		 * @param message
 		 */
 		private void broadcastGameEnd() {
 			for (LogicMessageInbound connection : myInList) {
@@ -162,7 +165,11 @@ public class LogicServlet extends WebSocketServlet {
 			return ServiceManager.getInstance().getService(IUserManager.class)
 					.getUserByWSID(playerID);
 		}
-
+		
+		/**
+		 * Create and send message to all that superuser has left the game.
+		 * 
+		 */
 		private void superUserLeft() {
 
 			for (LogicMessageInbound connection : myInList) {
@@ -177,7 +184,10 @@ public class LogicServlet extends WebSocketServlet {
 				}
 			}
 		}
-
+		
+		/**
+		 * requestQuestion case
+		 */
 		private void onCase8() {
 			QuizError error = new QuizError();
 			TimeOut t = new TimeOut(this.myOutbound, this.getUserObject()
@@ -247,7 +257,12 @@ public class LogicServlet extends WebSocketServlet {
 						.removeAllActiveUser();
 			}
 		}
-
+		
+		/**
+		 * answerQuestion case
+		 * 
+		 * @param answer 
+		 */
 		private void onCase10(String answer) {
 
 			System.out.println("Case: 10");
