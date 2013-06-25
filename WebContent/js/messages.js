@@ -58,7 +58,7 @@ function readMessages(data) {
 					}, 3500);
 				}
 			} else if (obj.id == "12") {
-				alert("Herzlichen Gl&uumlckwunsch!\nSie sind Rang " + obj.ranking);
+				alert("Herzlichen Glückwunsch!\nSie sind Rang " + obj.ranking);
 				location.reload();
 			} else if (obj.id == "11") {
 
@@ -123,10 +123,10 @@ function readMessages(data) {
 		// sind und ein Katalog ausgewählt ist
 		var playerCount = $('#highscore table tbody tr').length;
 
-		if (moreThan2 == true && playerCount > 1 && userId == 0
-				&& catalogSelected == true && gamePhase == false) {
+		if (gamePhase == false && moreThan2 == true && playerCount > 1 && userId == 0
+				&& catalogSelected == true) {
 			initGameStartButton();
-		} else if (moreThan2 && gamePhase == false) {
+		} else if (gamePhase == false && moreThan2 == true ) {
 			content.empty();
 			content
 					.wrapInner("<table class=\"center\" id=\"loginEingabe\"><td>Bitte warte bis mindestens noch 1 Spieler angemeldet ist.</td></table>");
