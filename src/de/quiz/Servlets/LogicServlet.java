@@ -54,6 +54,7 @@ public class LogicServlet extends WebSocketServlet {
 
 		private final int playerID;
 		private final HttpSession playerSession;
+		private boolean superUser = false;
 
 		private LogicMessageInbound(int id, HttpSession session) {
 			this.playerID = id;
@@ -63,8 +64,7 @@ public class LogicServlet extends WebSocketServlet {
 		@Override
 		protected void onClose(int status) {
 
-			if (this.getUserObject() != null
-					&& this.getUserObject().getPlayerObject().isSuperuser()) {
+			if (this.getUserObject() != null) {
 				superUserLeft();
 			}
 
@@ -91,6 +91,11 @@ public class LogicServlet extends WebSocketServlet {
 
 			ServiceManager.getInstance().getService(ILoggingManager.class)
 					.log("Login client open. " + playerID);
+
+			if (getUserObject().getPlayerObject().isSuperuser()) {
+				superUser = true;
+				System.out.println("SuperUser ist true!");
+			}
 		}
 
 		@Override
@@ -110,7 +115,7 @@ public class LogicServlet extends WebSocketServlet {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
 			}
-			
+
 			System.out.println(cases);
 
 			try {
@@ -167,17 +172,48 @@ public class LogicServlet extends WebSocketServlet {
 
 		private void superUserLeft() {
 
-			for (LogicMessageInbound connection : myInList) {
-				try {
+			int count = 0;
+			try {
+				for (LogicMessageInbound connection : myInList) {
+
+					System.out.println("SuperUser true!");
+					
 					if (connection.getUserObject() != null) {
-						String meins = "{\"id\": \"255\", \"message\": \"der Spielleiter hat das Spiel verlassen. Bitte melden sie sich erneut an.\"}";
-						CharBuffer buffer = CharBuffer.wrap(meins);
-						connection.getWsOutbound().writeTextMessage(buffer);
+						count++;
 					}
-				} catch (IOException ignore) {
-					// Ignore
+					if (connection.getUserObject() != null
+							&& superUser == true) {
+						System.out.println("SuperUserLeft!");
+						for (LogicMessageInbound connection2 : myInList) {
+							if (connection2.getUserObject() != null) {
+								System.out.println("Message wird auch versendet!");
+								String meins = "{\"id\": \"255\", \"message\": \"Der Spielleiter hat das Spiel verlassen. Bitte melden sie sich erneut an.\"}";
+								CharBuffer buffer = CharBuffer.wrap(meins);
+								connection2.getWsOutbound().writeTextMessage(
+										buffer);
+							}
+						}
+					}
+
 				}
+				// Hier muss eine 3 stehen da die Funktion ja im sich
+				// schlieﬂenden Client (der noch mitgez‰hlt wird) aufgerufen
+				// wird.
+				if (count < 3) {
+					for (LogicMessageInbound connection : myInList) {
+						if (connection.getUserObject() != null) {
+							String meins = "{\"id\": \"255\", \"message\": \"Es sind nicht mehr gen¸gend Spieler vorhanden. Das Spiel wird abgebrochen.\"}";
+							CharBuffer buffer = CharBuffer.wrap(meins);
+							connection.getWsOutbound().writeTextMessage(buffer);
+						}
+					}
+
+				}
+
+			} catch (IOException ignore) {
+				// Ignore
 			}
+
 		}
 
 		private void onCase8() {
