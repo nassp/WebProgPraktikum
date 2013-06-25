@@ -76,9 +76,11 @@ function readMessages(data) {
 	case 4:
 		$.each(data, function(index, element) {
 			if (element.name != undefined) {
-				$(".catList").append('<li data-qc="'+element.questions+'">' + element.name + '</li>');
+				$(".catList").append(
+						'<li data-qc="' + element.questions + '">'
+								+ element.name + '</li>');
 			}
-		}); 
+		});
 		initCatalogList();
 		break;
 	case 5:
@@ -123,10 +125,10 @@ function readMessages(data) {
 		// sind und ein Katalog ausgewählt ist
 		var playerCount = $('#highscore table tbody tr').length;
 
-		if (gamePhase == false && moreThan2 == true && playerCount > 1 && userId == 0
-				&& catalogSelected == true) {
+		if (gamePhase == false && playerCount > 1
+				&& userId == 0 && catalogSelected == true) {
 			initGameStartButton();
-		} else if (gamePhase == false && moreThan2 == true ) {
+		} else if (gamePhase == false && moreThan2 == true) {
 			content.empty();
 			content
 					.wrapInner("<table class=\"center\" id=\"loginEingabe\"><td>Bitte warte bis mindestens noch 1 Spieler angemeldet ist.</td></table>");

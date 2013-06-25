@@ -62,6 +62,7 @@ var startGame = function() {
 };
 /* Spielstart Button anzeigen */
 var initGameStartButton = function() {
+	moreThan2 = true;
 	var button = '<input class="startButton" type="button" name="Text 2" value="Spiel starten"></input>';
 	content.wrapInner(button);
 	startButtonVisible = true;

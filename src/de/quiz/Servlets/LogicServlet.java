@@ -64,8 +64,12 @@ public class LogicServlet extends WebSocketServlet {
 		@Override
 		protected void onClose(int status) {
 
-			if (this.getUserObject() != null) {
+			if (this.getUserObject() != null && superUser) {
 				superUserLeft();
+			}
+			else
+			{
+				tooFewPlayers();
 			}
 
 			ServiceManager.getInstance().getService(IUserManager.class)
@@ -170,29 +174,13 @@ public class LogicServlet extends WebSocketServlet {
 					.getUserByWSID(playerID);
 		}
 
-		private void superUserLeft() {
-
+		private void tooFewPlayers() {
 			int count = 0;
 			try {
 				for (LogicMessageInbound connection : myInList) {
 
-					System.out.println("SuperUser true!");
-					
 					if (connection.getUserObject() != null) {
 						count++;
-					}
-					if (connection.getUserObject() != null
-							&& superUser == true) {
-						System.out.println("SuperUserLeft!");
-						for (LogicMessageInbound connection2 : myInList) {
-							if (connection2.getUserObject() != null) {
-								System.out.println("Message wird auch versendet!");
-								String meins = "{\"id\": \"255\", \"message\": \"Der Spielleiter hat das Spiel verlassen. Bitte melden sie sich erneut an.\"}";
-								CharBuffer buffer = CharBuffer.wrap(meins);
-								connection2.getWsOutbound().writeTextMessage(
-										buffer);
-							}
-						}
 					}
 
 				}
@@ -206,6 +194,28 @@ public class LogicServlet extends WebSocketServlet {
 							CharBuffer buffer = CharBuffer.wrap(meins);
 							connection.getWsOutbound().writeTextMessage(buffer);
 						}
+					}
+
+				}
+
+			} catch (IOException ignore) {
+				// Ignore
+			}
+		}
+
+		private void superUserLeft() {
+
+			try {
+				for (LogicMessageInbound connection : myInList) {
+
+					System.out.println("SuperUser true!");
+
+					if (connection.getUserObject() != null) {
+						
+						String meins = "{\"id\": \"255\", \"message\": \"Der Spielleiter hat das Spiel verlassen. Bitte melden sie sich erneut an.\"}";
+						CharBuffer buffer = CharBuffer.wrap(meins);
+						connection.getWsOutbound().writeTextMessage(buffer);
+
 					}
 
 				}

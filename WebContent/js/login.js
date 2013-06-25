@@ -14,9 +14,8 @@ var initCatalogList = function() {
 		    	$(this).addClass("selected");
 				sendMessages(5);
 				var playerCount = $('#highscore table tbody tr').length;
-				if (startButtonVisible == false && playerCount>1 && userId==0 && catalogSelected == true){
+				if (startButtonVisible == false && playerCount>1 && userId==0){
 					initGameStartButton();
-					moreThan2 = true;
 				}
 			}
 		});
