@@ -102,8 +102,14 @@ public class LogicServlet extends WebSocketServlet {
 
 		@Override
 		protected void onTextMessage(CharBuffer arg0) throws IOException {
-
-			JSONObject cases = new JSONObject(arg0);
+			String jsonString = arg0.toString();
+			JSONObject cases = null;
+			try {
+				cases = new JSONObject(jsonString);
+			} catch (JSONException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
 			
 			System.out.println(cases);
 
@@ -113,7 +119,7 @@ public class LogicServlet extends WebSocketServlet {
 				}
 
 				else if (cases.getString("id").equals("10")) {
-					this.onCase10("0");
+					this.onCase10(cases.getString("answered"));
 				}
 			} catch (JSONException e) {
 				// TODO Auto-generated catch block

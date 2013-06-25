@@ -212,15 +212,14 @@ function sendMessages(id) {
 		break;
 	case 8:
 
-		var case8 = "{\"id\": \"8\"}";
+		var case8 = '{"id": "8"}';
 		ws.send(case8);
 		acceptAnswer = true;
 
 		break;
 	case 10:
-
-		ws.send("10" + answered);
-
+		var case10 = '{"id": "10", "answered": "'+answered+'"}';
+		ws.send(case10);
 		break;
 	default:
 		break;
