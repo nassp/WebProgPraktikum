@@ -78,7 +78,7 @@ function readMessages(data) {
 			if (element.name != undefined) {
 				$(".catList").append('<li data-qc="'+element.questions+'">' + element.name + '</li>');
 			}
-		});
+		}); 
 		initCatalogList();
 		break;
 	case 5:
