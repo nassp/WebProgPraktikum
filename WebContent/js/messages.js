@@ -1,5 +1,5 @@
 function readMessages(data) {
-	// console.log(data);
+	console.log(data);
 	switch (data.id) {
 	case 2:
 		userId = data.userID;
