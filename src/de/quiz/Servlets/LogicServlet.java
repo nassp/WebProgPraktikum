@@ -39,6 +39,8 @@ public class LogicServlet extends WebSocketServlet {
 	private static final long serialVersionUID = 1L;
 	private static CopyOnWriteArrayList<LogicMessageInbound> myInList = new CopyOnWriteArrayList<LogicMessageInbound>();
 	private final AtomicInteger connectionIds = new AtomicInteger(0);
+	private boolean superUserGone = false;
+	private boolean gameStarted = false;
 
 	@Override
 	protected StreamInbound createWebSocketInbound(String arg0,
@@ -63,12 +65,9 @@ public class LogicServlet extends WebSocketServlet {
 
 		@Override
 		protected void onClose(int status) {
-
 			if (this.getUserObject() != null && superUser) {
 				superUserLeft();
-			}
-			else
-			{
+			} else if (gameStarted) {
 				tooFewPlayers();
 			}
 
@@ -175,64 +174,54 @@ public class LogicServlet extends WebSocketServlet {
 		}
 
 		private void tooFewPlayers() {
-			int count = 0;
-			try {
-				for (LogicMessageInbound connection : myInList) {
 
-					if (connection.getUserObject() != null) {
-						count++;
-					}
-
-				}
-				// Hier muss eine 3 stehen da die Funktion ja im sich
-				// schlieﬂenden Client (der noch mitgez‰hlt wird) aufgerufen
-				// wird.
-				if (count < 3) {
+			if (!superUserGone) {
+				if (myInList.size() < 3) {
 					for (LogicMessageInbound connection : myInList) {
-						if (connection.getUserObject() != null) {
-							String meins = "{\"id\": \"255\", \"message\": \"Es sind nicht mehr gen¸gend Spieler vorhanden. Das Spiel wird abgebrochen.\"}";
-							CharBuffer buffer = CharBuffer.wrap(meins);
-							connection.getWsOutbound().writeTextMessage(buffer);
+						try {
+
+							// Hier muss eine 3 stehen da die Funktion ja im
+							// sich
+							// schlieﬂenden Client (der noch mitgez‰hlt wird)
+							// aufgerufen
+							// wird.
+
+							if (connection.getUserObject() != null) {
+								String meins = "{\"id\": \"255\", \"message\": \"Es sind nicht mehr gen¸gend Spieler vorhanden. Das Spiel wird abgebrochen.\"}";
+								CharBuffer buffer = CharBuffer.wrap(meins);
+								connection.getWsOutbound().writeTextMessage(
+										buffer);
+							}
+
+						} catch (IOException ignore) {
+							// Ignore
 						}
 					}
 
 				}
-
-			} catch (IOException ignore) {
-				// Ignore
 			}
+			superUserGone = false;
 		}
 
 		private void superUserLeft() {
-
-			try {
-				for (LogicMessageInbound connection : myInList) {
-
-					System.out.println("SuperUser true!");
-
-					if (connection.getUserObject() != null) {
-						
-						String meins = "{\"id\": \"255\", \"message\": \"Der Spielleiter hat das Spiel verlassen. Bitte melden sie sich erneut an.\"}";
-						CharBuffer buffer = CharBuffer.wrap(meins);
-						connection.getWsOutbound().writeTextMessage(buffer);
-
-					}
-
+			for (LogicMessageInbound connection : myInList) {
+				try {
+					String meins = "{\"id\": \"255\", \"message\": \"Der Spielleiter hat das Spiel verlassen. Bitte melden sie sich erneut an.\"}";
+					CharBuffer buffer = CharBuffer.wrap(meins);
+					connection.getWsOutbound().writeTextMessage(buffer);
+				} catch (IOException ignore) {
+					// Ignore
 				}
-
-			} catch (IOException ignore) {
-				// Ignore
 			}
-
 		}
 
 		private void onCase8() {
+			gameStarted = true;
 			QuizError error = new QuizError();
 			TimeOut t = new TimeOut(this.myOutbound, this.getUserObject()
 					.getPlayerObject());
 			currentQuestion = Quiz.getInstance().requestQuestion(
 					this.getUserObject().getPlayerObject(), t, error);
-
 			if (currentQuestion != null) {
 
 				t.setThisQuestion(currentQuestion);
@@ -304,7 +293,6 @@ public class LogicServlet extends WebSocketServlet {
 					this.getUserObject().getPlayerObject(), new Long(answer),
 					error);
 			System.out.println("Frage beantworten klappt!");
-
 			SSEServlet.broadcast(6);
 
 			System.out.println("SSE Broadcast klappt!");
