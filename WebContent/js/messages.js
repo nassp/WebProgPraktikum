@@ -59,15 +59,22 @@ function readMessages(data) {
 				}
 			} else if (obj.id == "12") {
 				alert("Herzlichen Glückwunsch!\nSie sind Rang " + obj.ranking);
-				location.reload();
+				setTimeout(function() {
+					location.reload();
+				}, 1000);
 			} else if (obj.id == "11") {
 
 			} else if (obj.id == "255") {
 				alert(obj.message);
-				location.reload();
+				setTimeout(function() {
+					location.reload();
+				}, 1000);
+				
 			} else {
 				alert("Es ist etwas schief gegangen!");
-				location.reload();
+				setTimeout(function() {
+					location.reload();
+				}, 1000);
 			}
 
 		};
@@ -143,7 +150,9 @@ function readMessages(data) {
 
 	case 255:
 		alert(data.message);
-		location.reload();
+		setTimeout(function() {
+			location.reload();
+		}, 1000);
 		break;
 
 	default:

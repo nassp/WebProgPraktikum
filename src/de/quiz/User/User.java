@@ -114,6 +114,7 @@ public class User implements IUser {
      */
     public void setResponse(HttpServletResponse response) {
     	this.response = response;
+    	this.response.setContentType("text/event-stream");
     	this.response.setCharacterEncoding("UTF-8");
     }
     /**

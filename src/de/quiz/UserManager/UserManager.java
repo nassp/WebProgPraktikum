@@ -63,7 +63,6 @@ public class UserManager implements IUserManager {
 		}
 
 	}
-	
 	/**
 	 * deletes all user from activeUser list and invalidates their session
 	 * 
@@ -71,32 +70,11 @@ public class UserManager implements IUserManager {
 	 */
 	public void removeAllActiveUser() {
 		for (int i=0;i<activeUser.size();i++) {
-			QuizError error = new QuizError();
-			if(activeUser.get(i)!= null){
-				Quiz.getInstance().removePlayer(activeUser.get(i).getPlayerObject(), error);
-				if (!error.isSet()) {
-	
-					ServiceManager
-							.getInstance()
-							.getService(ILoggingManager.class)
-							.log(activeUser.get(i).getName()
-									+ " removed because of session timeout!");
-					//activeUser.remove(user);
-					Quiz.getInstance().signalPlayerChange();
-	
-				} else {
-					ServiceManager.getInstance().getService(ILoggingManager.class)
-							.log(this, error);
-					// if superuser left error is also set
-					if (error.getStatus() == 7) {
-						activeUser.remove(activeUser.get(i));
-						Quiz.getInstance().signalPlayerChange();
-					}
-				}
-			}
+			removeActiveUser(activeUser.get(i));
 		}
 		activeUser.clear();
-
+		ServiceManager.getInstance().getService(ILoggingManager.class)
+		.log("Userliste wurde gelöscht");
 	}
 
 	/**

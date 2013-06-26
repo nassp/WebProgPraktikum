@@ -65,18 +65,24 @@ public class LogicServlet extends WebSocketServlet {
 
 		@Override
 		protected void onClose(int status) {
-			if (this.getUserObject() != null && superUser) {
-				superUserLeft();
-			} else if (gameStarted) {
-				tooFewPlayers();
+			if(status!=255){
+				if ((superUser) || (myInList.size()<3 && gameStarted)) {
+					broadcast(255);
+					gameStarted=false;
+				}
 			}
-
 			ServiceManager.getInstance().getService(IUserManager.class)
 					.removeActiveUser(this.getUserObject());
 
 			if (this.getUserObject() != null)
 				this.getUserObject().setWSID(-1);
 			myInList.remove(this);
+			if (myInList.size() < 1) {
+				// alle Aktiven User aus Liste löschen
+				ServiceManager.getInstance().getService(IUserManager.class)
+						.removeAllActiveUser();
+				gameStarted=false;
+			}
 			ServiceManager.getInstance().getService(ILoggingManager.class)
 					.log("Login client closed. PlayerID: " + (playerID - 1));
 		}
@@ -141,7 +147,7 @@ public class LogicServlet extends WebSocketServlet {
 		 * 
 		 * @param message
 		 */
-		private void broadcastGameEnd() {
+		private void broadcast(int msgID) {
 			for (LogicMessageInbound connection : myInList) {
 				try {
 					if (connection.getUserObject() != null) {
@@ -151,9 +157,19 @@ public class LogicServlet extends WebSocketServlet {
 								.getRankingForPlayer(
 										connection.getUserObject()
 												.getPlayerObject());
-						String meins = "{\"id\": \"12\", \"ranking\": \""
-								+ ranking + "\"}";
-
+						String meins = "";
+						if (msgID == 12) {
+							meins = "{\"id\": \"12\", \"ranking\": \""
+									+ ranking + "\"}";
+							gameStarted=false;
+						} else if (msgID == 255){
+							meins = "{\"id\": \"255\", \"message\": \"Es sind nicht mehr genügend Spieler vorhanden oder der Superuser hat sich abgemeldet. Das Spiel wird abgebrochen.\"}";
+							if (!(this.equals(connection))) {
+								connection.onClose(255);
+							}
+						} else {
+							meins = "{\"id\": \"255\", \"message\": \"undefined broadcast.\"}";
+						}
 						CharBuffer buffer = CharBuffer.wrap(meins);
 						connection.getWsOutbound().writeTextMessage(buffer);
 					}
@@ -175,43 +191,52 @@ public class LogicServlet extends WebSocketServlet {
 
 		private void tooFewPlayers() {
 
-			if (!superUserGone) {
-				if (myInList.size() < 3) {
-					for (LogicMessageInbound connection : myInList) {
-						try {
+			if (myInList.size() < 3) {
+				for (LogicMessageInbound connection : myInList) {
+					try {
 
-							// Hier muss eine 3 stehen da die Funktion ja im
-							// sich
-							// schließenden Client (der noch mitgezählt wird)
-							// aufgerufen
-							// wird.
+						// Hier muss eine 3 stehen da die Funktion ja im
+						// sich
+						// schließenden Client (der noch mitgezählt wird)
+						// aufgerufen
+						// wird.
 
-							if (connection.getUserObject() != null) {
-								String meins = "{\"id\": \"255\", \"message\": \"Es sind nicht mehr genügend Spieler vorhanden. Das Spiel wird abgebrochen.\"}";
-								CharBuffer buffer = CharBuffer.wrap(meins);
-								connection.getWsOutbound().writeTextMessage(
-										buffer);
-							}
-
-						} catch (IOException ignore) {
-							// Ignore
+						if (connection.getUserObject() != null) {
+							String meins = "{\"id\": \"255\", \"message\": \"Es sind nicht mehr genügend Spieler vorhanden. Das Spiel wird abgebrochen.\"}";
+							CharBuffer buffer = CharBuffer.wrap(meins);
+							connection.getWsOutbound().writeTextMessage(buffer);
 						}
-					}
 
+					} catch (IOException ignore) {
+						// Ignore
+					}
 				}
+
 			}
-			superUserGone = false;
 		}
 
 		private void superUserLeft() {
-			for (LogicMessageInbound connection : myInList) {
-				try {
-					String meins = "{\"id\": \"255\", \"message\": \"Der Spielleiter hat das Spiel verlassen. Bitte melden sie sich erneut an.\"}";
-					CharBuffer buffer = CharBuffer.wrap(meins);
-					connection.getWsOutbound().writeTextMessage(buffer);
-				} catch (IOException ignore) {
-					// Ignore
+			if (!superUserGone) {
+				for (LogicMessageInbound connection : myInList) {
+					try {
+						String meins = "{\"id\": \"255\", \"message\": \"Der Spielleiter hat das Spiel verlassen. Bitte melden sie sich erneut an.\"}";
+						CharBuffer buffer = CharBuffer.wrap(meins);
+						connection.getWsOutbound().writeTextMessage(buffer);
+					} catch (IOException ignore) {
+						// Ignore
+					}
+					ServiceManager.getInstance().getService(IUserManager.class)
+							.removeActiveUser(connection.getUserObject());
+					connection.getUserObject().setWSID(-1);
+					myInList.remove(connection);
+					ServiceManager
+							.getInstance()
+							.getService(ILoggingManager.class)
+							.log("Login client closed. PlayerID: "
+									+ (playerID - 1));
+
 				}
+				superUserGone = true;
 			}
 		}
 
@@ -279,9 +304,7 @@ public class LogicServlet extends WebSocketServlet {
 					}
 				}
 
-				broadcastGameEnd();
-				ServiceManager.getInstance().getService(IUserManager.class)
-						.removeAllActiveUser();
+				broadcast(12);
 			}
 		}
 
