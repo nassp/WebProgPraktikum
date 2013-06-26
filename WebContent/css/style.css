@@ -149,7 +149,7 @@ p, ul, ol, dl {
 	margin-bottom: 2em;
 	position: relative;
     height: 400px;
-    display: table
+    display: table;
 }
 #content .startButton {
 	margin: 8em auto;
@@ -267,10 +267,12 @@ p, ul, ol, dl {
 
 .red {
 	background-color: red;
+	color: white;
 }
 
 .green {
 	background-color: green;
+	color: white;
 }
 
 

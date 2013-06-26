@@ -16,7 +16,7 @@ var showQuestion = function(question, answer1, answer2, answer3, answer4,
 	console.log("Timeout: " + timeout);
 
 	content.empty();
-	content.append('<table id="quizTable"></table>');
+	content.append('<center><table id="quizTable"></table></center>');
 	var contentTable = $("#content table");
 	contentTable.append("<tr><th>" + question + "</th></tr>");
 	contentTable.append("<tr><td>" + a1 + "\"" + answer1 + "\"" + input + "</td></tr>");
