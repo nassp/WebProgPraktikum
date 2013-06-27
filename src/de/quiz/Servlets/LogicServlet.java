@@ -46,6 +46,7 @@ public class LogicServlet extends WebSocketServlet {
 		return new LogicMessageInbound(connectionIds.incrementAndGet(),
 				arg1.getSession());
 	}
+
 	/**
 	 * Implements the MessageInbound. (connection of sockets and textmessaging)
 	 * 
@@ -66,35 +67,56 @@ public class LogicServlet extends WebSocketServlet {
 			this.playerSession = session;
 		}
 
+		/**
+		 * if the websocket is closed checks whether the superuser left or if
+		 * too few players are left to play and then sends messages. After that
+		 * the player is remove from the playerlist.
+		 * 
+		 * @param status
+		 */
 		@Override
 		protected void onClose(int status) {
-			if(status!=255){
-				if ((superUser) || (myInList.size()<3 && gameStarted)) {
+			// If the socket is not closed because of the superuser or too few
+			// players. Checks if it is the superuser or too few players and
+			// sends a broadcast. But only if the game has started.
+			if (status != 255) {
+
+				// superuser or too few Players
+				if ((superUser) || (myInList.size() < 3 && gameStarted)) {
 					broadcast(255);
-					gameStarted=false;
+					gameStarted = false;
 				}
 			}
 			ServiceManager.getInstance().getService(IUserManager.class)
 					.removeActiveUser(this.getUserObject());
 
+			// if the userObject is not null deletes the player.
 			if (this.getUserObject() != null)
 				this.getUserObject().setWSID(-1);
 			myInList.remove(this);
+
 			if (myInList.size() < 1) {
-				// alle Aktiven User aus Liste löschen
+				// delete all active players from the list.
 				ServiceManager.getInstance().getService(IUserManager.class)
 						.removeAllActiveUser();
-				gameStarted=false;
+				gameStarted = false;
 			}
 			ServiceManager.getInstance().getService(ILoggingManager.class)
 					.log("Login client closed. PlayerID: " + (playerID - 1));
 		}
 
+		/**
+		 * On opening of the websocket myOutbound is set to the WsOutbound. The
+		 * WebsocketID is set and the player added to the list.
+		 * 
+		 * @param outbound
+		 */
 		@Override
 		protected void onOpen(WsOutbound outbound) {
 
 			this.myOutbound = outbound;
 
+			// sets the websocketID an adds the player to the list.
 			ServiceManager.getInstance().getService(IUserManager.class)
 					.getUserBySession(playerSession).setWSID(playerID);
 			myInList.add(this);
@@ -102,12 +124,17 @@ public class LogicServlet extends WebSocketServlet {
 			ServiceManager.getInstance().getService(ILoggingManager.class)
 					.log("Login client open with ID: " + playerID);
 
+			// if player is the superUser sets the superUser boolean
 			if (getUserObject().getPlayerObject().isSuperuser()) {
 				superUser = true;
-				System.out.println("SuperUser ist true!");
 			}
 		}
 
+		/**
+		 * not supported
+		 * 
+		 * @param arg0
+		 */
 		@Override
 		protected void onBinaryMessage(ByteBuffer arg0) throws IOException {
 			// this application does not expect binary data
@@ -115,20 +142,19 @@ public class LogicServlet extends WebSocketServlet {
 					"Binary message not supported.");
 		}
 
+		/**
+		 * on getting a text message converts it to a jsonString. Decides then
+		 * the case and calls the respective function.
+		 * 
+		 * @param arg0
+		 */
 		@Override
 		protected void onTextMessage(CharBuffer arg0) throws IOException {
 			String jsonString = arg0.toString();
 			JSONObject cases = null;
 			try {
 				cases = new JSONObject(jsonString);
-			} catch (JSONException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-			}
 
-			System.out.println(cases);
-
-			try {
 				if (cases.getString("id").equals("8")) {
 					this.onCase8();
 				}
@@ -146,12 +172,14 @@ public class LogicServlet extends WebSocketServlet {
 		/**
 		 * Broadcast method.
 		 * 
-		 * @param message
+		 * @param msgID
 		 */
 		private void broadcast(int msgID) {
+			// goes through all connections in the playerlist
 			for (LogicMessageInbound connection : myInList) {
 				try {
 					if (connection.getUserObject() != null) {
+						// ranking of a player from the list
 						int ranking = ServiceManager
 								.getInstance()
 								.getService(IUserManager.class)
@@ -159,12 +187,17 @@ public class LogicServlet extends WebSocketServlet {
 										connection.getUserObject()
 												.getPlayerObject());
 						String meins = "";
+						// sends his ranking to the player
 						if (msgID == 12) {
 							meins = "{\"id\": \"12\", \"ranking\": \""
 									+ ranking + "\"}";
-							gameStarted=false;
-						} else if (msgID == 255){
+							gameStarted = false;
+							// on error sends a respective message to the
+							// players
+						} else if (msgID == 255) {
 							meins = "{\"id\": \"255\", \"message\": \"Es sind nicht mehr genügend Spieler vorhanden oder der Superuser hat sich abgemeldet. Das Spiel wird abgebrochen.\"}";
+							// if this is the current connection, closes the
+							// connection in another way
 							if (!(this.equals(connection))) {
 								connection.onClose(255);
 							}
@@ -196,12 +229,16 @@ public class LogicServlet extends WebSocketServlet {
 		private void onCase8() {
 			gameStarted = true;
 			QuizError error = new QuizError();
+			// creates a timeout implementing the TimerTask
 			TimeOut t = new TimeOut(this.myOutbound, this.getUserObject()
 					.getPlayerObject());
+			// sets the current Question
 			currentQuestion = Quiz.getInstance().requestQuestion(
 					this.getUserObject().getPlayerObject(), t, error);
 			if (currentQuestion != null) {
 
+				// sets the currentQuestion and index of the correct answer in
+				// the timeout object
 				t.setThisQuestion(currentQuestion);
 				t.setIndex(currentQuestion.getCorrectIndex());
 
@@ -228,12 +265,10 @@ public class LogicServlet extends WebSocketServlet {
 					e.printStackTrace();
 				}
 
-				System.out.println(this.getUserObject().getPlayerObject()
-						.getName()
-						+ ": Frage wurde versendet!");
-
 			} else {
 
+				// case 9 with everything set to zero signalises the end of the
+				// catalog
 				String meins = "{\"id\": \"9\", \"timeout\": \"" + 0
 						+ "\", \"question\": \"" + 0 + "\", \"answer1\": \""
 						+ 0 + "\", \"answer2\": \"" + 0 + "\", \"answer3\": \""
@@ -251,6 +286,8 @@ public class LogicServlet extends WebSocketServlet {
 				Quiz.getInstance().setDone(
 						this.getUserObject().getPlayerObject());
 
+				// if all players are done sends a broadcast with the end game
+				// message
 				for (Player p : Quiz.getInstance().getPlayerList()) {
 					if (!p.isDone()) {
 						return;
@@ -264,21 +301,20 @@ public class LogicServlet extends WebSocketServlet {
 		/**
 		 * Method for answerQuestion (case10).
 		 * 
-		 * @param answer the player's answer
+		 * @param answer
+		 *            the player's answer
 		 */
 		private void onCase10(String answer) {
 
-			System.out.println("Case: 10");
+			// answers the question and broadcasts the new playerlist
 			QuizError error = new QuizError();
 			Quiz.getInstance().answerQuestion(
 					this.getUserObject().getPlayerObject(), new Long(answer),
 					error);
-			System.out.println("Frage beantworten klappt!");
 			SSEServlet.broadcast(6);
 
-			System.out.println("SSE Broadcast klappt!");
 			if (currentQuestion != null) {
-				System.out.println("CurrentQuestion ist nicht null!");
+
 				String meins = "{\"id\": \"11\", \"answer\": \""
 						+ String.valueOf(currentQuestion.getCorrectIndex())
 						+ "\"}";
@@ -290,8 +326,6 @@ public class LogicServlet extends WebSocketServlet {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
-			} else {
-				System.out.println("Wie kommt das?");
 			}
 
 		}

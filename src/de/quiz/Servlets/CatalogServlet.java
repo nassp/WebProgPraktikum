@@ -18,7 +18,6 @@ import de.fhwgt.quiz.application.Catalog;
 import de.fhwgt.quiz.application.Player;
 import de.fhwgt.quiz.application.Quiz;
 import de.fhwgt.quiz.error.QuizError;
-import de.fhwgt.quiz.loader.LoaderException;
 import de.quiz.LoggingManager.ILoggingManager;
 import de.quiz.ServiceManager.ServiceManager;
 import de.quiz.UserManager.IUserManager;
