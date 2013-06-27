@@ -16,7 +16,7 @@ import de.quiz.UserManager.IUserManager;
 /**
  * Servlet implementation class SSEServlet
  */
-@WebServlet(description = "handles everything which has to do with players", urlPatterns = { "/SSEServlet" })
+@WebServlet(description = "handles broadcasts which are event-triggered", urlPatterns = { "/SSEServlet" })
 public class SSEServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 

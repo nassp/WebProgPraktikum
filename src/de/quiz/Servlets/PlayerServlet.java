@@ -57,12 +57,15 @@ public class PlayerServlet extends HttpServlet {
 	protected void doPost(HttpServletRequest request,
 			HttpServletResponse response) throws ServletException, IOException {
 		String sc = "";
+		response.setContentType("application/json");
+
+		// get JSON packet ID
 		if (request.getParameter("rID") != null) {
 			sc = request.getParameter("rID");
 		}
+
 		// login request
 		if (sc.equals("1")) {
-			response.setContentType("application/json");
 			HttpSession session = request.getSession(true);
 			PrintWriter out = response.getWriter();
 			IUser tmpUser;
@@ -76,12 +79,12 @@ public class PlayerServlet extends HttpServlet {
 						.getInstance()
 						.getService(IUserManager.class)
 						.loginUser(request.getParameter("name"), session, error);
-
+				// catches an error if set 
 				if (error.isSet()) {
 					// QuizErrorType: Username taken
-
 					JSONObject errors = new JSONObject();
 
+					// create answer (errorMessage)
 					try {
 						errors.put("id", 255);
 						errors.put("message", error.getDescription());
@@ -93,32 +96,33 @@ public class PlayerServlet extends HttpServlet {
 
 					// send answer
 					out.print(errors);
-
+					// log the login fail
 					ServiceManager.getInstance()
 							.getService(ILoggingManager.class)
 							.log("User login failed!");
 					return;
 
+				} else {
+
+					// create answer (loginResponse)
+					JSONObject obj = new JSONObject();
+
+					obj.put("id", 2);
+					obj.put("userID", tmpUser.getUserID());
+
+					// send answer
+					out.print(obj);
+					// log the user login
+					ServiceManager
+							.getInstance()
+							.getService(ILoggingManager.class)
+							.log("Successfully logged in User with ID: "
+									+ tmpUser.getUserID() + " and name: "
+									+ tmpUser.getName());
 				}
-
-				// create answer
-				JSONObject obj = new JSONObject();
-
-				obj.put("id", 2);
-				obj.put("userID", tmpUser.getUserID());
-
-				// send answer
-				out.print(obj);
-
-				ServiceManager
-						.getInstance()
-						.getService(ILoggingManager.class)
-						.log("Successfully logged in User with ID: "
-								+ tmpUser.getUserID() + " and name: "
-								+ tmpUser.getName());
 			} catch (Exception e) {
 				e.printStackTrace();
-				// create answer
+				// create answer (errorMessage)
 				JSONObject error = new JSONObject();
 
 				try {
@@ -133,54 +137,26 @@ public class PlayerServlet extends HttpServlet {
 
 				// send answer
 				out.print(error);
-
+				// log the login fail
 				ServiceManager.getInstance().getService(ILoggingManager.class)
 						.log("User login failed!");
-			}
-		}
-		// playerlist
-		if (sc.equals("6")) {
-			response.setContentType("application/json");
-			PrintWriter out = response.getWriter();
-
-			try {
-
-			} catch (Exception e) {
-
-				// create answer
-				JSONObject error = new JSONObject();
-
-				try {
-					error.put("id", 255);
-					error.put("message",
-							"Fehler beim Versenden der Spielerliste.");
-				} catch (JSONException e1) {
-					ServiceManager.getInstance()
-							.getService(ILoggingManager.class)
-							.log("Failed sending playerlist error!");
-				}
-
-				// send answer
-				out.print(error);
-
-				ServiceManager.getInstance().getService(ILoggingManager.class)
-						.log("Failed sending Playerlist!");
 			}
 		}
 
 		// start game
 		if (sc.equals("7")) {
-			response.setContentType("application/json");
 
 			PrintWriter out = response.getWriter();
 			QuizError error = new QuizError();
+			// try to start the game
 			Quiz.getInstance().startGame(
 					ServiceManager.getInstance().getService(IUserManager.class)
 							.getUserBySession(request.getSession())
 							.getPlayerObject(), error);
+			// catches an error if set
 			if (error.isSet()) {
 
-				// create answer
+				// create answer (errorMessage)
 				JSONObject errorA = new JSONObject();
 
 				try {
@@ -195,40 +171,13 @@ public class PlayerServlet extends HttpServlet {
 
 				// send answer
 				out.print(error);
-
+				// log failed gameStart
 				ServiceManager.getInstance().getService(ILoggingManager.class)
 						.log("Failed starting game!");
 			} else {
+				// broadcast gameStart with SSE
 				SSEServlet.broadcast(7);
-				// create answer
-				JSONObject answer = new JSONObject();
-
-				try {
-					answer.put("id", 200);
-					answer.put("CatalogName", Quiz.getInstance()
-							.getCurrentCatalog());
-				} catch (JSONException e) {
-
-					// create answer
-					JSONObject errorA = new JSONObject();
-
-					try {
-						errorA.put("id", 255);
-						errorA.put("message",
-								"Fehler beim Senden der Start Game message.");
-					} catch (JSONException e1) {
-						ServiceManager.getInstance()
-								.getService(ILoggingManager.class)
-								.log("Failed sending start game succeed!");
-					}
-
-					// send answer
-					out.print(error);
-				}
-
-				// send answer
-				out.print(answer);
-
+				// log successful gameStart
 				ServiceManager.getInstance().getService(ILoggingManager.class)
 						.log("Started game!");
 			}
