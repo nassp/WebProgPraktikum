@@ -18,6 +18,7 @@ public class TimeOut extends TimerTask {
 	long index = 10;
 	Question quest;
 
+	// Constructor with the outbound and player to write messages
 	public TimeOut(WsOutbound outbound, Player p) {
 		myOutbound = outbound;
 		this.p = p;
@@ -40,8 +41,10 @@ public class TimeOut extends TimerTask {
 		QuizError error = new QuizError();
 		Quiz.getInstance().answerQuestion(p, new Long(5), error);
 
+		// sends the right answer to the player if the question timed out with
+		// the right value + 10 to differ from a normal answer
 		String meins = "{\"id\": \"11\", \"answer\": \""
-				+ String.valueOf(index+10) + "\"}";
+				+ String.valueOf(index + 10) + "\"}";
 		CharBuffer buffer = CharBuffer.wrap(meins);
 		try {
 			this.myOutbound.writeTextMessage(buffer);
