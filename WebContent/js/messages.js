@@ -1,80 +1,19 @@
+/**
+ * processes the messages from the server
+ * 
+ */
 function readMessages(data) {
-	console.log(data);
 	switch (data.id) {
 	case 2:
 		userId = data.userID;
 		sseFunc();
-		console.log(userId);
 		loggedIn();
-		ws = new WebSocket("ws://" + loginURL);
-		ws.onopen = function() {
-			console.log("WEBSOCKET WURDE GEÖFFNET");
-		};
-
-		ws.onmessage = function(message) {
-			console.log(message);
-			var bool = false;
-			var obj = jQuery.parseJSON(message.data);
-
-			if (obj.id == "9") {
-				if (obj.question == "0" && obj.timeout == "0") {
-					content.empty();
-					content
-							.wrapInner("<table class=\"center\" id=\"loginEingabe\"><td>Bitte warte bis alle Spieler fertig sind.</td></table>");
-				} else {
-					showQuestion(obj.question, obj.answer1, obj.answer2,
-							obj.answer3, obj.answer4, obj.timeout);
-				}
-			} else if (obj.id == "11" && acceptAnswer) {
-				acceptAnswer = false;
-				var rightAnswer = obj.answer;
-				if (rightAnswer == answered) {
-					$("#answer" + rightAnswer).addClass("green");
-				} else if (rightAnswer >= 10) {
-					bool = true;
-					$(".answer").prop("disabled", true);
-					$("#answer" + (rightAnswer - 10)).addClass("red");
-
-				} else {
-					$("#answer" + answered).addClass("red");
-					$("#answer" + rightAnswer).addClass("green");
-
-				}
-				if (bool) {
-					setTimeout(function() {
-						console.log("Timeout: Vor ws.send");
-						var case8 = "{\"id\": \"8\"}";
-						ws.send(case8);
-						acceptAnswer = true;
-						console.log("Timeout: Nach ws.send");
-					}, 3500);
-				} else {
-					setTimeout(function() {
-						console.log("Vor ws.send");
-						var case8 = "{\"id\": \"8\"}";
-						ws.send(case8);
-						acceptAnswer = true;
-						console.log("Nach ws.send");
-					}, 3500);
-				}
-			} else if (obj.id == "12") {
-				alert("Herzlichen Glückwunsch!\nSie sind Rang " + obj.ranking);
-				location.reload();
-			} else if (obj.id == "11") {
-
-			} else if (obj.id == "255") {
-				alert(obj.message);
-				location.reload();
-				
-			} else {
-				alert("Es ist etwas schief gegangen!");
-				location.reload();
-			}
-
-		};
+		processWS();
 
 		break;
 	case 4:
+		
+		// shows the catalognames in the cataloglist
 		$.each(data, function(index, element) {
 			if (element.name != undefined) {
 				$(".catList").append(
@@ -85,7 +24,7 @@ function readMessages(data) {
 		initCatalogList();
 		break;
 	case 5:
-		console.log("MoreThan2: " + moreThan2);
+		// selects the chosen catalog and deselects the old one
 		var catElements = $(".catList");
 		$(".catList .selected").removeClass("selected");
 		catElements.children().each(function() {
@@ -95,11 +34,11 @@ function readMessages(data) {
 		});
 		break;
 	case 6:
+		// shows the playerlist with playername and score
 		$("#highscore table tbody").empty();
 		var playerCounter = 1;
 		$.each(data, function(index, element) {
-			console.log("SSE: " + index + " " + element + "   playerCounter:"
-					+ playerCounter);
+
 			if (index == ("name" + playerCounter)) {
 				$("#highscore table tbody").append(
 						'<tr id="player' + playerCounter + '"></tr>');
@@ -122,13 +61,16 @@ function readMessages(data) {
 
 		});
 
-		// Start Game Button für SuperUser anzeigen falls jetzt genug Player da
-		// sind und ein Katalog ausgewählt ist
 		var playerCount = $('#highscore table tbody tr').length;
 
+		// shows the game start button if enough players are there
+		// and a catalog is selected
 		if (gamePhase == false && playerCount > 1
 				&& userId == 0 && catalogSelected == true) {
 			initGameStartButton();
+			
+		// if one player left after a catalog was selected it tells
+		// the superuser to wait for another player
 		} else if (gamePhase == false && moreThan2 == true) {
 			content.empty();
 			content
@@ -139,10 +81,12 @@ function readMessages(data) {
 		startGame();
 		gamePhase = true;
 		loginPhase = false;
+		// Requests a question, used only at the gamestart
 		sendMessages(8);
 		break;
 
 	case 255:
+		// Shows the errormessage and reloads the site
 		alert(data.message);			
 		location.reload();
 		break;
@@ -152,10 +96,15 @@ function readMessages(data) {
 	}
 }
 
+/**
+ * sends messages to the server
+ * 
+ */
 function sendMessages(id) {
 
 	switch (id) {
 	case 1:
+		// sends the chosen loginname to the server
 		$.ajax({
 			type : 'POST',
 			url : 'PlayerServlet',
@@ -165,13 +114,12 @@ function sendMessages(id) {
 			},
 			dataType : 'json',
 			success : function(data) {
-				console.log(data);
 				readMessages(data);
-
 			}
 		});
 		break;
 	case 3:
+		// requests a list of the questioncatalogs
 		$.ajax({
 			type : 'POST',
 			url : 'CatalogServlet',
@@ -185,7 +133,7 @@ function sendMessages(id) {
 		});
 		break;
 	case 5:
-		// == 0 klappt aus mir unbekannten Gründen nicht.
+		// the newly selected catalog is send
 		if (userId == 0) {
 			$.ajax({
 				type : 'POST',
@@ -197,13 +145,12 @@ function sendMessages(id) {
 				dataType : 'json',
 				success : function(data) {
 					readMessages(data);
-					$.each(data, function(index, element) {
-					});
 				}
 			});
 		}
 		break;
 	case 7:
+		// sends the chosen catalog with the gamestart message
 		$.ajax({
 			type : 'POST',
 			url : 'PlayerServlet',
@@ -214,20 +161,18 @@ function sendMessages(id) {
 			dataType : 'json',
 			success : function(data) {
 				readMessages(data);
-				$.each(data, function(index, element) {
-
-				});
 			}
 		});
 		break;
 	case 8:
-
+		// sends a questionrequest to the server
 		var case8 = '{"id": "8"}';
 		ws.send(case8);
 		acceptAnswer = true;
 
 		break;
 	case 10:
+		// sends the answer to the server
 		var case10 = '{"id": "10", "answered": "' + answered + '"}';
 		ws.send(case10);
 		break;

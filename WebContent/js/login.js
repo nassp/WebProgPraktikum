@@ -1,4 +1,7 @@
-/* Katalogliste anzeigen und (für Spielleiter) selektierbar machen */
+/**
+ * shows catalog list and makes it selectable for the superuser
+ * 
+ */
 var initCatalogList = function() {
 	var catElements = $(".catList");
 	
@@ -6,14 +9,19 @@ var initCatalogList = function() {
 		if(userId==0){
 			$(".catList li").addClass("active");
 		}
+		// on click of one of the catalogs it checks if the game has not
+		// started yet and the user is the superuser. If so the catalog
+		// is selected.
 		$(this).click(function(event){
-			console.log(userId);
 			if(gamePhase==false && userId==0) {
 				catalogSelected=true;
 		    	$(".catList .selected").removeClass("selected");
 		    	$(this).addClass("selected");
+		    	// sends the selected catalog
 				sendMessages(5);
 				var playerCount = $('#highscore table tbody tr').length;
+				// makes the startbutton visible if more than on player
+				// is there and the user is the superuser.
 				if (startButtonVisible == false && playerCount>1 && userId==0){
 					initGameStartButton();
 				}
@@ -22,7 +30,10 @@ var initCatalogList = function() {
 	});
 };
 
-/* Fragekatalog Auswahl zuslassen wenn Loginname eingegeben ist */
+/**
+ * tells the player what to do after the login
+ * 
+ */
 var loggedIn = function() {
 	if (loginPhase == true) {
 		if (userId == 0) {
@@ -35,6 +46,11 @@ var loggedIn = function() {
 		loginPhase = false;
 	}
 };
+
+/**
+ * adds the listeners for the Server Send Events
+ * 
+ */
 var sseFunc = function () {
 	var eventSource = new EventSource('http://localhost:8080/WebQuiz/SSEServlet?uID='+userId);
 	eventSource.addEventListener('playerListEvent', function(playerListEvent) {
@@ -42,12 +58,10 @@ var sseFunc = function () {
 	    readMessages(data);
 	},false);
 	eventSource.addEventListener('catalogChangeEvent', function(catalogChangeEvent) {
-	    console.log(data);
 		var data = JSON.parse(catalogChangeEvent.data);
 	    readMessages(data);
 	},false);
 	eventSource.addEventListener('gameStartEvent', function(gameStartEvent) {
-		console.log(gameStartEvent);
 	    var data = JSON.parse(gameStartEvent.data);
 	    readMessages(data);
 	},false);
@@ -57,6 +71,3 @@ var sseFunc = function () {
 	},false);
 	
 };
-
-
-

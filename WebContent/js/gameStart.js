@@ -1,5 +1,15 @@
 var answered = 0;
-/* Quizfrage anzeigen */
+/**
+ * show questions
+ * 
+ * 
+ * @param question
+ * @param answer1
+ * @param answer2
+ * @param answer3
+ * @param answer4
+ * @param timeout
+ */
 var showQuestion = function(question, answer1, answer2, answer3, answer4,
 		timeout) {
 	
@@ -12,10 +22,10 @@ var showQuestion = function(question, answer1, answer2, answer3, answer4,
 	var input = '></input>';
 	
 	timeout = timeout/1000;
-	
-	console.log("Timeout: " + timeout);
 
+	// clear the current content
 	content.empty();
+	
 	content.append('<center><table id="quizTable"></table></center>');
 	var contentTable = $("#content table");
 	contentTable.append("<tr><th>" + question + "</th></tr>");
@@ -24,6 +34,8 @@ var showQuestion = function(question, answer1, answer2, answer3, answer4,
 	contentTable.append("<tr><td>" + a3 + "\"" + answer3 + "\"" + input + "</td></tr>");
 	contentTable.append("<tr><td>" + a4 + "\"" + answer4 + "\"" + input + "</td></tr>");
 	content.append('<div id="countdownWrap"><div id="countdown"></div></div>');
+	
+	// initialize the countdown
 	jQuery("#content #countdown").countDown({
 		startNumber : timeout,
 		callBack : function(me) {
@@ -31,43 +43,40 @@ var showQuestion = function(question, answer1, answer2, answer3, answer4,
 		}
 	});
 
+	// stops the countdown and disables all buttons
 	$(".answer").click(function(event) {
 
 		stopCountdown = true;
 
 		answered = $(".answer").index(this);
 		$(".answer").prop("disabled", true);
-
+		//sends the question answered message
 		sendMessages(10);
 
 	});
 };
-/* Startet das Spiel und l‰dt erste Frage */
+/**
+ * removes the highlight form the selected catalog
+ * 
+ */
 var startGame = function() {
 	var catElements = $(".catList");
 	catElements.children().each(function() {
 		$(this).removeClass("active");
 	});
-
-
-	// Quizfrage zum testen
-	/*var question = "Ein Thread soll auf ein durch einen anderen Thread ausgel√∂stes Ereignis warten. Welcher Mechanismus ist geeignet?";
-	var answer1 = '<input class="answer" type="button" name="Antwort 1" value="Nur Semaphore"></input>';
-	var answer2 = '<input class="answer" type="button" name="Antwort 2" value="Nur Mutexe"></input>';
-	var answer3 = '<input class="answer" type="button" name="Antwort 3" value="Weder Semaphore noch Mutexe"></input>';
-	var answer4 = '<input class="answer" type="button" name="Antwort 4" value="Sowohl Semaphore als auch Mutexe"></input>';
-	var timeout = 30;*/
-
-	//showQuestion(question, answer1, answer2, answer3, answer4, timeout);
 };
-/* Spielstart Button anzeigen */
+
+/**
+ * initializes the gamestart button
+ * 
+ */
 var initGameStartButton = function() {
 	moreThan2 = true;
 	var button = '<input class="startButton" type="button" name="Text 2" value="Spiel starten"></input>';
 	content.wrapInner(button);
 	startButtonVisible = true;
 	$("#content .startButton").click(function(e) {
-		// Spielstart Paket senden
+		// Sends the start game message.
 		sendMessages(7);
 	});
 };
