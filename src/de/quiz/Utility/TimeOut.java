@@ -60,10 +60,6 @@ public class TimeOut extends TimerTask {
 	 */
 	@Override
 	public void run() {
-		// TODO Auto-generated method stub
-
-		System.out.println("TimeOut!");
-
 		QuizError error = new QuizError();
 		Quiz.getInstance().answerQuestion(p, new Long(5), error);
 

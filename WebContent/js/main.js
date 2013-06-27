@@ -5,7 +5,7 @@ var catalogSelected = false;
 var content;
 var userId = -1;
 //Websocket
-var siteURL = 'localhost:8080/WebQuiz/';
+var siteURL = 'pluto.hs-weingarten.de:8181/~webprog03/tomcat/';
 var loginURL = siteURL+'LogicServlet';
 var sseURL = 'http://'+siteURL+'SSEServlet';
 var ws;
