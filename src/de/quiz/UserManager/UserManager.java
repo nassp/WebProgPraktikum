@@ -1,6 +1,5 @@
 package de.quiz.UserManager;
 
-import java.util.ArrayList;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import javax.servlet.http.HttpSession;
@@ -10,7 +9,6 @@ import org.json.JSONObject;
 
 import de.fhwgt.quiz.application.Player;
 import de.fhwgt.quiz.application.Quiz;
-import de.fhwgt.quiz.error.ErrorType;
 import de.fhwgt.quiz.error.QuizError;
 import de.fhwgt.quiz.error.QuizErrorType;
 import de.quiz.LoggingManager.ILoggingManager;
@@ -20,7 +18,7 @@ import de.quiz.User.IUser;
 import de.quiz.User.User;
 
 /**
- * this service handles the users. It should get registered with the
+ * This service handles the users. It should get registered with the
  * ServiceManager by default!
  * 
  * @author Patrick Na§
@@ -33,16 +31,17 @@ public class UserManager implements IUserManager {
 	}
 
 	/**
-	 * delete single user from activeUser list and invalidates its session
+	 * Delete single user from activeUser list and quiz logic.
 	 * 
 	 * @param user
+	 *            user which should be deleted
 	 */
 	public void removeActiveUser(IUser user) {
 		QuizError error = new QuizError();
-		if(user != null){
+		if (user != null) {
 			Quiz.getInstance().removePlayer(user.getPlayerObject(), error);
 			if (!error.isSet()) {
-	
+
 				ServiceManager
 						.getInstance()
 						.getService(ILoggingManager.class)
@@ -50,7 +49,7 @@ public class UserManager implements IUserManager {
 								+ " removed because of session timeout!");
 				activeUser.remove(user);
 				SSEServlet.broadcast(6);
-	
+
 			} else {
 				ServiceManager.getInstance().getService(ILoggingManager.class)
 						.log(this, error);
@@ -63,30 +62,35 @@ public class UserManager implements IUserManager {
 		}
 
 	}
+
 	/**
-	 * deletes all user from activeUser list and invalidates their session
+	 * Delete all users from activeUser list and quiz logic (function for game
+	 * reset).
 	 * 
-	 * @param user
+	 * 
 	 */
 	public void removeAllActiveUser() {
-		for (int i=0;i<activeUser.size();i++) {
+		for (int i = 0; i < activeUser.size(); i++) {
 			removeActiveUser(activeUser.get(i));
 		}
 		activeUser.clear();
 		ServiceManager.getInstance().getService(ILoggingManager.class)
-		.log("Userliste wurde gelöscht");
+				.log("Userliste wurde gelöscht");
 	}
 
 	/**
-	 * check user data and set session ID
+	 * Creates IUser object and adds player to actual gameplay
 	 * 
-	 * @param id
-	 *            the user's ID
+	 * @param name
+	 *            the user's name
 	 * @param session
 	 *            the user's session
+	 * @param e
+	 *            QuizError exception
 	 * @throws Exception
 	 */
-	public IUser loginUser(String name, HttpSession session, QuizError e) throws Exception {
+	public IUser loginUser(String name, HttpSession session, QuizError e)
+			throws Exception {
 
 		// check if session in use
 		if (getUserBySession(session) != null) {
@@ -102,8 +106,7 @@ public class UserManager implements IUserManager {
 			if (error.isSet()) {
 				ServiceManager.getInstance().getService(ILoggingManager.class)
 						.log(this, error);
-				if(error.getDescription().equals("Username taken"))
-				{
+				if (error.getDescription().equals("Username taken")) {
 					e.set(QuizErrorType.USERNAME_TAKEN);
 				}
 				return null;
@@ -122,17 +125,18 @@ public class UserManager implements IUserManager {
 		}
 
 	}
-    /**
-     * get the activeUser List
-     * 
-     * @return CopyOnWriteArrayList with all active Users
-     */
-    public CopyOnWriteArrayList<IUser> getUserList(){
-    	return activeUser;
-    }
-    
+
 	/**
-	 * returns an active user by it's ID
+	 * Get the activeUser list.
+	 * 
+	 * @return CopyOnWriteArrayList with all active Users
+	 */
+	public CopyOnWriteArrayList<IUser> getUserList() {
+		return activeUser;
+	}
+
+	/**
+	 * Returns an active user by it's ID.
 	 * 
 	 * @param id
 	 *            the requested user's ID return the user object or null
@@ -171,7 +175,7 @@ public class UserManager implements IUserManager {
 	}
 
 	/**
-	 * set's the session for a user
+	 * Set's the session for a user.
 	 * 
 	 * @param user
 	 *            the user we want to add the session
@@ -196,7 +200,7 @@ public class UserManager implements IUserManager {
 	}
 
 	/**
-	 * logout user
+	 * Logout user. (invalidates his session)
 	 * 
 	 * @param session
 	 *            the user's session
@@ -206,8 +210,13 @@ public class UserManager implements IUserManager {
 		if (session != null) {
 			session.invalidate();
 
-			ServiceManager.getInstance().getService(ILoggingManager.class)
-					.log(this, "successfully logged out user"+getUserBySession(session).getPlayerObject().getName());
+			ServiceManager
+					.getInstance()
+					.getService(ILoggingManager.class)
+					.log(this,
+							"successfully logged out user"
+									+ getUserBySession(session)
+											.getPlayerObject().getName());
 			return;
 		}
 		throw new Exception("Unable to logout user!");
@@ -215,14 +224,13 @@ public class UserManager implements IUserManager {
 	}
 
 	/**
-	 * Returns a JSON with the playerlist. THIS METHOD HAS TO BE CALLED FROM THE
-	 * SERVER SEND EVENTS!!!
+	 * Returns a JSON with the playerlist. 
 	 * 
 	 * @return JSONObject Playerlist or null at failure.
 	 */
 	public JSONObject getPlayerList() {
 		JSONObject tmpJSON = new JSONObject();
-		int i = 0;
+		
 		for (IUser user : this.activeUser) {
 			try {
 				int rank = getRankingForPlayer(user.getPlayerObject());
@@ -233,13 +241,13 @@ public class UserManager implements IUserManager {
 				ServiceManager.getInstance().getService(ILoggingManager.class)
 						.log("Failed to send Playerlist");
 			}
-			i++;
+			
 		}
 		return tmpJSON;
 	}
-	
+
 	/**
-	 * Returns the rankId for the requested Player
+	 * Returns the rankId for the requested Player.
 	 * 
 	 * @param curPlayer
 	 * @return rankId
@@ -250,7 +258,8 @@ public class UserManager implements IUserManager {
 			if (player != curPlayer) {
 				if (player.getScore() > curPlayer.getScore()) {
 					i++;
-				}else if(player.getScore() == curPlayer.getScore()&&player.getId()<curPlayer.getId()){
+				} else if (player.getScore() == curPlayer.getScore()
+						&& player.getId() < curPlayer.getId()) {
 					i++;
 				}
 			}
@@ -259,7 +268,7 @@ public class UserManager implements IUserManager {
 	}
 
 	/**
-	 * Returns the user with given websocket id
+	 * Returns the user with given websocket id.
 	 * 
 	 * @param id
 	 * @return IUser

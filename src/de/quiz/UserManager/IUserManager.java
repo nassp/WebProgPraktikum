@@ -11,10 +11,8 @@ import de.fhwgt.quiz.error.QuizError;
 import de.quiz.ServiceManager.IService;
 import de.quiz.User.IUser;
 
-
-
 /**
- * this service handles the users. It should get registered with the
+ * This service handles the users. It should get registered with the
  * ServiceManager by default!
  * 
  * @author Patrick Na§
@@ -22,91 +20,97 @@ import de.quiz.User.IUser;
 public interface IUserManager extends IService {
 
 	/**
-	 * check user data and set session ID
+	 * Creates IUser object and adds player to actual gameplay
 	 * 
-	 * @param id
-	 *            the user's ID
+	 * @param name
+	 *            the user's name
 	 * @param session
 	 *            the user's session
+	 * @param e
+	 *            QuizError exception
 	 * @throws Exception
 	 */
-    public IUser loginUser(String name, HttpSession session, QuizError error) throws Exception;
-    
-    /**
-     * logout user
-     * 
-     * @param session
-     *            the user's session
-     */
-    public void logoutUser(HttpSession session) throws Exception;
-    /**
-     * get the activeUser List
-     * 
-     * @return CopyOnWriteArrayList with all active Users
-     */
-    public CopyOnWriteArrayList<IUser> getUserList();
-    
-    /**
-     * get a user by his ID
-     * 
-     * @param id
-     *            the requested user's ID return the user object or null
-     * @return IUser The user with the requested id
-     */
-    public IUser getUserById(String id) throws Exception;
-
-    /**
-     * Returns a player object if found by session.
-     * 
-     * @param session
-     *            the requested user's session return the user object or null
-     * @return IUser The user with the requested session
-     */
-    public IUser getUserBySession(HttpSession session);
-		
-    /**
-     * set's the session for a user
-     * 
-     * @param user
-     *            the user we want to add the session
-     * @param session
-     *            the session we want to add
-     * @throws Exception
-     */
-    public void setSessionForUser(IUser user, HttpSession session) throws Exception;
+	public IUser loginUser(String name, HttpSession session, QuizError error)
+			throws Exception;
 
 	/**
-	 * Returns a JSON with the playerlist. THIS METHOD HAS TO BE CALLED FROM THE SERVER SEND EVENTS!!!
+	 * Logout user. (invalidates his session)
+	 * 
+	 * @param session
+	 *            the user's session
+	 */
+	public void logoutUser(HttpSession session) throws Exception;
+
+	/**
+	 * Get the activeUser list.
+	 * 
+	 * @return CopyOnWriteArrayList with all active Users
+	 */
+	public CopyOnWriteArrayList<IUser> getUserList();
+
+	/**
+	 * Get a user by his ID.
+	 * 
+	 * @param id
+	 *            the requested user's ID return the user object or null
+	 * @return IUser The user with the requested id
+	 */
+	public IUser getUserById(String id) throws Exception;
+
+	/**
+	 * Returns a player object if found by session.
+	 * 
+	 * @param session
+	 *            the requested user's session return the user object or null
+	 * @return IUser The user with the requested session
+	 */
+	public IUser getUserBySession(HttpSession session);
+
+	/**
+	 * Set's the session for a user.
+	 * 
+	 * @param user
+	 *            the user we want to add the session
+	 * @param session
+	 *            the session we want to add
+	 * @throws Exception
+	 */
+	public void setSessionForUser(IUser user, HttpSession session)
+			throws Exception;
+
+	/**
+	 * Returns a JSON with the playerlist.
 	 * 
 	 * @return JSONObject Playerlist or null at failure.
 	 */
 	public JSONObject getPlayerList();
-	
+
 	/**
-	 * delete single user from activeUser list and invalidates its session
+	 * Delete single user from activeUser list and quiz logic.
 	 * 
-     * @param user
-     *            the user we want to add the session
+	 * @param user
+	 *            the user we want to add the session
 	 */
 	public void removeActiveUser(IUser user);
-	
+
 	/**
-	 * deletes all user from activeUser list and invalidates their sessions (function for game reset)
+	 * Delete all users from activeUser list and quiz logic (function for game
+	 * reset).
 	 * 
 	 */
 	public void removeAllActiveUser();
-	
+
 	/**
-	 * Returns the rankId for the requested Player
+	 * Returns the rankId for the requested Player.
 	 * 
 	 * @param curPlayer
-     *            the player whose ranking we want
-	 * @return rankId 
+	 *            the player whose ranking we want
+	 * @return rankId
 	 */
 	public int getRankingForPlayer(Player curPlayer);
-	
+
 	/**
-	 * Returns the user with given websocket id
+	 * Returns the user with given websocket id.
 	 * 
 	 * @param id
 	 * @return IUser
