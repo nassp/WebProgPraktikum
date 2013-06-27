@@ -1,13 +1,8 @@
-package de.quiz.Servlets;
+package de.quiz.Utility;
 
-import java.io.IOException;
 import java.io.PrintWriter;
 
 import javax.servlet.AsyncContext;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 import org.json.JSONObject;
 
@@ -15,7 +10,12 @@ import de.fhwgt.quiz.application.Quiz;
 import de.quiz.ServiceManager.ServiceManager;
 import de.quiz.UserManager.IUserManager;
 
-class ClientThread implements Runnable {
+/**
+ * Thread to send a message to a player. 
+ * 
+ * @author Harry Strauch
+ */
+public class ClientThread implements Runnable {
 	private AsyncContext ctx;
 	private int messageId;
 	
@@ -27,7 +27,7 @@ class ClientThread implements Runnable {
 	 * @param messageId
 	 *            the ID of the broadcast to send
 	 */
-	ClientThread(AsyncContext ctx, int broadcastMsg) {
+	public ClientThread(AsyncContext ctx, int broadcastMsg) {
 		this.ctx = ctx;
 		messageId = broadcastMsg;
 	}

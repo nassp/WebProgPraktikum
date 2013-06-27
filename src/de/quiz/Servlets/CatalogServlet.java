@@ -24,13 +24,12 @@ import de.quiz.ServiceManager.ServiceManager;
 import de.quiz.UserManager.IUserManager;
 
 /**
- * Servlet implementation class CatalogServlet. This servlet handles
- * catalogs.
+ * Servlet implementation class CatalogServlet. This servlet handles catalogs.
  * 
  * 
  * @author Patrick Na§
  */
-@WebServlet(description = "managing of catalogs", urlPatterns = { "/CatalogServlet" })
+@WebServlet(description = "manages catalogs", urlPatterns = { "/CatalogServlet" })
 public class CatalogServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
@@ -61,7 +60,8 @@ public class CatalogServlet extends HttpServlet {
 	protected void doPost(HttpServletRequest request,
 			HttpServletResponse response) throws ServletException, IOException {
 		String sc = "";
-
+		
+		// get JSON packet ID
 		if (request.getParameter("rID") != null) {
 			sc = request.getParameter("rID");
 		}
@@ -71,68 +71,42 @@ public class CatalogServlet extends HttpServlet {
 			response.setContentType("application/json");
 			PrintWriter out = response.getWriter();
 			try {
+				// get all catalogs
 				Map<String, Catalog> catalogList = Quiz.getInstance()
 						.getCatalogList();
+				// create answer (catalogResponse)
 				JSONObject answer = new JSONObject();
 				answer.put("id", 4);
 				int catCounter = 1;
-				for(Map.Entry<String,Catalog> e : catalogList.entrySet()){
+				// adds a new catalog with the name and number of questions for each entry
+				for (Map.Entry<String, Catalog> e : catalogList.entrySet()) {
 					JSONObject catalog = new JSONObject();
 					catalog.put("name", e.getKey());
 					catalog.put("questions", e.getValue().getQuestions().size());
-					answer.put("cat"+catCounter,catalog);
+					answer.put("cat" + catCounter, catalog);
 					catCounter++;
 				}
+				// send answer
 				out.print(answer);
 
-			} catch (LoaderException e3) {
-
+			} catch (Exception e3) {
+				// inform client about error
 				JSONObject error = new JSONObject();
 				try {
+					// create answer (errorMessage)
 					error.put("id", 255);
 					error.put("message",
 							"Fehler beim Versenden des catalogue request");
+
 					ServiceManager.getInstance()
 							.getService(ILoggingManager.class)
 							.log("Failed sending catalog request!");
-
-				} catch (JSONException e1) {
-
-					try {
-						error.put("id", 255);
-						error.put("message",
-								"Fehler beim Versenden der catalogue request Fehler-Nachricht.");
-					} catch (JSONException e2) {
-						ServiceManager.getInstance()
-								.getService(ILoggingManager.class)
-								.log("Failed sending catalog request error!");
-					}
+					// send answer
 					out.print(error);
+				} catch (JSONException e) {
+					e.printStackTrace();
 				}
-			} catch (JSONException e) {
 
-				JSONObject error = new JSONObject();
-				try {
-					error.put("id", 255);
-					error.put("message",
-							"Fehler beim Versenden des catalogue request");
-					ServiceManager.getInstance()
-							.getService(ILoggingManager.class)
-							.log("Failed sending catalog request!");
-
-				} catch (JSONException e1) {
-
-					try {
-						error.put("id", 255);
-						error.put("message",
-								"Fehler beim Versenden der catalogue request Fehler-Nachricht.");
-					} catch (JSONException e2) {
-						ServiceManager.getInstance()
-								.getService(ILoggingManager.class)
-								.log("Failed sending catalog request error!");
-					}
-					out.print(error);
-				}
 			}
 
 		}
@@ -144,19 +118,13 @@ public class CatalogServlet extends HttpServlet {
 				Player player = ServiceManager.getInstance()
 						.getService(IUserManager.class)
 						.getUserBySession(session).getPlayerObject();
-				if (player != null) {
-					System.out.println(player.isSuperuser());
-				} else {
-					System.out.println("Player ist null");
-				}
 				if (player.isSuperuser()) {
 					QuizError error = new QuizError();
 					Catalog cat = Quiz.getInstance().changeCatalog(player,
 							request.getParameter("filename"), error);
 					if (cat != null) {
+						// broadcast catalogChange
 						SSEServlet.broadcast(5);
-					} else {
-						System.out.println("catalog not changed");
 					}
 				}
 
@@ -164,19 +132,6 @@ public class CatalogServlet extends HttpServlet {
 				e.printStackTrace();
 			}
 
-		}
-
-		else if (sc.equals("7")) {
-			response.setContentType("application/json");
-			PrintWriter out = response.getWriter();
-			JSONObject json = new JSONObject();
-			try {
-				json.put("id", 7);
-			} catch (JSONException e) {
-				
-				e.printStackTrace();
-			}
-			out.print(json);
 		}
 
 	}

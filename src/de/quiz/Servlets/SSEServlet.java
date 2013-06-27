@@ -12,6 +12,7 @@ import javax.servlet.http.HttpServletResponse;
 import de.quiz.ServiceManager.ServiceManager;
 import de.quiz.User.IUser;
 import de.quiz.UserManager.IUserManager;
+import de.quiz.Utility.ClientThread;
 
 /**
  * Servlet implementation class SSEServlet

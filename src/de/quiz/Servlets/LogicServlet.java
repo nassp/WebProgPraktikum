@@ -38,7 +38,6 @@ public class LogicServlet extends WebSocketServlet {
 	private static final long serialVersionUID = 1L;
 	private static CopyOnWriteArrayList<LogicMessageInbound> myInList = new CopyOnWriteArrayList<LogicMessageInbound>();
 	private final AtomicInteger connectionIds = new AtomicInteger(0);
-	private boolean superUserGone = false;
 	private boolean gameStarted = false;
 
 	@Override
@@ -189,64 +188,6 @@ public class LogicServlet extends WebSocketServlet {
 		public IUser getUserObject() {
 			return ServiceManager.getInstance().getService(IUserManager.class)
 					.getUserByWSID(playerID);
-		}
-		
-		/**
-		 * Message for too few players.
-		 * 
-		 */
-		private void tooFewPlayers() {
-
-			if (myInList.size() < 3) {
-				for (LogicMessageInbound connection : myInList) {
-					try {
-
-						// Hier muss eine 3 stehen da die Funktion ja im
-						// sich
-						// schließenden Client (der noch mitgezählt wird)
-						// aufgerufen
-						// wird.
-
-						if (connection.getUserObject() != null) {
-							String meins = "{\"id\": \"255\", \"message\": \"Es sind nicht mehr genügend Spieler vorhanden. Das Spiel wird abgebrochen.\"}";
-							CharBuffer buffer = CharBuffer.wrap(meins);
-							connection.getWsOutbound().writeTextMessage(buffer);
-						}
-
-					} catch (IOException ignore) {
-						// Ignore
-					}
-				}
-
-			}
-		}
-		
-		/**
-		 * Message that superuser has left the game.
-		 */
-		private void superUserLeft() {
-			if (!superUserGone) {
-				for (LogicMessageInbound connection : myInList) {
-					try {
-						String meins = "{\"id\": \"255\", \"message\": \"Der Spielleiter hat das Spiel verlassen. Bitte melden sie sich erneut an.\"}";
-						CharBuffer buffer = CharBuffer.wrap(meins);
-						connection.getWsOutbound().writeTextMessage(buffer);
-					} catch (IOException ignore) {
-						// Ignore
-					}
-					ServiceManager.getInstance().getService(IUserManager.class)
-							.removeActiveUser(connection.getUserObject());
-					connection.getUserObject().setWSID(-1);
-					myInList.remove(connection);
-					ServiceManager
-							.getInstance()
-							.getService(ILoggingManager.class)
-							.log("Login client closed. PlayerID: "
-									+ (playerID - 1));
-
-				}
-				superUserGone = true;
-			}
 		}
 
 		/**
