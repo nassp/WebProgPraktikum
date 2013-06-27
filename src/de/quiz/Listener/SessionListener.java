@@ -36,11 +36,12 @@ public class SessionListener implements HttpSessionListener {
 		IUser tmpUser = ServiceManager.getInstance()
 				.getService(IUserManager.class)
 				.getUserBySession(arg0.getSession());
-		//dont know why but sometimes the same session is destroyed several times... but it works
+		// session could be already destroyed
 		if (tmpUser != null)
 		ServiceManager.getInstance().getService(IUserManager.class)
 				.removeActiveUser(tmpUser);
-		System.out.println("Session Destoryed");
+		// debug
+		System.out.println("Session Destroyed");
 
 	}
 

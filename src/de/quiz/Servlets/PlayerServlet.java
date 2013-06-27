@@ -2,14 +2,7 @@ package de.quiz.Servlets;
 
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
 
-import javax.servlet.AsyncContext;
-import javax.servlet.RequestDispatcher;
-import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -28,12 +21,14 @@ import de.quiz.User.IUser;
 import de.quiz.UserManager.IUserManager;
 
 /**
- * Servlet implementation class PlayerServlet
+ * Servlet implementation class PlayerServlet. This Servlet handles everything
+ * that has to do with players.
+ * 
+ * @author Patrick Na§
  */
 @WebServlet(description = "handles everything which has to do with players", urlPatterns = { "/PlayerServlet" })
 public class PlayerServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-
 
 	/**
 	 * @see HttpServlet#HttpServlet()
@@ -49,6 +44,7 @@ public class PlayerServlet extends HttpServlet {
 	 */
 	protected void doGet(HttpServletRequest request,
 			HttpServletResponse response) throws ServletException, IOException {
+		// get is not supported
 		ServiceManager.getInstance().getService(ILoggingManager.class)
 				.log("GET is not supported by this Servlet");
 		response.getWriter().print("GET is not supported by this Servlet");
@@ -74,22 +70,21 @@ public class PlayerServlet extends HttpServlet {
 			try {
 
 				QuizError error = new QuizError();
-				
+
 				// create user
-				tmpUser = ServiceManager.getInstance()
+				tmpUser = ServiceManager
+						.getInstance()
 						.getService(IUserManager.class)
 						.loginUser(request.getParameter("name"), session, error);
-				
-				if(error.isSet())
-				{
-					//QuizErrorType: Username taken
-					
+
+				if (error.isSet()) {
+					// QuizErrorType: Username taken
+
 					JSONObject errors = new JSONObject();
 
 					try {
 						errors.put("id", 255);
-						errors.put("message",
-								error.getDescription());
+						errors.put("message", error.getDescription());
 					} catch (JSONException e1) {
 						ServiceManager.getInstance()
 								.getService(ILoggingManager.class)
@@ -99,10 +94,11 @@ public class PlayerServlet extends HttpServlet {
 					// send answer
 					out.print(errors);
 
-					ServiceManager.getInstance().getService(ILoggingManager.class)
+					ServiceManager.getInstance()
+							.getService(ILoggingManager.class)
 							.log("User login failed!");
 					return;
-					
+
 				}
 
 				// create answer

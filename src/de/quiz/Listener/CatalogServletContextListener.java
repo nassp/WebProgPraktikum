@@ -35,15 +35,9 @@ public class CatalogServletContextListener implements ServletContextListener {
 
 		try {
 			Quiz.getInstance().initCatalogLoader(loader);
+			// test if fail (initCatalogLoader doesn't throw anything)
 			Quiz.getInstance().getCatalogList();
-			//testing
-//			Map<String, Catalog> map = Quiz.getInstance().getCatalogList();
-//			Iterator<Entry<String, Catalog>> iter = map.entrySet().iterator();
-//			 
-//			while (iter.hasNext()) {
-//				Map.Entry<String, Catalog> mEntry = (Map.Entry<String, Catalog>) iter.next();
-//				System.out.println(mEntry.getKey() + " : " + mEntry.getValue());
-//			}
+
 			ServiceManager.getInstance().getService(ILoggingManager.class)
 					.log(this, "Instantiation of FileSystemLoader: success");
 		} catch (LoaderException e) {

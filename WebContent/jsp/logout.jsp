@@ -1,43 +1,37 @@
-<%@page import="de.quiz.UserManager.IUserManager"%>
-<%@page import="de.quiz.LoggingManager.ILoggingManager"%>
-<%@page import="de.quiz.ServiceManager.ServiceManager"%>
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Logout Page</title>
 
-<%
-response.getWriter().println("<!DOCTYPE html>");
+		<meta name="author" content="Patrick Naß">
+		<meta name="description" content="Log Seite zum Augaben des eigenen Logs">
 
+		<meta http-equiv="content-type" content="text/html; charset=utf-8">
 
-response.getWriter().println("<html>"); 
-	response.getWriter().println("<head>");
-		response.getWriter().println("<title>Logout Page</title>");
+		<!-- icon für Mozilla, Chrome, Safari und andere -->
+		<link rel="icon" href="../img/titleicon.ico" type="image/x-icon">
+		<!-- icon für Internet Explorer -->
+		<link rel="shortcut icon" href="../img/titleicon.ico" type="image/x-icon">
 
-		response.getWriter().println("<meta name=\"author\" content=\"Patrick Naß\">");
-		response.getWriter().println("<meta name=\"description\" content=\"Log Seite zum Augaben des eigenen Logs\">");
-
-		response.getWriter().println("<meta http-equiv=\"content-type\" content=\"text/html; charset=utf-8\">");
-
-		//<!-- icon für Mozilla, Chrome, Safari und andere -->
-		response.getWriter().println("<link rel=\"icon\" href=\"../img/titleicon.ico\" type=\"image/x-icon\">"); 
-		//<!-- icon für Internet Explorer -->
-		response.getWriter().println("<link rel=\"shortcut icon\" href=\"../img/titleicon.ico\" type=\"image/x-icon\">");
-
-		response.getWriter().println("<link type=\"text/css\" href=\"../css/style.css\" rel=\"stylesheet\">");
-		response.getWriter().println("<link type=\"text/css\" href=\"../css/font-awesome.css\" rel=\"stylesheet\">");
+		<link type="text/css" href="../css/style.css" rel="stylesheet">
+		<link type="text/css" href="../css/font-awesome.css" rel="stylesheet">
 		
-		response.getWriter().println("<meta http-equiv=\"refresh\" content=\"5; url=/WebQuiz/\">");
+		<meta http-equiv="refresh" content="5; url=/WebQuiz/">
+		<%@page import="de.quiz.UserManager.IUserManager"%>
+		<%@page import="de.quiz.LoggingManager.ILoggingManager"%>
+		<%@page import="de.quiz.ServiceManager.ServiceManager"%>
+	</head>
+	<body>
 		
-	response.getWriter().println("</head>");
-	response.getWriter().println("<body>");
-		
-			response.getWriter().println("<section id=\"quiz-app\">");
-			response.getWriter().println("<section id=\"logoutJSP\">");
-			response.getWriter().println("<br /> <br />");
-			response.getWriter()
-			.println(
-					"<br /> <br /> <img src=\"../img/abgemeldet.png\" alt=\"abgemeldet\">");
+			<section id="quiz-app">
+			<section id="logoutJSP">
+			<br /> <br />
+			<br /> <br /> 
+			<img src="../img/abgemeldet.png" alt="abgemeldet">
 
-			response.getWriter().println("<p>Du bist jetzt abgemeldet!</p>");
-			response.getWriter().println("<p>Bis zum nächsten mal.</p>");
-
+			<p>Du bist jetzt abgemeldet!</p>
+			<p>Bis zum nächsten mal.</p>
+			<% 
 			HttpSession tmp = request.getSession(false);
 			System.out.println("SESSION:!!!! "+tmp);
 			try {
@@ -53,16 +47,13 @@ response.getWriter().println("<html>");
 						.getService(ILoggingManager.class)
 						.log(e,
 								"User couldn't logout, because Session is already invalid");
-				response.sendRedirect(response.encodeRedirectURL("/WebQuiz/"));
+				//response.sendRedirect(response.encodeRedirectURL("/WebQuiz/"));
 			}
-
-			response.getWriter().println("<br /> <br />");
-			response.getWriter().println("<p>");
-			response.getWriter().println(
-					"<a href=\"/WebQuiz/\">-Zurück zur Anmeldeseite-</a>");
-			response.getWriter().println("</section>");
-			response.getWriter().println("</section>");
+			%>
+			<br /> <br />
+			<a href="/WebQuiz/">-Zurück zur Anmeldeseite-</a>
+			</section>
+			</section>
 		
-	response.getWriter().println("</body>");
-response.getWriter().println("</html>");
-%>
+	</body>
+</html>

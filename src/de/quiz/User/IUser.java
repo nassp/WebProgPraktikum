@@ -11,7 +11,7 @@ import de.fhwgt.quiz.application.Player;
 
 
 /**
- * this class is the interface for the UserConfig
+ * this class is the interface for the User class
  * 
  * @author Patrick Na§
  */
