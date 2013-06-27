@@ -4,15 +4,14 @@
  */
 function readMessages(data) {
 	switch (data.id) {
-	case 2:
+	case 2: // LoginResponseOK
 		userId = data.userID;
 		sseFunc();
 		loggedIn();
 		processWS();
 
 		break;
-	case 4:
-		
+	case 4: // CatalogResponse
 		// shows the catalognames in the cataloglist
 		$.each(data, function(index, element) {
 			if (element.name != undefined) {
@@ -23,7 +22,7 @@ function readMessages(data) {
 		});
 		initCatalogList();
 		break;
-	case 5:
+	case 5: // CatalogChange
 		// selects the chosen catalog and deselects the old one
 		var catElements = $(".catList");
 		$(".catList .selected").removeClass("selected");
@@ -33,7 +32,7 @@ function readMessages(data) {
 			}
 		});
 		break;
-	case 6:
+	case 6: // PlayerList
 		// shows the playerlist with playername and score
 		$("#highscore table tbody").empty();
 		var playerCounter = 1;
@@ -77,7 +76,7 @@ function readMessages(data) {
 					.wrapInner("<table class=\"center\" id=\"loginEingabe\"><td>Bitte warte bis mindestens noch 1 Spieler angemeldet ist.</td></table>");
 		}
 		break;
-	case 7:
+	case 7: // StartGame
 		startGame();
 		gamePhase = true;
 		loginPhase = false;
@@ -85,7 +84,7 @@ function readMessages(data) {
 		sendMessages(8);
 		break;
 
-	case 255:
+	case 255: // ErrorWarning
 		// Shows the errormessage and reloads the site
 		alert(data.message);			
 		location.reload();
@@ -103,7 +102,7 @@ function readMessages(data) {
 function sendMessages(id) {
 
 	switch (id) {
-	case 1:
+	case 1: // LoginRequest
 		// sends the chosen loginname to the server
 		$.ajax({
 			type : 'POST',
@@ -118,7 +117,7 @@ function sendMessages(id) {
 			}
 		});
 		break;
-	case 3:
+	case 3: // CatalogRequest
 		// requests a list of the questioncatalogs
 		$.ajax({
 			type : 'POST',
@@ -132,7 +131,7 @@ function sendMessages(id) {
 			}
 		});
 		break;
-	case 5:
+	case 5: // CatalogChange
 		// the newly selected catalog is send
 		if (userId == 0) {
 			$.ajax({
@@ -149,7 +148,7 @@ function sendMessages(id) {
 			});
 		}
 		break;
-	case 7:
+	case 7: // StartGame
 		// sends the chosen catalog with the gamestart message
 		$.ajax({
 			type : 'POST',
@@ -164,14 +163,14 @@ function sendMessages(id) {
 			}
 		});
 		break;
-	case 8:
+	case 8: // QuestionRequest
 		// sends a questionrequest to the server
 		var case8 = '{"id": "8"}';
 		ws.send(case8);
 		acceptAnswer = true;
 
 		break;
-	case 10:
+	case 10: // QuestionAnswered
 		// sends the answer to the server
 		var case10 = '{"id": "10", "answered": "' + answered + '"}';
 		ws.send(case10);

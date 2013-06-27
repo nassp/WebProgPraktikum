@@ -1,6 +1,6 @@
-/* CountdownTimer Funktion */
 var stopCountdown = false;
 
+/* countdownTimer function */
 jQuery.fn.countDown = function(settings, to) {
 	settings = jQuery.extend({
 		startFontSize : "36px",

@@ -6,6 +6,7 @@ var initCatalogList = function() {
 	var catElements = $(".catList");
 	
 	catElements.children().each(function() {   
+		// is this player superuser?
 		if(userId==0){
 			$(".catList li").addClass("active");
 		}
@@ -52,7 +53,7 @@ var loggedIn = function() {
  * 
  */
 var sseFunc = function () {
-	var eventSource = new EventSource('http://localhost:8080/WebQuiz/SSEServlet?uID='+userId);
+	var eventSource = new EventSource(sseURL+'?uID='+userId);
 	eventSource.addEventListener('playerListEvent', function(playerListEvent) {
 	    var data = JSON.parse(playerListEvent.data); 
 	    readMessages(data);

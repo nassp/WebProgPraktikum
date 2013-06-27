@@ -1,6 +1,6 @@
 var answered = 0;
 /**
- * show questions
+ * show question with possible answers and countdown
  * 
  * 
  * @param question
@@ -25,7 +25,7 @@ var showQuestion = function(question, answer1, answer2, answer3, answer4,
 
 	// clear the current content
 	content.empty();
-	
+	// show question
 	content.append('<center><table id="quizTable"></table></center>');
 	var contentTable = $("#content table");
 	contentTable.append("<tr><th>" + question + "</th></tr>");
@@ -45,9 +45,7 @@ var showQuestion = function(question, answer1, answer2, answer3, answer4,
 
 	// stops the countdown and disables all buttons
 	$(".answer").click(function(event) {
-
 		stopCountdown = true;
-
 		answered = $(".answer").index(this);
 		$(".answer").prop("disabled", true);
 		//sends the question answered message

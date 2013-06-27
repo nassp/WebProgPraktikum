@@ -4,13 +4,15 @@ var startButtonVisible = false;
 var catalogSelected = false;
 var content;
 var userId = -1;
-//Websocket 
-var loginURL = "localhost:8080/WebQuiz/LogicServlet";
+//Websocket
+var siteURL ='http://localhost:8080/WebQuiz/';
+var loginURL = siteURL+'LogicServlet';
+var sseURL = siteURL+'SSEServlet';
 var ws;
 var acceptAnswer = true;
 var moreThan2 = false;
 
-/* Wird ausgeführt wenn HTML-Content geladen ist */
+/* Execute when content is ready */
 $(document).ready(function() {
 	content = $("#content");
 	// Scrolls the website directly to the game
