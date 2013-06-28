@@ -16,7 +16,7 @@
 		<link type="text/css" href="../css/style.css" rel="stylesheet">
 		<link type="text/css" href="../css/font-awesome.css" rel="stylesheet">
 		
-		<meta http-equiv="refresh" content="5; url=/WebQuiz/">
+		<meta http-equiv="refresh" content="5; url=/~webprog03/tomcat/index.html">
 		<%@page import="de.quiz.UserManager.IUserManager"%>
 		<%@page import="de.quiz.LoggingManager.ILoggingManager"%>
 		<%@page import="de.quiz.ServiceManager.ServiceManager"%>
@@ -51,7 +51,7 @@
 			}
 			%>
 			<br /> <br />
-			<a href="/WebQuiz/">-Zurück zur Anmeldeseite-</a>
+			<a href="/~webprog03/tomcat/index.html">-Zurück zur Anmeldeseite-</a>
 			</section>
 			</section>
 		
